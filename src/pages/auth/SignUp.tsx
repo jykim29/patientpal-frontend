@@ -76,7 +76,8 @@ export default function SignUp() {
           PatienPal에 가입하고 다양한 간병 서비스를 이용해보세요.
         </p>
         <h3 className="text-text-large font-semibold">
-          회원 유형을 선택해주세요.
+          {step === 0 && '회원 유형을 선택해주세요. (1/2)'}
+          {step === 1 && '회원 정보를 입력해주세요. (2/2)'}
         </h3>
         <p className="text-text-medium text-negative">에러메세지 표시구역</p>
       </div>
