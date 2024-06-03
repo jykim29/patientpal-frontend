@@ -4,4 +4,6 @@
 
 body {
   font-family: 'Noto Sans KR', sans-serif;
+  inline-size: 100vw;
+  min-block-size: 100dvh;
 }

@@ -30,7 +30,7 @@ export default {
         'title-large': [
           pxToRem(48),
           {
-            fontWeight: 'semibold',
+            fontWeight: 'bold',
             letterSpacing: '0px',
             lineHeight: 1.2,
           },
@@ -38,7 +38,7 @@ export default {
         'title-medium': [
           pxToRem(36),
           {
-            fontWeight: 'semibold',
+            fontWeight: 'bold',
             letterSpacing: '0px',
             lineHeight: 1.2,
           },
@@ -46,7 +46,7 @@ export default {
         'title-small': [
           pxToRem(28),
           {
-            fontWeight: 'semibold',
+            fontWeight: 'bold',
             letterSpacing: '0px',
             lineHeight: 1.2,
           },
