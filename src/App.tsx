@@ -6,7 +6,7 @@ import {
 import './App.css';
 import Home from './pages/Home';
 import Layout from './components/layout/Layout';
-import Login from './pages/Login';
+import SignIn from './pages/SignIn';
 import Error from './components/common/Error';
 import AuthLayout from './components/layout/AuthLayout';
 
@@ -30,11 +30,11 @@ function App() {
       children: [
         {
           index: true,
-          element: <Navigate to={'login'} />,
+          element: <Navigate to={'signin'} />,
         },
         {
-          path: 'login',
-          element: <Login />,
+          path: 'signin',
+          element: <SignIn />,
         },
       ],
     },
