@@ -1,10 +1,7 @@
+import { memo } from 'react';
 import Button from './Button';
 
-export default function SocialLoginButtonSet({
-  type,
-}: {
-  type: 'horizontal' | 'vertical';
-}) {
+function SocialLoginButtonSet({ type }: { type: 'horizontal' | 'vertical' }) {
   const buttonWrapperClassName =
     type === 'vertical'
       ? 'flex w-full flex-col gap-1.5'
@@ -89,3 +86,5 @@ export default function SocialLoginButtonSet({
 
   return <div className={buttonWrapperClassName}>{buttonContents}</div>;
 }
+
+export default memo(SocialLoginButtonSet);
