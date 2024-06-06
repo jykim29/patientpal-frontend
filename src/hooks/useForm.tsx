@@ -1,120 +1,65 @@
-import { useCallback, useState } from 'react';
-import { userIdFromLocalStorage } from '../utils/getUserIdFromLocalStorage';
+import { useCallback, useEffect, useState } from 'react';
 
-type FormType = 'signIn' | 'signUp' | 'board';
-type UserRole = 'USER' | 'CAREGIVER';
+export type Validator<T> = {
+  [Key in keyof T]?: {
+    regex: string;
+    message: string;
+  };
+};
+type ErrorObject<T> = {
+  [Key in keyof T]?: { isValid: boolean; message: string } | null;
+};
 
-export interface SignInFormData {
-  username: string;
-  password: string;
-  isRememberId: boolean;
-}
-export interface SignUpFormData {
-  role: UserRole;
-  username: string;
-  password: string;
-  passwordConfirm: string;
-  contact: string;
-  termOfUse: boolean;
-  personalInformation: boolean;
-}
-export interface BoardFormData {
-  title: string;
-  content: string;
-}
+/*
+  TODO
+  1. 한계점 : regex가 단순히 입력값에 대해 정규식 검증만 지원함
+    - 해결해야할 점 : 함수도 지원하여 다양한 검증 방법에 대응
+    (예를들어, 두 개의 값 일치 여부, 다수의 값 true 여부 등... )
+*/
+export function useForm<T extends { [key: string]: any }>(
+  formData: T,
+  validator?: Validator<T>
+) {
+  const [data, setData] = useState(formData);
+  const [error, setError] = useState<ErrorObject<T>>({});
 
-type FormData = SignInFormData | SignUpFormData | BoardFormData;
-
-function generateInitialFormData(type: FormType): FormData {
-  if (type === 'signIn')
-    return {
-      username: userIdFromLocalStorage.get() || '',
-      password: '',
-      isRememberId: !!userIdFromLocalStorage.get(),
-    };
-  else if (type === 'signUp')
-    return {
-      role: 'USER',
-      username: '',
-      password: '',
-      passwordConfirm: '',
-      contact: '',
-      termOfUse: false,
-      personalInformation: false,
-    };
-  else {
-    return {
-      title: '',
-      content: '',
-    };
-  }
-}
-
-export function useForm<T extends FormData>(
-  type: FormType
-): [
-  T,
-  (e: React.ChangeEvent<HTMLInputElement>) => void,
-  (e: React.FormEvent<HTMLFormElement>) => void,
-] {
-  const [formData, setFormData] = useState<FormData>(() =>
-    generateInitialFormData(type)
-  );
+  const validate = () => {
+    if (!validator) return;
+    const newErrorObject = { ...error };
+    const keyValueArray = Object.entries(data as object);
+    keyValueArray.forEach(([key, value]) => {
+      if (value.length === 0) return;
+      const regex = new RegExp(validator[key]?.regex as string);
+      if (!regex.test(value))
+        newErrorObject[key as keyof T] = {
+          isValid: false,
+          message: validator[key]?.message as string,
+        };
+      else delete newErrorObject[key as keyof T];
+    });
+    setError(newErrorObject);
+  };
 
   const onChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.currentTarget;
-    const newValue = type === 'checkbox' ? checked : value;
-
-    if (name === 'contact' && isNaN(Number(value))) return;
-    setFormData((prev) => ({ ...prev, [name]: newValue }));
+    const { type, name, value, checked } = e.currentTarget;
+    if (name === 'contact' && Number.isNaN(Number(value))) return;
+    setData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
   }, []);
 
-  /*
-    - validation
-      - signup
-        - username : 최소 8자 이상
-        - password : 영문, 특수기호, 숫자 중 2개 이상 조합하여 8~20자 사이
-        - passwordConfirm : 비밀번호와 일치
-        - contact : 010으로 시작하는 11자리 숫자
-      - post
-        - title : 최소 1자 이상
-        - content : 최소 1자 이상
-  */
-
-  const submitSignInForm = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>, callback: () => any) => {
       e.preventDefault();
-      const { isRememberId, username, password } = formData as SignInFormData;
-      if (!isRememberId) userIdFromLocalStorage.remove();
-      else userIdFromLocalStorage.set(username);
-      console.log(formData);
+      callback();
     },
-    [formData]
-  );
-  const submitSignUpForm = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      const { termOfUse, personalInformation } = formData as SignUpFormData;
-      const agreement = [termOfUse, personalInformation];
-      if (Object.values(agreement).includes(false))
-        return alert('약관에 모두 동의해주세요.');
-      alert(JSON.stringify(formData));
-    },
-    [formData]
-  );
-  const submitBoardForm = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      const { title, content } = formData as BoardFormData;
-      alert(`title: ${title}, content: ${content}`);
-    },
-    [formData]
+    []
   );
 
-  const onSubmit = {
-    signIn: submitSignInForm,
-    signUp: submitSignUpForm,
-    board: submitBoardForm,
-  };
-  return [formData as T, onChange, onSubmit[type]];
+  useEffect(() => {
+    validator && validate();
+  }, [data]);
+
+  return { formData: data, handler: { onChange, onSubmit }, error };
 }

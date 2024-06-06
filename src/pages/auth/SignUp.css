@@ -13,10 +13,17 @@
   }
 
   .input-validation-message-box {
-    @apply relative flex h-11 items-center rounded-md border border-secondary bg-tertiary px-2 py-1 text-text-small;
+    @apply relative flex h-11 items-center rounded-md border border-gold bg-yellow-200 px-1.5 py-0.5 text-text-small;
 
     & > span {
-      @apply before:absolute before:-left-4 before:top-1/2 before:-translate-y-1/2 before:border-8 before:border-transparent before:border-r-secondary;
+      @apply before:absolute before:-left-4 before:top-1/2 before:-translate-y-1/2 before:border-8 before:border-transparent before:border-r-gold;
     }
+  }
+
+  .input-valid {
+    @apply w-full rounded-lg border border-gray-light-medium px-4 py-2.5 text-text-medium hover:border-black focus:outline-secondary [&:not(:placeholder-shown)]:border-2 [&:not(:placeholder-shown)]:border-secondary;
+  }
+  .input-invalid {
+    @apply w-full rounded-lg border border-2 border-negative px-4 py-2.5 text-text-medium hover:border-black focus:outline-negative [&:not(:placeholder-shown)]:border-2 [&:not(:placeholder-shown)]:border-negative;
   }
 }

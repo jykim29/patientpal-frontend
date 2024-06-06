@@ -1,22 +1,117 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 
-import FormInput from './FormInput';
-import { SignUpFormData, useForm } from '../../hooks/useForm';
-import Button from '../common/Button';
-import FormCheckbox from './FormCheckbox';
+import { SignUpFormData } from '@/types/formData';
+import { Validator, useForm } from '@/hooks/useForm';
+import FormAlertErrorBox from './FormAlertErrorBox';
+import {
+  FormInput,
+  FormTooltipMessageBox,
+  FormCheckbox,
+} from '@/components/Form';
+import Button from '@/components/common/Button';
+
+const initialFormData: SignUpFormData = {
+  role: 'USER',
+  username: '',
+  password: '',
+  passwordConfirm: '',
+  contact: '',
+  termOfUse: false,
+  personalInformation: false,
+};
+const validator: Validator<SignUpFormData> = {
+  username: {
+    regex: '^[a-z0-9]{8,20}$',
+    message: '아이디는 알파벳 소문자 또는 숫자가 포함된 8~20자여야 합니다.',
+  },
+  password: {
+    regex: '^(?=.*[a-zA-Z])(?=.*[0-9]|.*[!@#$_-])[A-Za-z0-9!@#$_-]{8,20}$',
+    message:
+      '비밀번호는 영문 필수, 숫자 또는 특수문자(!,@,#,$,_,-)가 포함된 8~20자여야 합니다.',
+  },
+  contact: {
+    regex: '^010[0-9]{8}$',
+    message: '휴대폰 번호는 "010"으로 시작하는 11자리의 숫자여야 합니다.',
+  },
+};
 
 export default function SignUpForm() {
-  const [formData, handleChange, handleSubmit] =
-    useForm<SignUpFormData>('signUp');
+  const {
+    formData,
+    handler: { onChange: handleChange, onSubmit: handleSubmit },
+    error,
+  } = useForm<SignUpFormData>(initialFormData, validator);
   const [step, setStep] = useState<number>(0);
+  const [isShowError, setIsShowError] = useState<boolean>(false);
+  const {
+    role,
+    username,
+    password,
+    passwordConfirm,
+    contact,
+    termOfUse,
+    personalInformation,
+  } = formData;
+  const {
+    username: usernameErr,
+    password: passwordErr,
+    contact: contactErr,
+  } = error;
 
-  const { role, username, password, passwordConfirm, contact } = formData;
+  // 에러 메세지 설정
+  const errorArray = useMemo(() => {
+    const { username, password, passwordConfirm, contact } = formData;
+    const {
+      username: usernameErr,
+      password: passwordErr,
+      contact: contactErr,
+    } = error;
+    const tempArray = [];
+    if (
+      username === '' ||
+      password === '' ||
+      passwordConfirm === '' ||
+      contact === ''
+    )
+      tempArray.push('모든 항목을 입력해주세요.');
+    if (usernameErr) tempArray.push(usernameErr.message);
+    if (passwordErr) tempArray.push(passwordErr.message);
+    if (password !== passwordConfirm)
+      tempArray.push('비밀번호가 일치하지 않습니다.');
+    if (contactErr) tempArray.push(contactErr.message);
+    if (!(termOfUse && personalInformation))
+      tempArray.push('약관에 모두 동의하지 않았습니다.');
+    return tempArray;
+  }, [formData, error]);
+
+  // 툴팁 메세지 설정
+  const tooltipBoxArray = useMemo(
+    () => [
+      '알파벳 소문자 또는 숫자가 포함된 8~20자',
+      '영문 필수, 숫자 또는 특수문자가 포함된 8~20자',
+      '비밀번호를 다시 입력해주세요.',
+      '010으로 시작하는 11자리의 숫자',
+    ],
+    []
+  );
 
   const handleClickStepChange = useCallback(() => {
-    if (step === 0) setStep((prev) => prev + 1);
-    if (step === 1) setStep((prev) => prev - 1);
-  }, [step]);
+    if (step === 0) {
+      if (role !== 'USER' && role !== 'CAREGIVER') return setIsShowError(true);
+      setStep((prev) => prev + 1);
+    }
+    if (step === 1) {
+      setStep((prev) => prev - 1);
+    }
+    setIsShowError(false);
+  }, [step, role]);
+
+  const signUp = () => {
+    if (errorArray.length > 0) return setIsShowError(true);
+    // 회원가입 api 호출
+    setIsShowError(false);
+  };
 
   return (
     <>
@@ -24,10 +119,16 @@ export default function SignUpForm() {
         {step === 0 && '회원 유형을 선택해주세요. (1/2)'}
         {step === 1 && '회원 정보를 입력해주세요. (2/2)'}
       </h3>
-      <p className="text-text-medium text-negative">에러메세지 표시구역</p>
+
+      {isShowError && step === 0 && (
+        <FormAlertErrorBox>잘못된 유형을 선택하였습니다.</FormAlertErrorBox>
+      )}
+      {isShowError && step === 1 && errorArray.length > 0 && (
+        <FormAlertErrorBox>{errorArray[0]}</FormAlertErrorBox>
+      )}
 
       <form
-        onSubmit={handleSubmit}
+        onSubmit={(e) => handleSubmit(e, signUp)}
         className="flex w-full flex-col items-start gap-3"
       >
         {/* 1단계 - 간병인 회원 선택 */}
@@ -50,7 +151,7 @@ export default function SignUpForm() {
               />
               <label className="user-type-radio-button" htmlFor="user">
                 <figure className="user-type-image-container">
-                  <figcaption>일반 회원</figcaption>
+                  <figcaption>일반 사용자</figcaption>
                   <img
                     className="h-[120px]"
                     src="/assets/patient_both.png"
@@ -100,14 +201,16 @@ export default function SignUpForm() {
                 label="아이디"
                 name="username"
                 value={username}
+                isValid={usernameErr?.isValid}
                 onChange={handleChange}
               />
               <Button className="h-full w-[80px] px-1 py-1" type="button">
                 중복확인
               </Button>
-              <div className="input-validation-message-box invisible ml-2 w-[150px] peer-focus-within:visible">
-                <span>툴팁 메세지</span>
-              </div>
+              <FormTooltipMessageBox>
+                {tooltipBoxArray[0]}
+              </FormTooltipMessageBox>
+              {/* {tooltipBoxArray[0]} */}
             </div>
             <div className="mt-2.5 flex w-full gap-1">
               <FormInput
@@ -116,11 +219,13 @@ export default function SignUpForm() {
                 label="비밀번호"
                 name="password"
                 value={password}
+                isValid={passwordErr?.isValid}
                 onChange={handleChange}
               />
-              <div className="input-validation-message-box invisible ml-2 w-[150px] peer-focus-within:visible">
-                <span>툴팁 메세지</span>
-              </div>
+              <FormTooltipMessageBox>
+                {tooltipBoxArray[1]}
+              </FormTooltipMessageBox>
+              {/* {tooltipBoxArray[1]} */}
             </div>
             <div className="mt-2.5 flex w-full gap-1">
               <FormInput
@@ -129,11 +234,13 @@ export default function SignUpForm() {
                 label="비밀번호 확인"
                 name="passwordConfirm"
                 value={passwordConfirm}
+                isValid={password === passwordConfirm}
                 onChange={handleChange}
               />
-              <div className="input-validation-message-box invisible ml-2 w-[150px] peer-focus-within:visible">
-                <span>툴팁 메세지</span>
-              </div>
+              <FormTooltipMessageBox>
+                {tooltipBoxArray[2]}
+              </FormTooltipMessageBox>
+              {/* {tooltipBoxArray[2]} */}
             </div>
             <div className="mt-2.5 flex w-full gap-1">
               <FormInput
@@ -142,14 +249,16 @@ export default function SignUpForm() {
                 label="휴대폰 번호"
                 name="contact"
                 value={contact}
+                isValid={contactErr?.isValid}
                 onChange={handleChange}
               />
               <Button className="h-full w-[80px] px-1 py-1" type="button">
                 인증요청
               </Button>
-              <div className="input-validation-message-box invisible ml-2 w-[150px] peer-focus-within:visible">
-                <span>툴팁 메세지</span>
-              </div>
+              <FormTooltipMessageBox>
+                {tooltipBoxArray[3]}
+              </FormTooltipMessageBox>
+              {/* {tooltipBoxArray[3]} */}
             </div>
             <div className="mt-3 flex w-full items-center justify-center gap-5">
               <FormCheckbox
