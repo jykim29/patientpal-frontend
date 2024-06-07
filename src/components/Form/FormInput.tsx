@@ -6,6 +6,7 @@ interface FormInputProps extends React.ComponentPropsWithoutRef<'input'> {
   type?: string;
   name: string;
   label: string;
+  isValid?: boolean;
   [key: string]: any;
 }
 
@@ -14,6 +15,7 @@ function FormInput({
   type = 'text',
   name,
   label,
+  isValid = true,
   ...restProps
 }: FormInputProps) {
   const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
@@ -30,14 +32,15 @@ function FormInput({
   return (
     <div className={combinedContainerClassName}>
       <input
-        className="peer w-full rounded-lg border border-gray-light-medium px-4 py-2.5 text-text-medium hover:border-black focus:outline-secondary [&:not(:placeholder-shown)]:border-2 [&:not(:placeholder-shown)]:border-secondary"
+        className={`${twMerge('peer', isValid ? 'input-valid' : 'input-invalid')}`}
         type={inputType}
         name={name}
         placeholder=""
         {...restProps}
       />
+
       <label
-        className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 select-none text-text-medium text-gray-medium transition-all peer-focus-visible:left-3 peer-focus-visible:top-0 peer-focus-visible:bg-white peer-focus-visible:px-1 peer-focus-visible:text-text-small peer-focus-visible:text-secondary peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1 peer-[:not(:placeholder-shown)]:text-text-small peer-[:not(:placeholder-shown)]:text-secondary"
+        className={`peer-focus-visible:text-text-small peer-[:not(:placeholder-shown)]:text-text-small ${twMerge('pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 select-none text-text-medium text-gray-medium transition-all peer-focus-visible:left-3 peer-focus-visible:top-0 peer-focus-visible:bg-white peer-focus-visible:px-1 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1', isValid ? 'peer-focus-visible:text-secondary peer-[:not(:placeholder-shown)]:text-secondary' : 'peer-focus-visible:text-negative peer-[:not(:placeholder-shown)]:text-negative')}`}
         htmlFor={name}
       >
         {label}
