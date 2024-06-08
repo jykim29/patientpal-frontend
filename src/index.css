@@ -1,11 +1,8 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
+@import './styles/custom-components.css';
 @import 'tailwindcss/utilities';
-
-@import './pages/auth/SignUp.css';
 
 body {
   font-family: 'Noto Sans KR', sans-serif;
-  inline-size: 100vw;
-  min-block-size: 100dvh;
 }

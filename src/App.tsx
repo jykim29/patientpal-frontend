@@ -10,6 +10,7 @@ import Layout from './components/layout/Layout';
 import { SignIn, SignUp } from './pages/auth';
 import Error from './components/common/Error';
 import AuthLayout from './components/layout/AuthLayout';
+import Forum from './pages/community/Forum';
 
 function App() {
   const router = createBrowserRouter([
@@ -21,6 +22,10 @@ function App() {
         {
           path: '/',
           element: <Home />,
+        },
+        {
+          path: '/community/forum',
+          element: <Forum />,
         },
       ],
     },

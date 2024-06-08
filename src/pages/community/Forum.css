@@ -1,0 +1,59 @@
+@layer components {
+  /* board 컨테이너 */
+  .board-container {
+    @apply flex w-full flex-col justify-center border-y-2 border-gray-medium;
+  }
+
+  /* board li요소 전체 */
+  .board-item {
+    @apply flex py-[5px];
+
+    & span {
+      @apply text-center;
+    }
+    /* 번호, 조회수 너비 */
+    & .board-id,
+    & .board-views {
+      @apply w-[8%];
+    }
+    /* 제목 너비 */
+    & .board-subject {
+      @apply flex-1;
+    }
+    /* 작성자, 날짜 너비 */
+    & .board-author,
+    & .board-date {
+      @apply w-[13%];
+    }
+  }
+
+  /* board 헤더 li 요소 */
+  .board-header {
+    @apply bg-gray-light font-semibold;
+
+    & > span:nth-last-child(n + 2) {
+      @apply border-r-2 border-gray-light-medium;
+    }
+  }
+
+  /* board 헤더 제외 li요소 전체 */
+  .board-body {
+    @apply hover:bg-gray-light;
+
+    &:nth-last-child(n + 2) {
+      @apply border-b border-b-gray-light-medium;
+    }
+    & .board-subject {
+      @apply flex;
+      & a {
+        @apply ml-3 flex gap-2;
+        &:hover span:first-child {
+          @apply text-primary underline;
+        }
+      }
+    }
+    & .board-comments-count {
+      @apply align-middle text-orange;
+    }
+  }
+}
