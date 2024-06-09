@@ -1011,7 +1011,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^7.2.0":
+"@typescript-eslint/eslint-plugin@npm:7.12.0, @typescript-eslint/eslint-plugin@npm:^7.2.0":
   version: 7.12.0
   resolution: "@typescript-eslint/eslint-plugin@npm:7.12.0"
   dependencies:
@@ -1034,7 +1034,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^7.2.0":
+"@typescript-eslint/parser@npm:7.12.0, @typescript-eslint/parser@npm:^7.2.0":
   version: 7.12.0
   resolution: "@typescript-eslint/parser@npm:7.12.0"
   dependencies:
@@ -2419,7 +2419,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.57.0":
+"eslint@npm:8.x":
   version: 8.57.0
   resolution: "eslint@npm:8.57.0"
   dependencies:
@@ -4104,7 +4104,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:^7.2.0"
     "@vitejs/plugin-react": "npm:^4.2.1"
     autoprefixer: "npm:^10.4.19"
-    eslint: "npm:^8.57.0"
+    eslint: "npm:8.x"
     eslint-config-airbnb: "npm:^19.0.4"
     eslint-config-airbnb-typescript: "npm:^18.0.0"
     eslint-config-prettier: "npm:^9.1.0"
@@ -4130,6 +4130,7 @@ __metadata:
     tailwind-merge: "npm:^2.3.0"
     tailwindcss: "npm:^3.4.3"
     typescript: "npm:^5.2.2"
+    typescript-eslint: "npm:^7.12.0"
     vite: "npm:^5.2.0"
     vite-plugin-svgr: "npm:^4.2.0"
     vite-tsconfig-paths: "npm:^4.3.2"
@@ -5302,6 +5303,22 @@ __metadata:
     is-typed-array: "npm:^1.1.13"
     possible-typed-array-names: "npm:^1.0.0"
   checksum: 10c0/74253d7dc488eb28b6b2711cf31f5a9dcefc9c41b0681fd1c178ed0a1681b4468581a3626d39cd4df7aee3d3927ab62be06aa9ca74e5baf81827f61641445b77
+  languageName: node
+  linkType: hard
+
+"typescript-eslint@npm:^7.12.0":
+  version: 7.12.0
+  resolution: "typescript-eslint@npm:7.12.0"
+  dependencies:
+    "@typescript-eslint/eslint-plugin": "npm:7.12.0"
+    "@typescript-eslint/parser": "npm:7.12.0"
+    "@typescript-eslint/utils": "npm:7.12.0"
+  peerDependencies:
+    eslint: ^8.56.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/4533dc8f277b431ff6911789581d4f2dada7c3f6382a95b5b727d3fbfc1f316fc28153c46375d2c0d72d628b1fd48762e7b66efb51d49a2614913d42b74a8033
   languageName: node
   linkType: hard
 

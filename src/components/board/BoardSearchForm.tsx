@@ -1,7 +1,7 @@
+import { memo, useCallback, useState } from 'react';
 import Dropdown from '@/components/Dropdown';
 import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
-import { memo, useMemo, useState } from 'react';
 
 interface BoardSearchFormProps {
   categoryList: string[];
@@ -13,20 +13,29 @@ function BoardSearchForm({ categoryList }: BoardSearchFormProps) {
     keyword: '',
   });
 
-  const handleChangeKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.currentTarget;
-    setSearchFormData((prev) => ({ ...prev, [name]: value }));
-  };
-  const handleClickSetCategory = (e: React.MouseEvent<HTMLLIElement>) => {
-    const { innerText } = e.currentTarget;
-    if (searchFormData.category === innerText) return;
-    setSearchFormData((prev) => ({ ...prev, category: innerText }));
-  };
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    const { category, keyword } = searchFormData;
-    e.preventDefault();
-    alert(category + ' ' + keyword);
-  };
+  const handleChangeKeyword = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.currentTarget;
+      setSearchFormData((prev) => ({ ...prev, [name]: value }));
+    },
+    []
+  );
+  const handleClickSetCategory = useCallback(
+    (e: React.MouseEvent<HTMLLIElement>) => {
+      const { innerText } = e.currentTarget;
+      if (searchFormData.category === innerText) return;
+      setSearchFormData((prev) => ({ ...prev, category: innerText }));
+    },
+    []
+  );
+  const handleSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      const { category, keyword } = searchFormData;
+      e.preventDefault();
+      alert(category + ' ' + keyword);
+    },
+    [searchFormData]
+  );
 
   return (
     <form className="flex items-center gap-2" onSubmit={handleSubmit}>

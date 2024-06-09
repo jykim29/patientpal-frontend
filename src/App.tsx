@@ -11,6 +11,8 @@ import { SignIn, SignUp } from './pages/auth';
 import Error from './components/common/Error';
 import AuthLayout from './components/layout/AuthLayout';
 import Forum from './pages/community/Forum';
+import MainLayout from './components/layout/MainLayout';
+import BoardWrite from './pages/community/BoardWrite';
 
 function App() {
   const router = createBrowserRouter([
@@ -24,8 +26,23 @@ function App() {
           element: <Home />,
         },
         {
-          path: '/community/forum',
-          element: <Forum />,
+          path: '/community',
+          element: <MainLayout title="커뮤니티" />,
+          errorElement: <Error />,
+          children: [
+            {
+              index: true,
+              element: <Navigate to={'forum'} />,
+            },
+            {
+              path: '/community/forum',
+              element: <Forum />,
+            },
+            {
+              path: '/community/forum/write',
+              element: <BoardWrite />,
+            },
+          ],
         },
       ],
     },

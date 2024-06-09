@@ -3,6 +3,8 @@
 @import './styles/custom-components.css';
 @import 'tailwindcss/utilities';
 
+@import './styles/custom-react-quill.css';
+
 body {
   font-family: 'Noto Sans KR', sans-serif;
 }

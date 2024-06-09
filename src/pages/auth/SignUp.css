@@ -20,10 +20,10 @@
     }
   }
 
-  .input-valid {
-    @apply w-full rounded-lg border border-gray-light-medium px-4 py-2.5 text-text-medium hover:border-black focus:outline-secondary [&:not(:placeholder-shown)]:border-2 [&:not(:placeholder-shown)]:border-secondary;
+  .form-input {
+    @apply w-full rounded-lg border border-gray-light-medium py-2.5 pl-4 pr-9 text-text-medium shadow-[0_0_0_0.5px_#D8D8D8] hover:border-black hover:shadow-[0_0_0_0.5px_#000] focus:outline-secondary [&:not(:placeholder-shown)]:border-2 [&:not(:placeholder-shown)]:border-secondary;
   }
-  .input-invalid {
-    @apply w-full rounded-lg border border-2 border-negative px-4 py-2.5 text-text-medium hover:border-black focus:outline-negative [&:not(:placeholder-shown)]:border-2 [&:not(:placeholder-shown)]:border-negative;
+  .form-input-invalid {
+    @apply w-full rounded-lg border border-2 border-negative py-2.5 pl-4 pr-9 text-text-medium focus:outline-negative [&:not(:placeholder-shown)]:border-2 [&:not(:placeholder-shown)]:border-negative;
   }
 }

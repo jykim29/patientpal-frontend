@@ -31,7 +31,7 @@ function Dropdown({
     setIsExpanded((prev) => !prev);
   };
   return (
-    <div className="relative">
+    <div className="relative rounded-lg bg-white">
       <button
         className={combinedDropdownClassName}
         type="button"

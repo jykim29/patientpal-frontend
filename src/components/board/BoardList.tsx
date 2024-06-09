@@ -186,7 +186,7 @@ function BoardList({ title, searchCategoryList }: BoardListProps) {
 
       <div className="mt-3 text-right">
         <Link
-          to={''}
+          to={'write'}
           className="inline-block rounded-md bg-primary px-4 py-1 text-text-medium text-white transition-all hover:brightness-[0.95] active:brightness-[1.05]"
         >
           글쓰기

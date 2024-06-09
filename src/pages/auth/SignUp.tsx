@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 import SocialLoginButtonSet from '../../components/common/SocialLoginButtonSet';
-import SignUpForm from '../../components/Form/SignUpForm';
+import SignUpForm from '../../components/Form/auth/SignUpForm';
 
 /*
   TODO

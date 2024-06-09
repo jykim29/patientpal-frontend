@@ -1,12 +1,11 @@
 import { useState } from 'react';
-
-import { useForm } from '../../hooks/useForm';
-import Button from '../common/Button';
-import FormCheckbox from './FormCheckbox';
+import { useForm } from '../../../hooks/useForm';
+import Button from '../../common/Button';
+import FormCheckbox from '../FormCheckbox';
 import FormInput from './FormInput';
 import FormAlertErrorBox from './FormAlertErrorBox';
-import { SignInFormData } from '../../types/formData';
-import { userIdFromLocalStorage } from '../../utils/getUserIdFromLocalStorage';
+import { SignInFormData } from '../../../types/formData.interface';
+import { userIdFromLocalStorage } from '../../../utils/getUserIdFromLocalStorage';
 
 const initialFormData: SignInFormData = {
   username: userIdFromLocalStorage.get() || '',

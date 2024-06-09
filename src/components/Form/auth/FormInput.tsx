@@ -32,7 +32,7 @@ function FormInput({
   return (
     <div className={combinedContainerClassName}>
       <input
-        className={`${twMerge('peer', isValid ? 'input-valid' : 'input-invalid')}`}
+        className={`${twMerge('peer', isValid ? 'form-input' : 'form-input-invalid')}`}
         type={inputType}
         name={name}
         placeholder=""
