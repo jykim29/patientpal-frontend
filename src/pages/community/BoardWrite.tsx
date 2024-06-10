@@ -1,4 +1,4 @@
-import BoardWriteForm from '@/components/board/BoardWriteForm';
+import { BoardWriteForm } from '@/components/board';
 
 export default function BoardWrite() {
   return (

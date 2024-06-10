@@ -1,19 +1,16 @@
-import { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 
 import { BoardFormData } from '@/types/formData.interface';
 
 import Input from '../common/Input';
 import Dropdown from '../Dropdown';
 import Button from '../common/Button';
+import CustomReactQuill from '../Editor/CustomReactQuill';
 
 interface BoardWriteFormProps {
   title: string;
 }
-const MemoQuill = memo(ReactQuill);
-
 const boardCategoryListArray = ['자유게시판'];
 
 function BoardWriteForm({ title }: BoardWriteFormProps) {
@@ -23,7 +20,6 @@ function BoardWriteForm({ title }: BoardWriteFormProps) {
     content: '',
     password: '',
   });
-  const quillRef = useRef<ReactQuill>(null);
 
   const handleChange = {
     category: useCallback((e: React.MouseEvent<HTMLLIElement>) => {
@@ -51,24 +47,6 @@ function BoardWriteForm({ title }: BoardWriteFormProps) {
     content: ${content}`);
     },
     [writeFormData]
-  );
-  const modules = useMemo(
-    () => ({
-      toolbar: [
-        [{ size: ['small', false, 'large', 'huge'] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ color: ['#000', '#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f'] }],
-        [
-          { list: 'ordered' },
-          { list: 'bullet' },
-          { indent: '-1' },
-          { indent: '+1' },
-        ],
-        ['link', 'video'],
-        ['clean'],
-      ],
-    }),
-    []
   );
 
   return (
@@ -117,12 +95,7 @@ function BoardWriteForm({ title }: BoardWriteFormProps) {
         </div>
 
         <div>
-          <MemoQuill
-            ref={quillRef}
-            placeholder="내용을 입력하세요."
-            onChange={handleChange.quill}
-            modules={modules}
-          />
+          <CustomReactQuill onChange={handleChange.quill} />
         </div>
       </div>
 
