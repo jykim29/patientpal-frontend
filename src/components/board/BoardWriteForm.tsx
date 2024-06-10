@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
+import { BoardFormData } from '@/types/formData.interface';
+
 import Input from '../common/Input';
 import Dropdown from '../Dropdown';
 import Button from '../common/Button';
-
-import { BoardFormData } from '@/types/formData.interface';
 
 interface BoardWriteFormProps {
   title: string;
@@ -71,11 +71,9 @@ function BoardWriteForm({ title }: BoardWriteFormProps) {
     []
   );
 
-  console.log('리렌더링');
-
   return (
     <form onSubmit={handleSubmit}>
-      <div className="mt-[52px] flex w-full items-center justify-between">
+      <div className="flex w-full items-center justify-between">
         <h3 className="text-title-small">{title}</h3>
       </div>
 
@@ -117,6 +115,7 @@ function BoardWriteForm({ title }: BoardWriteFormProps) {
             형사상의 책임을 질 수 있습니다.
           </p>
         </div>
+
         <div>
           <MemoQuill
             ref={quillRef}

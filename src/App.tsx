@@ -5,14 +5,13 @@ import {
 } from 'react-router-dom';
 
 import './App.css';
-import Home from './pages/Home';
 import Layout from './components/layout/Layout';
-import { SignIn, SignUp } from './pages/auth';
 import Error from './components/common/Error';
 import AuthLayout from './components/layout/AuthLayout';
-import Forum from './pages/community/Forum';
 import MainLayout from './components/layout/MainLayout';
-import BoardWrite from './pages/community/BoardWrite';
+import Home from './pages/Home';
+import { SignIn, SignUp } from './pages/auth';
+import { BoardWrite, BoardView, Forum, Notice } from './pages/community';
 
 function App() {
   const router = createBrowserRouter([
@@ -35,12 +34,20 @@ function App() {
               element: <Navigate to={'forum'} />,
             },
             {
-              path: '/community/forum',
-              element: <Forum />,
+              path: 'forum',
+              element: <Forum title="자유게시판" />,
             },
             {
-              path: '/community/forum/write',
+              path: 'notice',
+              element: <Notice title="공지사항" />,
+            },
+            {
+              path: 'forum/post',
               element: <BoardWrite />,
+            },
+            {
+              path: 'forum/view/:id',
+              element: <BoardView />,
             },
           ],
         },

@@ -1,2 +1,2 @@
-@import '../pages/auth/SignUp.css';
-@import '../pages/community/Forum.css';
+@import '../components/Form/auth/SignUpForm.css';
+@import '../components/board/BoardList.css';

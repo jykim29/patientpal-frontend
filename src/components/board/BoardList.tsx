@@ -148,7 +148,7 @@ const dummyBoardData = [
 function BoardList({ title, searchCategoryList }: BoardListProps) {
   return (
     <>
-      <div className="mt-[52px] flex w-full items-center justify-between">
+      <div className="flex w-full items-center justify-between">
         <h3 className="text-title-small">{title}</h3>
         <BoardSearchForm categoryList={searchCategoryList} />
       </div>
@@ -169,7 +169,7 @@ function BoardList({ title, searchCategoryList }: BoardListProps) {
             <li key={data.id} className="board-item board-body">
               <span className="board-id">{data.id}</span>
               <div className="board-subject">
-                <Link to={`${data.id}`}>
+                <Link to={`view/${data.id}`}>
                   <span>{data.subject}</span>
                   <span className="board-comments-count">
                     [{data.comments.length}]
@@ -186,7 +186,7 @@ function BoardList({ title, searchCategoryList }: BoardListProps) {
 
       <div className="mt-3 text-right">
         <Link
-          to={'write'}
+          to={'post'}
           className="inline-block rounded-md bg-primary px-4 py-1 text-text-medium text-white transition-all hover:brightness-[0.95] active:brightness-[1.05]"
         >
           글쓰기
@@ -237,6 +237,7 @@ function BoardList({ title, searchCategoryList }: BoardListProps) {
             4
           </Link>
         </div>
+
         <div className="flex items-center gap-0.5">
           <Link
             title="끝 페이지"

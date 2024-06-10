@@ -36,6 +36,7 @@ function Dropdown({
         className={combinedDropdownClassName}
         type="button"
         onClick={handleToggle}
+        {...restProps}
       >
         {currentCategory}
       </button>
