@@ -20,11 +20,13 @@ function BoardSearchForm({ categoryList }: BoardSearchFormProps) {
     },
     []
   );
-  const handleClickSetCategory = useCallback(
+  const handleClickCategory = useCallback(
     (e: React.MouseEvent<HTMLLIElement>) => {
       const { innerText } = e.currentTarget;
-      if (searchFormData.category === innerText) return;
-      setSearchFormData((prev) => ({ ...prev, category: innerText }));
+      setSearchFormData((prev) => {
+        if (prev.category === innerText) return prev;
+        return { ...prev, category: innerText };
+      });
     },
     []
   );
@@ -32,6 +34,11 @@ function BoardSearchForm({ categoryList }: BoardSearchFormProps) {
     (e: React.FormEvent<HTMLFormElement>) => {
       const { category, keyword } = searchFormData;
       e.preventDefault();
+      // 카테고리 HTML 변조 validation
+      if (!categoryList.includes(category)) return alert('잘못된 요청입니다.');
+      // 키워드 값 validation
+      if (keyword.replace(/\s/g, '').length === 0)
+        return alert('검색어를 입력해주세요.');
       alert(category + ' ' + keyword);
     },
     [searchFormData]
@@ -42,7 +49,7 @@ function BoardSearchForm({ categoryList }: BoardSearchFormProps) {
       <Dropdown
         list={categoryList}
         currentCategory={searchFormData.category}
-        onClick={handleClickSetCategory}
+        onClick={handleClickCategory}
       />
       <Input
         label="검색어"

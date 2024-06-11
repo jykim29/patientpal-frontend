@@ -12,6 +12,7 @@ import MainLayout from './components/layout/MainLayout';
 import Home from './pages/Home';
 import { SignIn, SignUp } from './pages/auth';
 import { BoardWrite, BoardView, Forum, Notice } from './pages/community';
+import { loader as forumLoader } from './components/board/BoardList';
 
 function App() {
   const router = createBrowserRouter([
@@ -35,19 +36,39 @@ function App() {
             },
             {
               path: 'forum',
-              element: <Forum title="자유게시판" />,
+              children: [
+                {
+                  index: true,
+                  element: <Forum title="자유게시판" />,
+                  loader: forumLoader,
+                },
+                {
+                  path: 'post',
+                  element: <BoardWrite />,
+                },
+                {
+                  path: 'view/:id',
+                  element: <BoardView />,
+                },
+              ],
             },
             {
               path: 'notice',
-              element: <Notice title="공지사항" />,
-            },
-            {
-              path: 'forum/post',
-              element: <BoardWrite />,
-            },
-            {
-              path: 'forum/view/:id',
-              element: <BoardView />,
+              children: [
+                {
+                  index: true,
+                  element: <Notice title="공지사항" />,
+                  loader: forumLoader,
+                },
+                {
+                  path: 'post',
+                  element: <BoardWrite />,
+                },
+                {
+                  path: 'view/:id',
+                  element: <BoardView />,
+                },
+              ],
             },
           ],
         },

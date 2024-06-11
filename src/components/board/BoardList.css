@@ -6,7 +6,7 @@
 
   /* board li요소 전체 */
   .board-item {
-    @apply flex py-[5px];
+    @apply flex items-center py-[5px];
 
     & span {
       @apply text-center;
@@ -19,6 +19,9 @@
     /* 제목 너비 */
     & .board-subject {
       @apply flex-1;
+      & span:first-child {
+        @apply mr-2 text-left;
+      }
     }
     /* 작성자, 날짜 너비 */
     & .board-author,
@@ -46,14 +49,14 @@
     & .board-subject {
       @apply flex;
       & a {
-        @apply ml-3 flex gap-2;
+        @apply ml-3;
         &:hover span:first-child {
           @apply text-primary underline;
         }
       }
     }
     & .board-comments-count {
-      @apply align-middle text-orange;
+      @apply align-middle align-bottom text-orange;
     }
   }
 }

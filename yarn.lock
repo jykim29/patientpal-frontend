@@ -967,6 +967,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash@npm:^4":
+  version: 4.17.5
+  resolution: "@types/lodash@npm:4.17.5"
+  checksum: 10c0/55924803ed853e72261512bd3eaf2c5b16558c3817feb0a3125ef757afe46e54b86f33d1960e40b7606c0ddab91a96f47966bf5e6006b7abfd8994c13b04b19b
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:^20.12.13":
   version: 20.14.1
   resolution: "@types/node@npm:20.14.1"
@@ -3593,7 +3600,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.17.4":
+"lodash@npm:^4.17.21, lodash@npm:^4.17.4":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: 10c0/d8cbea072bb08655bb4c989da418994b073a608dffa608b09ac04b43a791b12aeae7cd7ad919aa4c925f33b48490b5cfe6c1f71d827956071dae2e7bb3a6b74c
@@ -4134,6 +4141,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "patientpal-frontend@workspace:."
   dependencies:
+    "@types/lodash": "npm:^4"
     "@types/node": "npm:^20.12.13"
     "@types/react": "npm:^18.2.66"
     "@types/react-dom": "npm:^18.2.22"
@@ -4153,6 +4161,7 @@ __metadata:
     eslint-plugin-react-hooks: "npm:^4.6.2"
     eslint-plugin-react-refresh: "npm:^0.4.6"
     framer-motion: "npm:^11.2.9"
+    lodash: "npm:^4.17.21"
     postcss: "npm:^8.4.38"
     postcss-import: "npm:^16.1.0"
     postcss-nesting: "npm:^12.1.5"

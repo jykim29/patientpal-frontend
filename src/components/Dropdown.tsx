@@ -52,8 +52,8 @@ function Dropdown({
               key={index}
               className="cursor-pointer px-2 py-1 hover:bg-gray-light-medium"
               onClick={(e) => {
-                handleToggle();
                 handleClick(e);
+                handleToggle();
               }}
             >
               {value}

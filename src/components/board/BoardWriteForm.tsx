@@ -21,26 +21,34 @@ function BoardWriteForm({ title }: BoardWriteFormProps) {
     password: '',
   });
 
-  const handleChange = {
-    category: useCallback((e: React.MouseEvent<HTMLLIElement>) => {
+  const handleChangeText = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.currentTarget;
+      return setWriteFormData((prev) => ({ ...prev, [name]: value }));
+    },
+    []
+  );
+  const handleClickCategory = useCallback(
+    (e: React.MouseEvent<HTMLLIElement>) => {
       const { innerText } = e.currentTarget;
-      setWriteFormData((prev) => {
+      return setWriteFormData((prev) => {
         if (prev.category === innerText) return prev;
         return { ...prev, category: innerText };
       });
-    }, []),
-    input: useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.currentTarget;
-      setWriteFormData((prev) => ({ ...prev, [name]: value }));
-    }, []),
-    quill: useCallback((value: string) => {
-      setWriteFormData((prev) => ({ ...prev, content: value }));
-    }, []),
-  };
+    },
+    []
+  );
+  const handleChangeQuill = useCallback((value: string) => {
+    return setWriteFormData((prev) => ({ ...prev, content: value }));
+  }, []);
   const handleSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       const { category, title, password, content } = writeFormData;
+      if (title.replace(/\s/g, '').length === 0)
+        return alert('제목을 입력해주세요.');
+      if (content.replace(/\s/g, '').length === 0)
+        return alert('내용을 입력해주세요.');
       alert(`category: ${category}
     title: ${title}
     password: ${password}
@@ -61,7 +69,7 @@ function BoardWriteForm({ title }: BoardWriteFormProps) {
             <Dropdown
               className="h-9 border-gray-medium-dark"
               currentCategory={writeFormData.category}
-              onClick={handleChange.category}
+              onClick={handleClickCategory}
               list={boardCategoryListArray}
             />
             <div className="flex-1">
@@ -72,7 +80,7 @@ function BoardWriteForm({ title }: BoardWriteFormProps) {
                 name="title"
                 placeholder="제목을 입력하세요."
                 isHideLabel={true}
-                onChange={handleChange.input}
+                onChange={handleChangeText}
               />
             </div>
             <Input
@@ -82,7 +90,7 @@ function BoardWriteForm({ title }: BoardWriteFormProps) {
               name="password"
               placeholder="비밀번호"
               isHideLabel={true}
-              onChange={handleChange.input}
+              onChange={handleChangeText}
             />
           </div>
           <p className="mt-2 text-text-small text-gray-medium-dark">
@@ -95,7 +103,7 @@ function BoardWriteForm({ title }: BoardWriteFormProps) {
         </div>
 
         <div>
-          <CustomReactQuill onChange={handleChange.quill} />
+          <CustomReactQuill onChange={handleChangeQuill} />
         </div>
       </div>
 
