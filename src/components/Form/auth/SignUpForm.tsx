@@ -1,15 +1,16 @@
 import { useCallback, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 
-import { SignUpFormData } from '@/types/formData';
+import { SignUpFormData } from '@/types/formData.interface';
 import { Validator, useForm } from '@/hooks/useForm';
-import FormAlertErrorBox from './FormAlertErrorBox';
 import {
   FormInput,
   FormTooltipMessageBox,
   FormCheckbox,
 } from '@/components/Form';
 import Button from '@/components/common/Button';
+
+import FormAlertErrorBox from './FormAlertErrorBox';
 
 const initialFormData: SignUpFormData = {
   role: 'USER',
