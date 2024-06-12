@@ -26,7 +26,7 @@ const Home = () => {
     ]
   }
   return (
-    <main className='gap-[52px] px-[52px] py-8 flex flex-col min-h-[1440px] items-center'>
+    <main className='gap-[52px] px-[52px] py-8 flex flex-col min-h-[1440px] items-center w-[1190px]'>
       <img className='w-full' src="assets/main-banner.png"/>
       <div className="w-full h-[68px] px-[40px] py-4 flex gap-4 items-center  bg-tertiary rounded-2xl">
         <BsMegaphoneFill className="w-8 h-8" color="red"/>
@@ -35,7 +35,7 @@ const Home = () => {
         <p>patient pal 서비스를 오픈하였습니다.</p>
         <p>2024.06.01</p>
       </div>
-      <MainTitleIndex text='서비스 바로가기'>
+      <MainTitleIndex text='서비스 바로가기' size='medium'>
         <div className="flex gap-4">
           {cardSmallItem.img.map((item, index) => {
             return(
@@ -44,13 +44,13 @@ const Home = () => {
           })}
         </div>
       </MainTitleIndex>
-      <MainTitleIndex text='맞춤 추천'>
+      <MainTitleIndex text='맞춤 추천' size='medium'>
         <p className="absolute top-3 left-[170px] text-gray-medium-dark">※등록된 주소지를 기준으로 추천됩니다.</p>
         <div className="h-[211px] flex">
 
         </div>
       </MainTitleIndex>
-      <MainTitleIndex text='이달의 우수 간병인'>
+      <MainTitleIndex text='이달의 우수 간병인' size='medium'>
           <div className="flex items-center justify-center gap-4">
             {cardLargeItem.name.map((item, index) => {
               return(
