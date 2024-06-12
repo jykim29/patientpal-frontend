@@ -10,17 +10,26 @@ import Layout from './components/layout/Layout';
 import { SignIn, SignUp } from './pages/auth';
 import Error from './components/common/Error';
 import AuthLayout from './components/layout/AuthLayout';
+import SearchPage from './pages/SearchPage';
 
 function App() {
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <Layout></Layout>,
+      element: <Layout />,
       errorElement: <Error />,
       children: [
         {
           path: '/',
           element: <Home />,
+        },
+        {
+          path: '/search/city',
+          element: <SearchPage />,
+        },
+        {
+          path: 'search/map',
+          element: <SearchPage />,
         },
       ],
     },
