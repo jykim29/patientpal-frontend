@@ -8,6 +8,7 @@ import './App.css';
 import Layout from './components/layout/Layout';
 import Error from './components/common/Error';
 import AuthLayout from './components/layout/AuthLayout';
+import SearchPage from './pages/SearchPage';
 import MainLayout from './components/layout/MainLayout';
 import Home from './pages/Home';
 import { SignIn, SignUp } from './pages/auth';
@@ -19,7 +20,7 @@ function App() {
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <Layout></Layout>,
+      element: <Layout />,
       errorElement: <Error />,
       children: [
         {
@@ -27,49 +28,57 @@ function App() {
           element: <Home />,
         },
         {
-          path: '/community',
-          element: <MainLayout title="커뮤니티" />,
-          errorElement: <Error />,
+          path: '/search/city',
+          element: <SearchPage />,
+        },
+        {
+          path: 'search/map',
+          element: <SearchPage />,
+        },
+      ],
+    },
+    {
+      path: '/community',
+      element: <MainLayout title="커뮤니티" />,
+      errorElement: <Error />,
+      children: [
+        {
+          index: true,
+          element: <Navigate to={'forum'} />,
+        },
+        {
+          path: 'forum',
           children: [
             {
               index: true,
-              element: <Navigate to={'forum'} />,
+              element: <Forum title="자유게시판" />,
+              loader: forumLoader,
             },
             {
-              path: 'forum',
-              children: [
-                {
-                  index: true,
-                  element: <Forum title="자유게시판" />,
-                  loader: forumLoader,
-                },
-                {
-                  path: 'post',
-                  element: <BoardWrite />,
-                },
-                {
-                  path: 'view/:id',
-                  element: <BoardView />,
-                },
-              ],
+              path: 'post',
+              element: <BoardWrite />,
             },
             {
-              path: 'notice',
-              children: [
-                {
-                  index: true,
-                  element: <Notice title="공지사항" />,
-                  loader: forumLoader,
-                },
-                {
-                  path: 'post',
-                  element: <BoardWrite />,
-                },
-                {
-                  path: 'view/:id',
-                  element: <BoardView />,
-                },
-              ],
+              path: 'view/:id',
+              element: <BoardView />,
+            },
+          ],
+        },
+        {
+          path: 'notice',
+          children: [
+            {
+              index: true,
+              element: <Notice title="공지사항" />,
+              loader: forumLoader,
+            },
+            {
+              path: 'post',
+              element: <BoardWrite />,
+            },
+            {
+              path: 'view/:id',
+              element: <BoardView />,
             },
           ],
         },
@@ -110,7 +119,6 @@ function App() {
       ],
     },
   ]);
-
   return <RouterProvider router={router} />;
 }
 
