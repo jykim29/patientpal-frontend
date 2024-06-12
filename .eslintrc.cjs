@@ -6,16 +6,25 @@ module.exports = {
     },
     ecmaVersion: 'latest',
     sourceType: 'module',
+    project: ['./tsconfig.json'],
   },
-  plugins: ['react', '@typescript-eslint', 'prettier'],
+  plugins: ['react', '@typescript-eslint', 'prettier', 'import'],
   extends: [
-    'airbnb',
-    'airbnb-typescript',
+    // 'airbnb',
+    // 'airbnb-typescript',
     'eslint:recommended',
     'plugin:react/recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
+    'plugin:import/recommended',
+    'plugin:import/typescript',
   ],
+  settings: {
+    'import/resolver': {
+      typescript: true,
+      node: true,
+    },
+  },
   ignorePatterns: ['dist', '.eslintrc.cjs', '.typescript-config'],
   env: {
     browser: true,
@@ -23,10 +32,17 @@ module.exports = {
     node: true,
   },
   rules: {
-    // '@typescript-eslint/interface-name-prefix': 'warn',
+    '@typescript-eslint/no-unused-vars': 'warn',
     '@typescript-eslint/explicit-function-return-type': 'warn',
     '@typescript-eslint/explicit-module-boundary-types': 'warn',
     '@typescript-eslint/no-explicit-any': 'warn',
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
+    'react/react-in-jsx-scope': 'off',
+    'import/order': [
+      'error',
+      {
+        groups: ['builtin', 'external', 'internal', 'type'],
+      },
+    ],
   },
 };

@@ -1,0 +1,29 @@
+@layer components {
+  .user-type-radio-button {
+    @apply block h-full w-full cursor-pointer rounded-xl border-4 border-gray-light-medium bg-white text-text-xlarge text-black shadow-lg;
+
+    &:hover,
+    input[type='radio']:checked ~ & {
+      @apply border-tertiary bg-secondary text-white;
+    }
+  }
+
+  .user-type-image-container {
+    @apply flex h-full w-full flex-col items-center justify-between p-4;
+  }
+
+  .input-validation-message-box {
+    @apply relative flex h-11 items-center rounded-md border border-gold bg-yellow-200 px-1.5 py-0.5 text-text-small;
+
+    & > span {
+      @apply before:absolute before:-left-4 before:top-1/2 before:-translate-y-1/2 before:border-8 before:border-transparent before:border-r-gold;
+    }
+  }
+
+  .form-input {
+    @apply w-full rounded-lg border border-gray-light-medium py-2.5 pl-4 pr-9 text-text-medium shadow-[0_0_0_0.5px_#D8D8D8] hover:border-black hover:shadow-[0_0_0_0.5px_#000] focus:outline-secondary [&:not(:placeholder-shown)]:border-2 [&:not(:placeholder-shown)]:border-secondary;
+  }
+  .form-input-invalid {
+    @apply w-full rounded-lg border border-2 border-negative py-2.5 pl-4 pr-9 text-text-medium focus:outline-negative [&:not(:placeholder-shown)]:border-2 [&:not(:placeholder-shown)]:border-negative;
+  }
+}
