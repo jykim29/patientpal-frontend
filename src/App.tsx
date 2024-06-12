@@ -35,50 +35,50 @@ function App() {
           path: 'search/map',
           element: <SearchPage />,
         },
-      ],
-    },
-    {
-      path: '/community',
-      element: <MainLayout title="커뮤니티" />,
-      errorElement: <Error />,
-      children: [
         {
-          index: true,
-          element: <Navigate to={'forum'} />,
-        },
-        {
-          path: 'forum',
+          path: '/community',
+          element: <MainLayout title="커뮤니티" />,
+          errorElement: <Error />,
           children: [
             {
               index: true,
-              element: <Forum title="자유게시판" />,
-              loader: forumLoader,
+              element: <Navigate to={'forum'} />,
             },
             {
-              path: 'post',
-              element: <BoardWrite />,
+              path: 'forum',
+              children: [
+                {
+                  index: true,
+                  element: <Forum title="자유게시판" />,
+                  loader: forumLoader,
+                },
+                {
+                  path: 'post',
+                  element: <BoardWrite />,
+                },
+                {
+                  path: 'view/:id',
+                  element: <BoardView />,
+                },
+              ],
             },
             {
-              path: 'view/:id',
-              element: <BoardView />,
-            },
-          ],
-        },
-        {
-          path: 'notice',
-          children: [
-            {
-              index: true,
-              element: <Notice title="공지사항" />,
-              loader: forumLoader,
-            },
-            {
-              path: 'post',
-              element: <BoardWrite />,
-            },
-            {
-              path: 'view/:id',
-              element: <BoardView />,
+              path: 'notice',
+              children: [
+                {
+                  index: true,
+                  element: <Notice title="공지사항" />,
+                  loader: forumLoader,
+                },
+                {
+                  path: 'post',
+                  element: <BoardWrite />,
+                },
+                {
+                  path: 'view/:id',
+                  element: <BoardView />,
+                },
+              ],
             },
           ],
         },
