@@ -28,7 +28,7 @@ export default {
       },
       fontSize: {
         'title-large': [
-          pxToRem(48),
+          pxToRem(44),
           {
             fontWeight: 'bold',
             letterSpacing: '0px',
@@ -36,7 +36,7 @@ export default {
           },
         ],
         'title-medium': [
-          pxToRem(36),
+          pxToRem(32),
           {
             fontWeight: 'bold',
             letterSpacing: '0px',
@@ -44,7 +44,7 @@ export default {
           },
         ],
         'title-small': [
-          pxToRem(28),
+          pxToRem(24),
           {
             fontWeight: 'bold',
             letterSpacing: '0px',
@@ -52,7 +52,7 @@ export default {
           },
         ],
         'text-xlarge': [
-          pxToRem(24),
+          pxToRem(22),
           {
             fontWeight: 'semibold',
             letterSpacing: '0px',
@@ -60,7 +60,7 @@ export default {
           },
         ],
         'text-large': [
-          pxToRem(20),
+          pxToRem(18),
           {
             fontWeight: 'normal',
             letterSpacing: '0px',

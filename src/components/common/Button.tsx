@@ -1,17 +1,15 @@
-import { ComponentPropsWithoutRef, PropsWithChildren, memo } from 'react';
+import { PropsWithChildren, memo } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-interface ButtonProps extends ComponentPropsWithoutRef<'button'> {
+interface ButtonProps {
   type?: React.ButtonHTMLAttributes<HTMLButtonElement>['type'];
   className?: string;
-  icon?: { url: string; alt: string; className: string };
   [key: string]: any;
 }
 
 function Button({
   type = 'button',
   className = '',
-  icon,
   children,
   ...restProps
 }: PropsWithChildren<ButtonProps>) {
@@ -22,8 +20,7 @@ function Button({
 
   return (
     <button className={combinedButtonClassName} type={type} {...restProps}>
-      {icon && <img className={icon.className} src={icon.url} alt={icon.alt} />}
-      {children && <span>{children}</span>}
+      {children}
     </button>
   );
 }
