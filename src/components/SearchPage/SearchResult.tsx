@@ -3,7 +3,7 @@ import MainTitleIndex from '../Home/MainTitleIndex';
 import ResultFilter from './ResultFilter';
 import Result from './Result';
 
-const SearchResult = () => {
+function SearchResult() {
   return (
     <section>
       <MainTitleIndex size="small" text="검색결과">
@@ -14,6 +14,6 @@ const SearchResult = () => {
       </MainTitleIndex>
     </section>
   );
-};
+}
 
 export default SearchResult;

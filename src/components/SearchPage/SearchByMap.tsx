@@ -3,7 +3,7 @@ import MainTitleIndex from '../Home/MainTitleIndex';
 import MapHeader from './MapHeader';
 import Map from './Map';
 
-const SearchByMap = () => {
+function SearchByMap() {
   return (
     <div className="w-full">
       <MainTitleIndex size="small" text="지도로 찾기">
@@ -14,6 +14,6 @@ const SearchByMap = () => {
       </MainTitleIndex>
     </div>
   );
-};
+}
 
 export default SearchByMap;

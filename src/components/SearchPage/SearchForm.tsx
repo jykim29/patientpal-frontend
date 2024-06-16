@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Button from '../common/Button';
 
-const SearchForm = () => {
+function SearchForm() {
   const userForm = [
     {
       index: '시/도',
@@ -91,6 +91,6 @@ const SearchForm = () => {
       </Button>
     </form>
   );
-};
+}
 
 export default SearchForm;

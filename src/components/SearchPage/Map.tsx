@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 const { kakao } = window;
-const Map = () => {
+function Map() {
   useEffect(() => {
     const container = document.getElementById('map');
     const options = {
@@ -12,6 +12,6 @@ const Map = () => {
   }, []);
 
   return <div id="map" className="h-full w-full"></div>;
-};
+}
 
 export default Map;
