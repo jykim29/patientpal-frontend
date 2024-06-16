@@ -5,49 +5,63 @@ import { FaUsers } from 'react-icons/fa6';
 import { FaCommentDots } from 'react-icons/fa6';
 import { FaFileSignature } from 'react-icons/fa6';
 import { FaGear } from 'react-icons/fa6';
-const SideBar = () => {
+function SideBar() {
+  const sideBarMenus = [
+    {
+      name: '홈',
+      path: '/',
+      icon: <FaHouse className="h-5 w-5" />,
+    },
+    {
+      name: '검색',
+      path: '/search/city',
+      icon: <FaMagnifyingGlass className="h-5 w-5" />,
+      subMenu: [
+        { name: '지역별 찾기', path: '/search/city' },
+        { name: '지도로 찾기', path: '/search/map' },
+      ],
+    },
+    {
+      name: '커뮤니티',
+      path: '/community/notice',
+      icon: <FaUsers className="h-5 w-5" />,
+      subMenu: [
+        { name: '공지사항', path: '/community/notice' },
+        { name: '자유게시판', path: '/community/forum' },
+      ],
+    },
+    {
+      name: '채팅',
+      path: '/chat',
+      icon: <FaCommentDots className="h-5 w-5" />,
+    },
+    {
+      name: '나의 계약',
+      path: '/contract',
+      icon: <FaFileSignature className="h-5 w-5" />,
+    },
+    {
+      name: '설정',
+      path: '/settings',
+      icon: <FaGear className="h-5 w-5" />,
+    },
+  ];
+
   return (
     <div className="w-[250px] border-r-2">
       <div className="mt-8 flex w-full flex-col items-center justify-center gap-[12px] px-8">
-        <div className="relative w-full">
-          <span className="absolute left-[-32px] h-[54px] w-[6px] rounded-br-lg rounded-tr-lg bg-primary" />
-          <SideBarItems itemName="홈">
-            <FaHouse className="h-5 w-5 text-primary" />
-          </SideBarItems>
-        </div>
-        <div className="relative w-full">
-          <span className="absolute left-[-32px] h-[54px] w-[6px] rounded-br-lg rounded-tr-lg bg-primary" />
-          <SideBarItems itemName="검색">
-            <FaMagnifyingGlass className="h-5 w-5 text-primary" />
-          </SideBarItems>
-        </div>
-        <div className="relative w-full">
-          <span className="absolute left-[-32px] h-[54px] w-[6px] rounded-br-lg rounded-tr-lg bg-primary" />
-          <SideBarItems itemName="커뮤니티">
-            <FaUsers className="h-5 w-5 text-primary" />
-          </SideBarItems>
-        </div>
-        <div className="relative w-full">
-          <span className="absolute left-[-32px] h-[54px] w-[6px] rounded-br-lg rounded-tr-lg bg-primary" />
-          <SideBarItems itemName="채팅">
-            <FaCommentDots className="h-5 w-5 text-primary" />
-          </SideBarItems>
-        </div>
-        <div className="relative w-full">
-          <span className="absolute left-[-32px] h-[54px] w-[6px] rounded-br-lg rounded-tr-lg bg-primary" />
-          <SideBarItems itemName="나의 계약">
-            <FaFileSignature className="h-5 w-5 text-primary" />
-          </SideBarItems>
-        </div>
-        <div className="relative w-full">
-          <span className="absolute left-[-32px] h-[54px] w-[6px] rounded-br-lg rounded-tr-lg bg-primary" />
-          <SideBarItems itemName="설정">
-            <FaGear className="h-5 w-5 text-primary" />
-          </SideBarItems>
-        </div>
+        {sideBarMenus.map((item, index) => (
+          <SideBarItems
+            path={item.path}
+            key={index}
+            itemName={item.name}
+            icon={item.icon}
+            subMenu={item.subMenu}
+          />
+        ))}
       </div>
     </div>
   );
-};
+}
 
 export default SideBar;
