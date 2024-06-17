@@ -14,6 +14,7 @@ import Home from './pages/Home';
 import { SignIn, SignUp } from './pages/auth';
 import { BoardWrite, BoardView, Forum, Notice } from './pages/community';
 import { loader as forumLoader } from './components/board/BoardList';
+import { ChatLobby, ChatRoom } from './pages/chat';
 
 function App() {
   const router = createBrowserRouter([
@@ -74,10 +75,29 @@ function App() {
                   element: <BoardWrite />,
                 },
                 {
-                  path: 'view/:id',
+                  path: 'view/:postId',
                   element: <BoardView />,
                 },
               ],
+            },
+          ],
+        },
+        {
+          path: '/chat',
+          element: <MainLayout title="채팅" />,
+          errorElement: <Error />,
+          children: [
+            {
+              index: true,
+              element: <Navigate to={'lobby'} />,
+            },
+            {
+              path: 'lobby',
+              element: <ChatLobby title="채팅 목록" />,
+            },
+            {
+              path: 'room/:roomId',
+              element: <ChatRoom />,
             },
           ],
         },

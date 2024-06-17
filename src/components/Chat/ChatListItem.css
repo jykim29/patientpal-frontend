@@ -1,0 +1,25 @@
+@layer components {
+  .chat-list-item {
+    @apply flex items-start gap-4;
+    & .profile-image {
+      @apply h-10 w-10 rounded-full;
+    }
+    & .chat-text {
+      @apply max-w-[60%] rounded-lg border-2 px-5 py-2 shadow-lg;
+    }
+  }
+  .chat-list-item.other-person {
+    @apply flex-row;
+
+    & .chat-text {
+      @apply border-secondary bg-white text-secondary;
+    }
+  }
+  .chat-list-item.me {
+    @apply flex-row-reverse;
+
+    & .chat-text {
+      @apply border-transparent bg-secondary text-white;
+    }
+  }
+}
