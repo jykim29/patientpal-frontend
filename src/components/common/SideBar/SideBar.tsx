@@ -1,10 +1,13 @@
+import {
+  FaHouse,
+  FaMagnifyingGlass,
+  FaUsers,
+  FaCommentDots,
+  FaFileSignature,
+  FaGear,
+} from 'react-icons/fa6';
 import SideBarItems from './SideBarItems';
-import { FaHouse } from 'react-icons/fa6';
-import { FaMagnifyingGlass } from 'react-icons/fa6';
-import { FaUsers } from 'react-icons/fa6';
-import { FaCommentDots } from 'react-icons/fa6';
-import { FaFileSignature } from 'react-icons/fa6';
-import { FaGear } from 'react-icons/fa6';
+
 function SideBar() {
   const sideBarMenus = [
     {
@@ -32,7 +35,7 @@ function SideBar() {
     },
     {
       name: '채팅',
-      path: '/chat',
+      path: '/chat/lobby',
       icon: <FaCommentDots className="h-5 w-5" />,
     },
     {
