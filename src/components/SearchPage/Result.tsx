@@ -2,7 +2,7 @@ import React from 'react';
 import Button from '../common/Button';
 import ResultItem from './ResultItem';
 
-const Result = () => {
+function Result() {
   const user = [
     {
       user_id: 0,
@@ -40,6 +40,6 @@ const Result = () => {
       ))}
     </div>
   );
-};
+}
 
 export default Result;

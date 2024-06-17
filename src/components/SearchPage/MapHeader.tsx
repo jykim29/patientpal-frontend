@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Button from '../common/Button';
 
-const MapHeader = () => {
+function MapHeader() {
   const mapIndex = [
     {
       index: '시/도',
@@ -64,6 +64,6 @@ const MapHeader = () => {
       </form>
     </div>
   );
-};
+}
 
 export default MapHeader;

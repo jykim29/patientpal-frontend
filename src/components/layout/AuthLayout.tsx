@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import Header from '../common/Header';
 
-const AuthLayout = () => {
+function AuthLayout() {
   return (
     <div className="flex h-screen w-screen flex-col justify-between">
       <Header />
@@ -13,6 +13,6 @@ const AuthLayout = () => {
       </main>
     </div>
   );
-};
+}
 
 export default AuthLayout;

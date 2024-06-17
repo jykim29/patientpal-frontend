@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom';
 import SideBar from '../common/SideBar/SideBar';
 import Home from '../../pages/Home';
 
-const Layout = () => {
+function Layout() {
   return (
     <div className="flex w-full min-w-[1440px] flex-col items-center justify-center">
       <Header />
@@ -18,6 +18,6 @@ const Layout = () => {
       <Footer />
     </div>
   );
-};
+}
 
 export default Layout;

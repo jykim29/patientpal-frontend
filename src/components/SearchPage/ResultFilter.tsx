@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Button from '../common/Button';
 import { useSearchParams } from 'react-router-dom';
 
-const ResultFilter = () => {
+function ResultFilter() {
   const filterVariant = [
     {
       index: '최신순',
@@ -26,7 +26,7 @@ const ResultFilter = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   //params
-  const handleFilter = (id) => {
+  const handleFilter = (id: number) => {
     const newSearchParams = new URLSearchParams(searchParams);
     setSearchParams(newSearchParams);
   };
@@ -45,6 +45,6 @@ const ResultFilter = () => {
       ))}
     </div>
   );
-};
+}
 
 export default ResultFilter;

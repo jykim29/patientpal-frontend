@@ -4,7 +4,7 @@ import { FaBell } from 'react-icons/fa6';
 import { FaCircleUser } from 'react-icons/fa6';
 import { FaCircle } from 'react-icons/fa6';
 
-const Header = () => {
+function Header() {
   const navigate = useNavigate();
   const moveToHome = () => {
     navigate('/');
@@ -48,6 +48,6 @@ const Header = () => {
       </header>
     </div>
   );
-};
+}
 
 export default Header;
