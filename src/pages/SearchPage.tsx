@@ -5,7 +5,7 @@ import SearchByCity from '../components/SearchPage/SearchByCity';
 import SearchByMap from '../components/SearchPage/SearchByMap';
 import { useLocation } from 'react-router-dom';
 
-const SearchPage = () => {
+function SearchPage() {
   const location = useLocation();
   return (
     <main className="flex flex-col justify-center gap-[52px] px-[52px] py-8">
@@ -15,6 +15,6 @@ const SearchPage = () => {
       <SearchResult />
     </main>
   );
-};
+}
 
 export default SearchPage;

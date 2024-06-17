@@ -4,7 +4,7 @@ import { FaStar } from 'react-icons/fa';
 import { BsGenderAmbiguous } from 'react-icons/bs';
 import Button from '../common/Button';
 import { FaRegFileLines } from 'react-icons/fa6';
-const ResultItem = ({ user }) => {
+function ResultItem({ user }) {
   const { name, rating, address, gender, age, career } = user;
 
   //신청버튼
@@ -49,6 +49,6 @@ const ResultItem = ({ user }) => {
       </Button>
     </div>
   );
-};
+}
 
 export default ResultItem;

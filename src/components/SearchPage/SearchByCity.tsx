@@ -2,7 +2,7 @@ import React from 'react';
 import MainTitleIndex from '../Home/MainTitleIndex';
 import SearchForm from './SearchForm';
 
-const SearchByCity = () => {
+function SearchByCity() {
   return (
     <div className="">
       <MainTitleIndex size="small" text="지역별 찾기">
@@ -13,6 +13,6 @@ const SearchByCity = () => {
       </MainTitleIndex>
     </div>
   );
-};
+}
 
 export default SearchByCity;
