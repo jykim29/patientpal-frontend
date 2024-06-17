@@ -1,14 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
 
-export type Validator<T> = {
-  [Key in keyof T]?: {
-    regex: string;
-    message: string;
-  };
-};
-type ErrorObject<T> = {
-  [Key in keyof T]?: { isValid: boolean; message: string } | null;
-};
+// export type Validator<T> = {
+//   [Key in keyof T]?: {
+//     regex: string;
+//     message: string;
+//   };
+// };
+// type ErrorObject<T> = {
+//   [Key in keyof T]?: { isValid: boolean; message: string } | null;
+// };
+
+type Validate<T> = (values: T) => Map<any, any>;
 
 /*
   TODO
@@ -18,31 +20,31 @@ type ErrorObject<T> = {
 */
 export function useForm<T extends { [key: string]: any }>(
   formData: T,
-  validator?: Validator<T>
+  validate: Validate<T>
+  // validator?: Validator<T>
 ) {
-  const [data, setData] = useState(formData);
-  const [error, setError] = useState<ErrorObject<T>>({});
+  const [data, setData] = useState<T>(formData);
+  const [error, setError] = useState<ReturnType<Validate<T>>>(new Map());
 
-  const validate = () => {
-    if (!validator) return;
-    const newErrorObject = { ...error };
-    const keyValueArray = Object.entries(data as object);
-    keyValueArray.forEach(([key, value]) => {
-      if (value.length === 0) return;
-      const regex = new RegExp(validator[key]?.regex as string);
-      if (!regex.test(value))
-        newErrorObject[key as keyof T] = {
-          isValid: false,
-          message: validator[key]?.message as string,
-        };
-      else delete newErrorObject[key as keyof T];
-    });
-    setError(newErrorObject);
-  };
+  // const validate = () => {
+  //   if (!validator) return;
+  //   const newErrorObject = {} as any;
+  //   const keyValueArray = Object.entries(data as object);
+  //   keyValueArray.forEach(([key, value]) => {
+  //     if (value.length === 0) return;
+  //     const regex = new RegExp(validator[key]?.regex as string);
+  //     if (!regex.test(value))
+  //       newErrorObject[key] = {
+  //         isValid: false,
+  //         message: validator[key]?.message as string,
+  //       };
+  //     // else delete newErrorObject[key as keyof T];
+  //   });
+  //   setError(newErrorObject);
+  // };
 
   const onChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { type, name, value, checked } = e.currentTarget;
-    if (name === 'contact' && Number.isNaN(Number(value))) return;
     setData((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
@@ -52,13 +54,17 @@ export function useForm<T extends { [key: string]: any }>(
   const onSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>, callback: () => any) => {
       e.preventDefault();
+      console.log(data);
+      const errors = validate(data);
+      if ([...errors.values()].length > 0) return setError(errors);
+      else setError(new Map());
       callback();
     },
-    []
+    [data]
   );
 
   useEffect(() => {
-    validator && validate();
+    // validator && validate();
   }, [data]);
 
   return { formData: data, handler: { onChange, onSubmit }, error };

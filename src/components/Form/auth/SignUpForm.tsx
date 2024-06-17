@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 
 import { SignUpFormData } from '@/types/formData.interface';
-import { Validator, useForm } from '@/hooks/useForm';
+import { useForm } from '@/hooks/useForm';
 import {
   FormInput,
   FormTooltipMessageBox,
@@ -21,20 +21,51 @@ const initialFormData: SignUpFormData = {
   termOfUse: false,
   personalInformation: false,
 };
-const validator: Validator<SignUpFormData> = {
-  username: {
-    regex: '^[a-z0-9]{8,20}$',
-    message: '아이디는 알파벳 소문자 또는 숫자가 포함된 8~20자여야 합니다.',
-  },
-  password: {
-    regex: '^(?=.*[a-zA-Z])(?=.*[0-9]|.*[!@#$_-])[A-Za-z0-9!@#$_-]{8,20}$',
-    message:
-      '비밀번호는 영문 필수, 숫자 또는 특수문자(!,@,#,$,_,-)가 포함된 8~20자여야 합니다.',
-  },
-  contact: {
-    regex: '^010[0-9]{8}$',
-    message: '휴대폰 번호는 "010"으로 시작하는 11자리의 숫자여야 합니다.',
-  },
+
+const validate = (values: SignUpFormData) => {
+  const {
+    username,
+    password,
+    passwordConfirm,
+    contact,
+    personalInformation,
+    termOfUse,
+  } = values;
+  const regex = {
+    username: new RegExp('^[a-z0-9]{8,20}$'),
+    password: new RegExp(
+      '^(?=.*[a-zA-Z])(?=.*[0-9]|.*[!@#$_-])[A-Za-z0-9!@#$_-]{8,20}$'
+    ),
+    contact: new RegExp('^010[0-9]{8}$'),
+  };
+  const errors = new Map();
+
+  if (!regex.username.test(username))
+    errors.set(
+      'username',
+      '아이디는 알파벳 소문자 또는 숫자가 포함된 8~20자여야 합니다.'
+    );
+
+  if (!regex.password.test(password))
+    errors.set(
+      'password',
+      '비밀번호는 영문 필수, 숫자 또는 특수문자(!,@,#,$,_,-)가 포함된 8~20자여야 합니다.'
+    );
+
+  if (passwordConfirm.trim() === '' || password !== passwordConfirm)
+    errors.set('passwordConfirm', '두 비밀번호가 일치하지 않습니다.');
+
+  if (!regex.contact.test(contact))
+    errors.set(
+      'contact',
+      '휴대폰 번호는 "010"으로 시작하는 11자리의 숫자여야 합니다.'
+    );
+
+  if (!termOfUse)
+    errors.set('termOfUse', 'PatientPal 이용약관에 동의해주세요.');
+  if (!personalInformation)
+    errors.set('personalInformation', '개인정보 수집이용에 동의해주세요.');
+  return errors;
 };
 
 export default function SignUpForm() {
@@ -42,49 +73,10 @@ export default function SignUpForm() {
     formData,
     handler: { onChange: handleChange, onSubmit: handleSubmit },
     error,
-  } = useForm<SignUpFormData>(initialFormData, validator);
+  } = useForm<SignUpFormData>(initialFormData, validate);
   const [step, setStep] = useState<number>(0);
-  const [isShowError, setIsShowError] = useState<boolean>(false);
-  const {
-    role,
-    username,
-    password,
-    passwordConfirm,
-    contact,
-    termOfUse,
-    personalInformation,
-  } = formData;
-  const {
-    username: usernameErr,
-    password: passwordErr,
-    contact: contactErr,
-  } = error;
-
-  // 에러 메세지 설정
-  const errorArray = useMemo(() => {
-    const { username, password, passwordConfirm, contact } = formData;
-    const {
-      username: usernameErr,
-      password: passwordErr,
-      contact: contactErr,
-    } = error;
-    const tempArray = [];
-    if (
-      username === '' ||
-      password === '' ||
-      passwordConfirm === '' ||
-      contact === ''
-    )
-      tempArray.push('모든 항목을 입력해주세요.');
-    if (usernameErr) tempArray.push(usernameErr.message);
-    if (passwordErr) tempArray.push(passwordErr.message);
-    if (password !== passwordConfirm)
-      tempArray.push('비밀번호가 일치하지 않습니다.');
-    if (contactErr) tempArray.push(contactErr.message);
-    if (!(termOfUse && personalInformation))
-      tempArray.push('약관에 모두 동의하지 않았습니다.');
-    return tempArray;
-  }, [formData, error]);
+  const [roleErrorMessage, setRoleErrorMessage] = useState<null | string>(null);
+  const errorArray = [...error.values()];
 
   // 툴팁 메세지 설정
   const tooltipBoxArray = useMemo(
@@ -99,19 +91,20 @@ export default function SignUpForm() {
 
   const handleClickStepChange = useCallback(() => {
     if (step === 0) {
-      if (role !== 'USER' && role !== 'CAREGIVER') return setIsShowError(true);
+      if (formData.role !== 'USER' && formData.role !== 'CAREGIVER')
+        return setRoleErrorMessage(
+          '잘못된 회원 유형을 선택하였습니다. 다시 선택해주세요.'
+        );
       setStep((prev) => prev + 1);
     }
     if (step === 1) {
       setStep((prev) => prev - 1);
     }
-    setIsShowError(false);
-  }, [step, role]);
+    setRoleErrorMessage(null);
+  }, [step, formData.role]);
 
   const signUp = () => {
-    if (errorArray.length > 0) return setIsShowError(true);
     // 회원가입 api 호출
-    setIsShowError(false);
   };
 
   return (
@@ -121,10 +114,10 @@ export default function SignUpForm() {
         {step === 1 && '회원 정보를 입력해주세요. (2/2)'}
       </h3>
 
-      {isShowError && step === 0 && (
-        <FormAlertErrorBox>잘못된 유형을 선택하였습니다.</FormAlertErrorBox>
+      {roleErrorMessage && step === 0 && (
+        <FormAlertErrorBox>{roleErrorMessage}</FormAlertErrorBox>
       )}
-      {isShowError && step === 1 && errorArray.length > 0 && (
+      {errorArray.length > 0 && step === 1 && (
         <FormAlertErrorBox>{errorArray[0]}</FormAlertErrorBox>
       )}
 
@@ -147,7 +140,7 @@ export default function SignUpForm() {
                 name="role"
                 id="user"
                 value="USER"
-                checked={role === 'USER'}
+                checked={formData.role === 'USER'}
                 onChange={handleChange}
               />
               <label className="user-type-radio-button" htmlFor="user">
@@ -168,7 +161,7 @@ export default function SignUpForm() {
                 name="role"
                 id="caregiver"
                 value="CAREGIVER"
-                checked={role === 'CAREGIVER'}
+                checked={formData.role === 'CAREGIVER'}
                 onChange={handleChange}
               />
               <label className="user-type-radio-button" htmlFor="caregiver">
@@ -196,70 +189,71 @@ export default function SignUpForm() {
             className="flex w-full flex-col items-center"
           >
             <div className="flex w-full gap-1">
-              <FormInput
-                className="peer flex-1"
-                type="text"
-                label="아이디"
-                name="username"
-                value={username}
-                isValid={usernameErr?.isValid}
-                onChange={handleChange}
-              />
-              <Button className="h-full w-[80px] px-1 py-1" type="button">
-                중복확인
-              </Button>
+              <div className="peer flex w-[350px] items-center gap-1">
+                <FormInput
+                  type="text"
+                  label="아이디"
+                  name="username"
+                  value={formData.username}
+                  isValid={!error.get('username')}
+                  onChange={handleChange}
+                />
+                <Button className="h-full w-[80px] px-1 py-1" type="button">
+                  중복확인
+                </Button>
+              </div>
               <FormTooltipMessageBox>
                 {tooltipBoxArray[0]}
               </FormTooltipMessageBox>
-              {/* {tooltipBoxArray[0]} */}
             </div>
             <div className="mt-2.5 flex w-full gap-1">
               <FormInput
-                className="peer flex-1"
+                className="peer w-[350px]"
                 type="password"
                 label="비밀번호"
                 name="password"
-                value={password}
-                isValid={passwordErr?.isValid}
+                value={formData.password}
+                isValid={!error.get('password')}
                 onChange={handleChange}
               />
               <FormTooltipMessageBox>
                 {tooltipBoxArray[1]}
               </FormTooltipMessageBox>
-              {/* {tooltipBoxArray[1]} */}
             </div>
             <div className="mt-2.5 flex w-full gap-1">
               <FormInput
-                className="peer flex-1"
+                className="peer w-[350px]"
                 type="password"
                 label="비밀번호 확인"
                 name="passwordConfirm"
-                value={passwordConfirm}
-                isValid={password === passwordConfirm}
+                value={formData.passwordConfirm}
+                isValid={!error.get('passwordConfirm')}
                 onChange={handleChange}
               />
               <FormTooltipMessageBox>
                 {tooltipBoxArray[2]}
               </FormTooltipMessageBox>
-              {/* {tooltipBoxArray[2]} */}
             </div>
             <div className="mt-2.5 flex w-full gap-1">
-              <FormInput
-                className="peer flex-1"
-                type="text"
-                label="휴대폰 번호"
-                name="contact"
-                value={contact}
-                isValid={contactErr?.isValid}
-                onChange={handleChange}
-              />
-              <Button className="h-full w-[80px] px-1 py-1" type="button">
-                인증요청
-              </Button>
+              <div className="peer flex w-[350px] items-center gap-1">
+                <FormInput
+                  type="text"
+                  label="휴대폰 번호"
+                  name="contact"
+                  value={formData.contact}
+                  isValid={!error.get('contact')}
+                  onChange={(e) => {
+                    if (Number.isNaN(Number(e.currentTarget.value))) return;
+                    handleChange(e);
+                  }}
+                />
+                <Button className="h-full w-[80px] px-1 py-1" type="button">
+                  인증요청
+                </Button>
+              </div>
               <FormTooltipMessageBox>
                 {tooltipBoxArray[3]}
               </FormTooltipMessageBox>
-              {/* {tooltipBoxArray[3]} */}
             </div>
             <div className="mt-3 flex w-full items-center justify-center gap-5">
               <FormCheckbox
@@ -269,6 +263,7 @@ export default function SignUpForm() {
                 name="termOfUse"
                 value="agree"
                 onChange={handleChange}
+                checked={formData.termOfUse}
               />
               <FormCheckbox
                 label="개인정보 수집이용 동의"
@@ -276,6 +271,7 @@ export default function SignUpForm() {
                 name="personalInformation"
                 value="agree"
                 onChange={handleChange}
+                checked={formData.personalInformation}
               />
             </div>
           </motion.div>
