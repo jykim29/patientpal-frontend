@@ -15,6 +15,7 @@ import { SignIn, SignUp } from './pages/auth';
 import { BoardWrite, BoardView, Forum, Notice } from './pages/community';
 import { loader as forumLoader } from './components/board/BoardList';
 import { ChatLobby, ChatRoom } from './pages/chat';
+import { ContractWrite } from './pages/contract';
 
 function App() {
   const router = createBrowserRouter([
@@ -98,6 +99,21 @@ function App() {
             {
               path: 'room/:roomId',
               element: <ChatRoom />,
+            },
+          ],
+        },
+        {
+          path: '/contract',
+          element: <MainLayout title="나의 계약" />,
+          errorElement: <Error />,
+          children: [
+            {
+              index: true,
+              element: <Navigate to={'contract'} />,
+            },
+            {
+              path: 'write/:contractId',
+              element: <ContractWrite />,
             },
           ],
         },
