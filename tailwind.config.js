@@ -30,7 +30,7 @@ export default {
         'title-large': [
           pxToRem(44),
           {
-            fontWeight: 'bold',
+            fontWeight: '600',
             letterSpacing: '0px',
             lineHeight: 1.2,
           },
@@ -38,7 +38,7 @@ export default {
         'title-medium': [
           pxToRem(32),
           {
-            fontWeight: 'bold',
+            fontWeight: '600',
             letterSpacing: '0px',
             lineHeight: 1.2,
           },
@@ -46,7 +46,7 @@ export default {
         'title-small': [
           pxToRem(24),
           {
-            fontWeight: 'bold',
+            fontWeight: '600',
             letterSpacing: '0px',
             lineHeight: 1.2,
           },
@@ -54,7 +54,7 @@ export default {
         'text-xlarge': [
           pxToRem(22),
           {
-            fontWeight: 'semibold',
+            fontWeight: '500',
             letterSpacing: '0px',
             lineHeight: 1.4,
           },
@@ -62,7 +62,7 @@ export default {
         'text-large': [
           pxToRem(18),
           {
-            fontWeight: 'normal',
+            fontWeight: '400',
             letterSpacing: '0px',
             lineHeight: 1.4,
           },
@@ -70,7 +70,7 @@ export default {
         'text-medium': [
           pxToRem(16),
           {
-            fontWeight: 'normal',
+            fontWeight: '400',
             letterSpacing: '0px',
             lineHeight: 1.4,
           },
@@ -78,7 +78,7 @@ export default {
         'text-small': [
           pxToRem(12),
           {
-            fontWeight: 'normal',
+            fontWeight: '400',
             letterSpacing: '0px',
             lineHeight: 1.4,
           },

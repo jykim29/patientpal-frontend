@@ -1,0 +1,45 @@
+@layer components {
+  .contract-information-table {
+    @apply w-full border-2 border-black;
+
+    & > tr {
+      @apply h-10;
+      & > * {
+        @apply border border-black text-text-medium;
+      }
+      & > th {
+        @apply w-[20%] bg-gray-light-medium;
+      }
+    }
+  }
+
+  .contract-terms {
+    @apply leading-9 tracking-wider;
+  }
+  .contract-terms-title {
+    @apply mr-4;
+  }
+  .contract-terms-list {
+    @apply list-inside;
+    &.decimal {
+      @apply list-decimal;
+    }
+    &.disc {
+      @apply list-disc;
+    }
+  }
+
+  .contract-form-table {
+    @apply mt-5 w-full border-2 border-black;
+
+    & > tr {
+      @apply h-14;
+      & > * {
+        @apply border border-black text-text-medium;
+      }
+      & > th {
+        @apply w-[10%] bg-gray-light-medium;
+      }
+    }
+  }
+}
