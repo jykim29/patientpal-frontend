@@ -1,19 +1,14 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-import SocialLoginButtonSet from '../../components/common/SocialLoginButtonSet';
-import SignUpForm from '../../components/Form/auth/SignUpForm';
+import { SignUpForm } from '@/components/Form';
+import SocialLoginButtonSet from '@/components/common/SocialLoginButtonSet';
 
-/*
-  TODO
-  1. 아이디, 비밀번호, 비밀번호확인 validation 기능 구현
-  2. 비밀번호 security level check 기능 구현
-*/
 export default function SignUp() {
   return (
     <motion.div
       initial={{ opacity: 0, width: '440px' }}
-      animate={{ opacity: 1, width: '560px' }}
+      animate={{ opacity: 1, width: '680px' }}
       transition={{
         width: { duration: 0.2 },
         opacity: { delay: 0.2, duration: 0.3 },
