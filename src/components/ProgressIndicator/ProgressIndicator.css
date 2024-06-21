@@ -1,0 +1,54 @@
+@layer components {
+  .steps-container {
+    @apply flex w-[120px] flex-col items-center gap-6;
+  }
+
+  .step-outer-circle {
+    @apply relative flex h-10 w-10 items-center justify-center rounded-full bg-gray-light shadow-[0_4px_4px_0_#00000040_inset] before:absolute before:left-0 before:top-0 before:-z-[5] before:h-10 before:w-10 before:rounded-full before:border-[3px] before:border-tertiary before:bg-white;
+    &.animated {
+      @apply before:animate-ping;
+    }
+  }
+
+  .step-inner-circle {
+    @apply h-7 w-7 rounded-full text-center text-text-xlarge leading-7 text-white;
+
+    &.todo {
+      @apply bg-gray-light-medium;
+    }
+
+    &.in-progress {
+      @apply border-[5px] border-primary bg-white;
+      & .step-count {
+        @apply hidden;
+      }
+    }
+    &.done {
+      @apply bg-primary bg-[url('/assets/checkmark.svg')] bg-center bg-no-repeat;
+      & .step-count {
+        @apply hidden;
+      }
+    }
+  }
+
+  .step-label {
+    @apply relative rounded-3xl border-transparent px-3 py-1 text-center font-semibold leading-5 before:absolute before:-top-[15px] before:left-1/2 before:-translate-x-1/2 before:border-x-[6px] before:border-b-[10px] before:border-transparent;
+
+    &.todo {
+      @apply bg-gray-light-medium text-gray-medium shadow-[0_2px_2px_0_#0000001a_inset] before:border-b-gray-light-medium;
+    }
+
+    &.in-progress,
+    &.done {
+      @apply bg-primary text-white before:border-b-primary;
+    }
+  }
+
+  .progress-bar {
+    @apply h-[14px] flex-1 bg-gray-light shadow-[0_4px_4px_0_#00000026_inset];
+
+    &.painted {
+      @apply bg-primary shadow-[0_4px_4px_0_#a2bffe26];
+    }
+  }
+}
