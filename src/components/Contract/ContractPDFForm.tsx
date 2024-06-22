@@ -1,8 +1,23 @@
+import { useRef } from 'react';
+import ScrollProgressBar, { ScrollHandle } from '../common/ScrollProgressBar';
+
 export default function ContractPDFForm() {
+  const progressBarRef = useRef<ScrollHandle>(null);
+
+  const handleScroll = (e: React.UIEvent) => {
+    const { scrollHeight, clientHeight, scrollTop } = e.currentTarget;
+    progressBarRef.current?.getScrollPercent({
+      scrollHeight,
+      clientHeight,
+      scrollTop,
+    });
+  };
+
   return (
-    <div className="w-full overflow-auto border">
-      <div className="mx-auto flex max-h-[800px] w-[1000px] flex-col gap-8 px-20 py-24 text-text-large">
-        <div className="border-2 border-black py-3 text-center text-title-medium">
+    <div className="contract-wrapper" onScroll={handleScroll}>
+      <ScrollProgressBar ref={progressBarRef} />
+      <div className="contract-container">
+        <div className="contract-title">
           <span>간병인 중개 표준 계약서(개인 간병)</span>
         </div>
         <p>
@@ -11,61 +26,63 @@ export default function ContractPDFForm() {
         </p>
 
         <table className="contract-information-table">
-          <tr>
-            <th>중개업체</th>
-            <th>상호</th>
-            <td></td>
-          </tr>
-          <tr>
-            <th rowSpan={5}>간병인</th>
-            <th>성명</th>
-            <td></td>
-          </tr>
-          <tr>
-            <th>연락처</th>
-            <td></td>
-          </tr>
-          <tr>
-            <th>주소</th>
-            <td></td>
-          </tr>
-          <tr>
-            <th>관련 자격</th>
-            <td></td>
-          </tr>
-          <tr>
-            <th>간병 교육 이수</th>
-            <td></td>
-          </tr>
-          <tr>
-            <th rowSpan={5}>구인자</th>
-            <th>성명</th>
-            <td></td>
-          </tr>
-          <tr>
-            <th>연락처</th>
-            <td></td>
-          </tr>
-          <tr>
-            <th>주소</th>
-            <td></td>
-          </tr>
-          <tr>
-            <th>환자와의 관계</th>
-            <td></td>
-          </tr>
+          <tbody>
+            <tr>
+              <th>중개업체</th>
+              <th>상호</th>
+              <td>페이션트팔</td>
+            </tr>
+            <tr>
+              <th rowSpan={5}>간병인</th>
+              <th>성명</th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>연락처</th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>주소</th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>관련 자격</th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>간병 교육 이수</th>
+              <td></td>
+            </tr>
+            <tr>
+              <th rowSpan={5}>구인자</th>
+              <th>성명</th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>연락처</th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>주소</th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>환자와의 관계</th>
+              <td></td>
+            </tr>
+          </tbody>
         </table>
 
-        <section className="contract-terms">
+        <div className="contract-terms">
           <p>
             <strong className="contract-terms-title">제1조(목적)</strong>이
             계약은 환자의 건강 회복을 위한 간병인을 중개함에 있어 중개업체,
             간병인, 구인자의 권리와 의무에 대한 기본적인 사항을 정하는 것을
             목적으로 한다.
           </p>
-        </section>
+        </div>
 
-        <section className="contract-terms">
+        <div className="contract-terms">
           <p>
             <strong className="contract-terms-title">제2조(간병의 범위)</strong>
             간병인은 환자에게 필요한 다음 각호의 간병 업무를 수행한다.
@@ -83,9 +100,9 @@ export default function ContractPDFForm() {
               행위. 단 의료행위는 제외한다.
             </li>
           </ol>
-        </section>
+        </div>
 
-        <section className="contract-terms">
+        <div className="contract-terms">
           <p>
             <strong className="contract-terms-title">제3조(계약사항)</strong>①
             간병인과 구인자는 간병 개시 전 다음 각 호의 사항을 협의하여 계약
@@ -110,42 +127,200 @@ export default function ContractPDFForm() {
             어려운 경우에는 간병인이 4시간 근무시 식사시간을 포함하여 30분의
             휴게시간을 갖는 것으로 본다.
           </p>
-        </section>
+        </div>
 
-        <section>
+        <div>
           <span>
             <strong>[계약사항]</strong>
           </span>
           <table className="contract-form-table">
-            <tr>
-              <th className="divided-left" rowSpan={2}>
-                간병 기간
-              </th>
-              <th className="divided-right">기한 없음</th>
-              <td></td>
-            </tr>
-            <tr>
-              <th className="divided-right">기한 있음</th>
-              <td></td>
-            </tr>
-            <tr>
-              <th colSpan={2}>간병시간</th>
-              <td></td>
-            </tr>
-            <tr>
-              <th colSpan={2}>간병장소</th>
-              <td></td>
-            </tr>
-            <tr>
-              <th colSpan={2}>휴게시간</th>
-              <td></td>
-            </tr>
-            <tr>
-              <th colSpan={2}>간병요금 지불방법</th>
-              <td></td>
-            </tr>
+            <tbody>
+              <tr>
+                <th className="divided-left" rowSpan={2}>
+                  간병 기간
+                </th>
+                <th className="divided-right">기한 없음</th>
+                <td>
+                  <p>2024. 07. 01 부터 개시</p>
+                  <p>주 5일 : 월, 화, 수, 목, 금</p>
+                </td>
+              </tr>
+              <tr>
+                <th className="divided-right">기한 있음</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th colSpan={2}>간병시간</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th colSpan={2}>간병장소</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th colSpan={2}>휴게시간</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th colSpan={2}>간병요금 지불방법</th>
+                <td></td>
+              </tr>
+            </tbody>
           </table>
-        </section>
+        </div>
+
+        <div>
+          <span>
+            <strong>[기타 사항]</strong>
+          </span>
+          <table className="contract-etc-table">
+            <tbody>
+              <tr>
+                <th>간병인</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th>구인자</th>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="contract-terms">
+          <p>
+            <strong className="contract-terms-title">
+              제4조(중개업체 의무)
+            </strong>
+            ① 중개업체는 간병인이 간병에 필수적으로 요구되는 교육을 이수 하도록
+            지도한다.
+          </p>
+          <p>
+            ② 중개업체는 간병인에게 제공하기 위하여 구인자로부터 간병비를
+            선금으로 받아서는 아니된다.
+          </p>
+          <p>
+            ③ 중개업체는 구인자의 간병인 교체 요청 또는 간병인이 부득이한
+            사정으로 간병서비스를 제공하기 어려운 경우 구인자에게 대체 간병인을
+            제공하기 위한 노력을 하여야 한다.
+          </p>
+          <p>
+            ④ 중개업체는 간병 중개 계약 전에 중개수수료, 지불 방법 등을
+            구인자에게 명확하게 안내 하고 계약서에 명시하여야 한다.
+          </p>
+          <p>
+            ⑤ 중개업체는 간병인에게 감염병 예방을 위한 의료 방역 물품 지급 등의
+            필요한 조치를 취하여야 한다.
+          </p>
+          <p>
+            ⑥ 중개업체는 간병인 중개에 있어 직업안정법 및 기타 관련 법률의
+            규정을 준수해야 한다.
+          </p>
+        </div>
+
+        <div className="contract-terms">
+          <p>
+            <strong className="contract-terms-title">제5조(간병인 의무)</strong>
+            ① 간병인은 환자의 안전과 감염예방에 유의하며, 구인자와 합의한 계
+            약사항을 준수하여 간병서비스를 제공한다.
+          </p>
+          <p>
+            ② 간병인은 환자의 치료와 관련하여 병원의 의료진이 환자 진료 및
+            치료를 진행함에 있어 적절한 조치를 하도록 협조하여야 하며, 병원이
+            정한 규제사항을 준수한다.
+          </p>
+          <p>
+            ③ 간병인은 환자 또는 그 가족의 개인정보를 누설하여서는 아니된다.
+          </p>
+          <p>
+            ④ 간병인은 환자의 보호 및 치료를 소홀히 하거나 폭언, 폭행, 상해 또는
+            성희롱, 성폭력 등 신체적, 정신적 해를 끼치는 행위를 하여서는
+            아니된다.
+          </p>
+        </div>
+
+        <div className="contract-terms">
+          <p>
+            <strong className="contract-terms-title">제6조(구인자 의무)</strong>
+            ① 구인자는 제4조에서 정한 간병요금을 기한 내에 납부하여야 한다.
+          </p>
+          <p>
+            ② 구인자는 환자의 건강상태, 감염가능성 등 기타 간병에 필요한 정보를
+            간병인에게 충분히 제공하여야 한다.
+          </p>
+          <p>
+            ③ 구인자는 간병인에게 폭언, 폭행, 상해 또는 성희롱, 성폭력 등
+            신체적, 정신적 해를 끼치는 행위를 하여서는 아니된다.
+          </p>
+          <p>
+            ④ 구인자는 간병인에게 제2조에서 정한 간병의 범위를 벗어난 업무의
+            제공을 요구하여서는 아니된다.
+          </p>
+          <p>
+            ⑤ 구인자는 간병인이 24시간 연속 근무를 할 경우 간병에 지장이 없는
+            선에서 수면을 취하도록 하여야 한다.
+          </p>
+        </div>
+
+        <div className="contract-terms">
+          <p>
+            <strong className="contract-terms-title">제7조(계약해지)</strong>①
+            구인자와 간병인은 상호합의 하에 간병 계약을 해지할 수 있으며, 이
+            경우 해지의 의사표시를 상대방에게 명시적으로 통지하고 위약금을
+            지급하여야 한다.
+          </p>
+          <p>
+            ② 위약금은 당사자간 별도 약정이 없는 경우 잔여기간 이용 요금의 10%로
+            한다. 다만 병원의 지시에 의한 환자의 퇴원, 사망, 상대방의 계약 의무
+            위반 등으로 인해 간병서비스의 목적을 달성할 수 없는 경우에는 위약금
+            없이 계약해지를 할 수 있다.
+          </p>
+          <p>
+            ➂ 제1항과 제2항에도 불구하고 당사자간 별도 약정이 있는 경우 그것을
+            따른다.
+          </p>
+        </div>
+
+        <div className="contract-terms">
+          <p>
+            <strong className="contract-terms-title">
+              제8조(사고 발생 및 손해배상)
+            </strong>
+            ① 간병인은 업무 수행 중 환자의 건강상태에 중요한 변동 이 발생한
+            경우, 즉시 담당 의료인과 이용자에게 그 내용을 알려야 한다.
+          </p>
+          <p>
+            ② 중개업체는 이 계약의 이행과정에서 발생한 사고를 배상하기 위하여
+            배상책임보험에 가입하여야 한다.
+          </p>
+        </div>
+
+        <div className="contract-terms">
+          <p>
+            <strong className="contract-terms-title">제9조(기타)</strong>① 이
+            계약서에 규정하지 않은 사항에 다툼이 있는 경우 당사자간 충분한 상호
+            협의하에 해결함을 원칙으로 하되, 합의되지 않을 경우 관계 법령 및
+            사회상규에 따른다.
+          </p>
+          <p>
+            ② 이 계약과 관련하여 분쟁이 발생하는 경우 당사자는 민사소송법에 따른
+            관할 법원에 소송을 제기할 수 있다.
+          </p>
+        </div>
+
+        <p>
+          위와 같이 계약을 체결하고 본 계약의 체결을 증명하기 위하여 간병인 및
+          구인자는 서명을 날인한 후 계약서를 내려받아 개인 저장장치에 보관한다.
+          중개업체는 계약 종료일 이후를 기점으로 서버에 본 계약서를 1년간
+          보관한다.
+        </p>
+
+        <div className="contract-footer">
+          <p>작성일자 : 2024년 06월 21일</p>
+          <p>중개업체 : 페이션트팔 (인)</p>
+          <p>간병인 : 김 간 병 (인)</p>
+          <p>구인자 : 김 환 자 (인)</p>
+        </div>
       </div>
     </div>
   );
