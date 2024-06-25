@@ -1,14 +1,16 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 import { SignUpFormData } from '@/types/formData.interface';
-import { useForm } from '@/hooks/useForm';
+import { Validate, useForm } from '@/hooks/useForm';
 import {
   FormInput,
   FormTooltipMessageBox,
   FormCheckbox,
 } from '@/components/Form';
 import Button from '@/components/common/Button';
+import { signUp } from '@/api/auth';
 
 import FormAlertErrorBox from './FormAlertErrorBox';
 
@@ -22,7 +24,7 @@ const initialFormData: SignUpFormData = {
   personalInformation: false,
 };
 
-const validate = (values: SignUpFormData) => {
+const validate: Validate<SignUpFormData> = (values) => {
   const {
     username,
     password,
@@ -76,7 +78,8 @@ export default function SignUpForm() {
   } = useForm<SignUpFormData>(initialFormData, validate);
   const [step, setStep] = useState<number>(0);
   const [roleErrorMessage, setRoleErrorMessage] = useState<null | string>(null);
-  const errorArray = [...error.values()];
+  const navigate = useNavigate();
+  const validateErrorArray = [...error.values()];
 
   // 툴팁 메세지 설정
   const tooltipBoxArray = useMemo(
@@ -103,8 +106,20 @@ export default function SignUpForm() {
     setRoleErrorMessage(null);
   }, [step, formData.role]);
 
-  const signUp = () => {
+  const handleChangePhoneNumber = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (Number.isNaN(Number(e.currentTarget.value))) return;
+      handleChange(e);
+    },
+    []
+  );
+
+  const signUpCallback = async () => {
     // 회원가입 api 호출
+    const response = await signUp(formData);
+    if (response.result === 'FAIL') return;
+    alert('회원가입에 성공하였습니다. 로그인페이지로 이동합니다.');
+    navigate('/auth/signin');
   };
 
   return (
@@ -117,12 +132,12 @@ export default function SignUpForm() {
       {roleErrorMessage && step === 0 && (
         <FormAlertErrorBox>{roleErrorMessage}</FormAlertErrorBox>
       )}
-      {errorArray.length > 0 && step === 1 && (
-        <FormAlertErrorBox>{errorArray[0]}</FormAlertErrorBox>
+      {validateErrorArray.length > 0 && step === 1 && (
+        <FormAlertErrorBox>{validateErrorArray[0]}</FormAlertErrorBox>
       )}
 
       <form
-        onSubmit={(e) => handleSubmit(e, signUp)}
+        onSubmit={(e) => handleSubmit(e, signUpCallback)}
         className="flex w-full flex-col items-start gap-3"
       >
         {/* 1단계 - 간병인 회원 선택 */}
@@ -242,10 +257,7 @@ export default function SignUpForm() {
                   name="contact"
                   value={formData.contact}
                   isValid={!error.get('contact')}
-                  onChange={(e) => {
-                    if (Number.isNaN(Number(e.currentTarget.value))) return;
-                    handleChange(e);
-                  }}
+                  onChange={handleChangePhoneNumber}
                 />
                 <Button className="h-full w-[80px] px-1 py-1" type="button">
                   인증요청
