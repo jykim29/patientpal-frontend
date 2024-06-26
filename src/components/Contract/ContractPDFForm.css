@@ -1,0 +1,87 @@
+@layer components {
+  .contract-wrapper {
+    @apply relative max-h-[600px] w-full overflow-auto border;
+  }
+
+  .contract-container {
+    @apply mx-auto flex w-[1000px] flex-col gap-8 px-20 py-16 text-text-large;
+  }
+
+  .contract-title {
+    @apply border-2 border-black py-3 text-center text-title-medium;
+  }
+
+  .contract-information-table {
+    @apply w-full border-2 border-black;
+
+    & > tbody > tr {
+      @apply h-10;
+      & > * {
+        @apply border border-black text-text-medium;
+      }
+      & > th {
+        @apply w-[20%] bg-gray-light-medium;
+      }
+      & > td {
+        @apply px-3 text-center tracking-wider;
+      }
+    }
+  }
+
+  .contract-terms {
+    @apply leading-9 tracking-wider;
+  }
+  .contract-terms-title {
+    @apply mr-4;
+  }
+  .contract-terms-list {
+    @apply list-inside;
+    &.decimal {
+      @apply list-decimal;
+    }
+    &.disc {
+      @apply list-disc;
+    }
+  }
+
+  .contract-form-table {
+    @apply mt-5 w-full border-2 border-black;
+
+    & > tbody > tr {
+      @apply h-14;
+      & > * {
+        @apply border border-black text-text-medium;
+      }
+      & > th {
+        @apply w-[10%] bg-gray-light-medium;
+      }
+      & > td {
+        @apply px-3 text-center tracking-wider;
+      }
+    }
+  }
+
+  .contract-etc-table {
+    @apply mt-5 w-full border-2 border-black;
+
+    & > tbody > tr {
+      @apply h-28;
+      & > * {
+        @apply border border-black text-text-medium;
+      }
+      & > th {
+        @apply w-[10%] bg-gray-light-medium;
+      }
+      & > td {
+        @apply px-3 tracking-wide;
+      }
+    }
+  }
+
+  .contract-footer {
+    @apply mt-10 flex flex-col gap-8 tracking-wider;
+    & > p {
+      @apply text-right;
+    }
+  }
+}
