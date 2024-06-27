@@ -22,3 +22,16 @@ export interface BoardFormData {
   password: string;
   content: string;
 }
+
+export interface SearchFormData {
+  city: string;
+  city2: string;
+  gender: string;
+  age: number | string;
+  career: number | string;
+}
+
+export interface SearchMapFormData {
+  city: string;
+  district: string;
+}
