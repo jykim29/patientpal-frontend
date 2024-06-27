@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { api } from '@/api/api';
+import { httpClient } from '@/api/http';
 import { SignInFormData } from '@/types/formData.interface';
 import {
   AuthErrorResponse,
@@ -12,9 +12,10 @@ export default async function signIn(
   formData: Pick<SignInFormData, 'username' | 'password'>
 ): Promise<SignInResponseData | AuthErrorResponseData> {
   try {
-    const response: SignInResponse = await api.post('/auth/login', formData, {
-      withCredentials: true,
-    });
+    const response: SignInResponse = await httpClient.post(
+      '/auth/login',
+      formData
+    );
     return {
       result: 'SUCCESS',
       data: { access_token: response.data.access_token },

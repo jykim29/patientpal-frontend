@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { api } from '@/api/api';
+import { httpClient } from '@/api/http';
 import { SignUpFormData } from '@/types/formData.interface';
 import {
   AuthErrorResponse,
@@ -13,7 +13,7 @@ export default async function signUp(
 ): Promise<SignUpResponseData | AuthErrorResponseData> {
   const { role, username, password, passwordConfirm, contact } = formData;
   try {
-    const response: SignUpResponse = await api.post('/auth/register', {
+    const response: SignUpResponse = await httpClient.post('/auth/register', {
       username,
       password,
       passwordConfirm,
