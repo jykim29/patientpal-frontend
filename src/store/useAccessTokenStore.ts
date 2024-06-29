@@ -5,7 +5,7 @@ type InitialState = { access_token: string | null };
 
 interface TokenState extends InitialState {
   get: () => void;
-  set: (newToken: string) => void;
+  set: (newToken: string | null) => void;
   delete: () => void;
 }
 
