@@ -5,7 +5,7 @@ export interface SignUpFormData {
   username: string;
   password: string;
   passwordConfirm: string;
-  contact: string;
+  // contact: string;
   termOfUse: boolean;
   personalInformation: boolean;
 }

@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { SignInFormData } from '@/types/formData.interface';
 import { userIdFromLocalStorage } from '@/utils/getUserIdFromLocalStorage';
 import Button from '@/components/common/Button';
 import { Validate, useForm } from '@/hooks/useForm';
-import { getRefreshToken, signIn } from '@/api/auth';
+import { signIn } from '@/api/auth';
+import { useAccessTokenStore } from '@/store/useAccessTokenStore';
 
 import FormInput from './FormInput';
 import FormAlertErrorBox from './FormAlertErrorBox';
@@ -32,6 +34,8 @@ export default function SignInForm() {
   const [loginErrorMessage, setLoginErrorMessage] = useState<string | null>(
     null
   );
+  const { set } = useAccessTokenStore();
+  const navigate = useNavigate();
   const { username, password, isRememberId } = formData;
   const validateErrorArray = [...error.values()];
 
@@ -40,17 +44,17 @@ export default function SignInForm() {
 
     if (!isRememberId) userIdFromLocalStorage.remove();
     else userIdFromLocalStorage.set(username);
+
     setLoginErrorMessage(null);
+
     const response = await signIn({ username, password });
-    if (response.result === 'FAIL' && response.data.message) {
-      return setLoginErrorMessage(response.data.message);
-    }
+    if (response.result === 'FAIL')
+      return setLoginErrorMessage(response.data.message as string);
+
+    set(response.data.access_token);
+    navigate('/');
   };
 
-  const getToken = async () => {
-    const response = await getRefreshToken();
-    console.log(response);
-  };
   return (
     <>
       <p className="text-text-medium text-gray-medium">
@@ -97,9 +101,6 @@ export default function SignInForm() {
 
         <Button type="submit" className="w-full">
           로그인
-        </Button>
-        <Button type="button" onClick={getToken}>
-          토큰재발급
         </Button>
       </form>
     </>
