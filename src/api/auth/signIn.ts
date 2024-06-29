@@ -7,13 +7,14 @@ import {
   SignInResponse,
   SignInResponseData,
 } from '@/types/authApi.type';
+import { API_ENDPOINT } from '@/constants/api';
 
 export default async function signIn(
   formData: Pick<SignInFormData, 'username' | 'password'>
 ): Promise<SignInResponseData | AuthErrorResponseData> {
   try {
     const response: SignInResponse = await httpClient.post(
-      '/auth/login',
+      API_ENDPOINT.AUTH.LOGIN,
       formData
     );
     return {

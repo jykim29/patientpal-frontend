@@ -20,3 +20,7 @@ type SignInData = {
 };
 export type SignInResponse = ApiResponse<SignInData>;
 export type SignInResponseData = ApiResponseData<SignInData>;
+
+type RefreshTokenData = { access_token: string };
+export type RefreshTokenResponse = ApiResponse<RefreshTokenData>;
+export type RefreshTokenResponseData = ApiResponseData<RefreshTokenData>;

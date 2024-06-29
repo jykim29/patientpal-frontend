@@ -7,19 +7,22 @@ import {
   SignUpResponse,
   SignUpResponseData,
 } from '@/types/authApi.type';
+import { API_ENDPOINT } from '@/constants/api';
 
 export default async function signUp(
   formData: SignUpFormData
 ): Promise<SignUpResponseData | AuthErrorResponseData> {
-  const { role, username, password, passwordConfirm, contact } = formData;
+  const { role, username, password, passwordConfirm } = formData;
   try {
-    const response: SignUpResponse = await httpClient.post('/auth/register', {
-      username,
-      password,
-      passwordConfirm,
-      contact,
-      role,
-    });
+    const response: SignUpResponse = await httpClient.post(
+      API_ENDPOINT.AUTH.REGISTER,
+      {
+        username,
+        password,
+        passwordConfirm,
+        role,
+      }
+    );
     return { result: 'SUCCESS', data: response.data };
   } catch (error) {
     if (axios.isAxiosError(error)) {
