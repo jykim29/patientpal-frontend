@@ -1,14 +1,16 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 import { SignUpFormData } from '@/types/formData.interface';
-import { useForm } from '@/hooks/useForm';
+import { Validate, useForm } from '@/hooks/useForm';
 import {
   FormInput,
   FormTooltipMessageBox,
   FormCheckbox,
 } from '@/components/Form';
 import Button from '@/components/common/Button';
+import { signUp } from '@/api/auth';
 
 import FormAlertErrorBox from './FormAlertErrorBox';
 
@@ -17,17 +19,17 @@ const initialFormData: SignUpFormData = {
   username: '',
   password: '',
   passwordConfirm: '',
-  contact: '',
+  // contact: '',
   termOfUse: false,
   personalInformation: false,
 };
 
-const validate = (values: SignUpFormData) => {
+const validate: Validate<SignUpFormData> = (values) => {
   const {
     username,
     password,
     passwordConfirm,
-    contact,
+    // contact,
     personalInformation,
     termOfUse,
   } = values;
@@ -36,7 +38,7 @@ const validate = (values: SignUpFormData) => {
     password: new RegExp(
       '^(?=.*[a-zA-Z])(?=.*[0-9]|.*[!@#$_-])[A-Za-z0-9!@#$_-]{8,20}$'
     ),
-    contact: new RegExp('^010[0-9]{8}$'),
+    // contact: new RegExp('^010[0-9]{8}$'),
   };
   const errors = new Map();
 
@@ -55,11 +57,11 @@ const validate = (values: SignUpFormData) => {
   if (passwordConfirm.trim() === '' || password !== passwordConfirm)
     errors.set('passwordConfirm', '두 비밀번호가 일치하지 않습니다.');
 
-  if (!regex.contact.test(contact))
-    errors.set(
-      'contact',
-      '휴대폰 번호는 "010"으로 시작하는 11자리의 숫자여야 합니다.'
-    );
+  // if (!regex.contact.test(contact))
+  //   errors.set(
+  //     'contact',
+  //     '휴대폰 번호는 "010"으로 시작하는 11자리의 숫자여야 합니다.'
+  //   );
 
   if (!termOfUse)
     errors.set('termOfUse', 'PatientPal 이용약관에 동의해주세요.');
@@ -76,7 +78,8 @@ export default function SignUpForm() {
   } = useForm<SignUpFormData>(initialFormData, validate);
   const [step, setStep] = useState<number>(0);
   const [roleErrorMessage, setRoleErrorMessage] = useState<null | string>(null);
-  const errorArray = [...error.values()];
+  const navigate = useNavigate();
+  const validateErrorArray = [...error.values()];
 
   // 툴팁 메세지 설정
   const tooltipBoxArray = useMemo(
@@ -84,7 +87,7 @@ export default function SignUpForm() {
       '알파벳 소문자 또는 숫자가 포함된 8~20자',
       '영문 필수, 숫자 또는 특수문자가 포함된 8~20자',
       '비밀번호를 다시 입력해주세요.',
-      '010으로 시작하는 11자리의 숫자',
+      // '010으로 시작하는 11자리의 숫자',
     ],
     []
   );
@@ -103,8 +106,20 @@ export default function SignUpForm() {
     setRoleErrorMessage(null);
   }, [step, formData.role]);
 
-  const signUp = () => {
+  // const handleChangePhoneNumber = useCallback(
+  //   (e: React.ChangeEvent<HTMLInputElement>) => {
+  //     if (Number.isNaN(Number(e.currentTarget.value))) return;
+  //     handleChange(e);
+  //   },
+  //   []
+  // );
+
+  const signUpCallback = async () => {
     // 회원가입 api 호출
+    const response = await signUp(formData);
+    if (response.result === 'FAIL') return;
+    alert('회원가입에 성공하였습니다. 로그인페이지로 이동합니다.');
+    navigate('/auth/signin');
   };
 
   return (
@@ -117,12 +132,12 @@ export default function SignUpForm() {
       {roleErrorMessage && step === 0 && (
         <FormAlertErrorBox>{roleErrorMessage}</FormAlertErrorBox>
       )}
-      {errorArray.length > 0 && step === 1 && (
-        <FormAlertErrorBox>{errorArray[0]}</FormAlertErrorBox>
+      {validateErrorArray.length > 0 && step === 1 && (
+        <FormAlertErrorBox>{validateErrorArray[0]}</FormAlertErrorBox>
       )}
 
       <form
-        onSubmit={(e) => handleSubmit(e, signUp)}
+        onSubmit={(e) => handleSubmit(e, signUpCallback)}
         className="flex w-full flex-col items-start gap-3"
       >
         {/* 1단계 - 간병인 회원 선택 */}
@@ -178,9 +193,6 @@ export default function SignUpForm() {
           </motion.div>
         )}
         {/* 2단계 - 가입양식 입력 */}
-        {/* TODO
-          1. FormInput, Button, 검증 메세지 중복코드 최소화
-        */}
         {step === 1 && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -234,7 +246,7 @@ export default function SignUpForm() {
                 {tooltipBoxArray[2]}
               </FormTooltipMessageBox>
             </div>
-            <div className="mt-2.5 flex w-full gap-1">
+            {/* <div className="mt-2.5 flex w-full gap-1">
               <div className="peer flex w-[350px] items-center gap-1">
                 <FormInput
                   type="text"
@@ -242,10 +254,7 @@ export default function SignUpForm() {
                   name="contact"
                   value={formData.contact}
                   isValid={!error.get('contact')}
-                  onChange={(e) => {
-                    if (Number.isNaN(Number(e.currentTarget.value))) return;
-                    handleChange(e);
-                  }}
+                  onChange={handleChangePhoneNumber}
                 />
                 <Button className="h-full w-[80px] px-1 py-1" type="button">
                   인증요청
@@ -254,7 +263,7 @@ export default function SignUpForm() {
               <FormTooltipMessageBox>
                 {tooltipBoxArray[3]}
               </FormTooltipMessageBox>
-            </div>
+            </div> */}
             <div className="mt-3 flex w-full items-center justify-center gap-5">
               <FormCheckbox
                 className="text-text-small"

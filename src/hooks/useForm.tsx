@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-type Validate<T> = (values: T) => Map<any, any>;
+export type Validate<T> = (values: T) => Map<any, any>;
 
 export function useForm<T extends { [key: string]: any }>(
   formData: T,
@@ -20,7 +20,6 @@ export function useForm<T extends { [key: string]: any }>(
   const onSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>, callback: () => any) => {
       e.preventDefault();
-      console.log(data);
       const errors = validate(data);
       if ([...errors.values()].length > 0) return setError(errors);
       else setError(new Map());

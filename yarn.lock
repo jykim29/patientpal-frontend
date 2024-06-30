@@ -1753,7 +1753,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.6.8":
+"axios@npm:^1.6.8, axios@npm:^1.7.2":
   version: 1.7.2
   resolution: "axios@npm:1.7.2"
   dependencies:
@@ -4586,6 +4586,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:^7.2.0"
     "@vitejs/plugin-react": "npm:^4.2.1"
     autoprefixer: "npm:^10.4.19"
+    axios: "npm:^1.7.2"
     eslint: "npm:8.x"
     eslint-config-airbnb: "npm:^19.0.4"
     eslint-config-airbnb-typescript: "npm:^18.0.0"
@@ -4606,6 +4607,7 @@ __metadata:
     prettier-plugin-tailwindcss: "npm:^0.6.1"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
+    react-hook-form: "npm:^7.52.0"
     react-icons: "npm:^5.2.1"
     react-quill: "npm:^2.0.0"
     react-router-dom: "npm:^6.23.1"
@@ -4936,6 +4938,15 @@ __metadata:
   peerDependencies:
     react: ^18.3.1
   checksum: 10c0/a752496c1941f958f2e8ac56239172296fcddce1365ce45222d04a1947e0cc5547df3e8447f855a81d6d39f008d7c32eab43db3712077f09e3f67c4874973e85
+  languageName: node
+  linkType: hard
+
+"react-hook-form@npm:^7.52.0":
+  version: 7.52.0
+  resolution: "react-hook-form@npm:7.52.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18 || ^19
+  checksum: 10c0/058bf5596f314c071863bb133979deb56d0a7817d5bf1908a569c003fe03a15736402b040d3e18aeb259723c6e15c243fe75d2d887ea47ff4be87fc472f31ad5
   languageName: node
   linkType: hard
 

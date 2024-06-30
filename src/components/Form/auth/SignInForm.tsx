@@ -1,51 +1,74 @@
 import { useState } from 'react';
-import { useForm } from '../../../hooks/useForm';
-import Button from '../../common/Button';
-import FormCheckbox from '../FormCheckbox';
+import { useNavigate } from 'react-router-dom';
+
+import { SignInFormData } from '@/types/formData.interface';
+import { userIdFromLocalStorage } from '@/utils/getUserIdFromLocalStorage';
+import Button from '@/components/common/Button';
+import { Validate, useForm } from '@/hooks/useForm';
+import { signIn } from '@/api/auth';
+import { useAccessTokenStore } from '@/store/useAccessTokenStore';
+
 import FormInput from './FormInput';
 import FormAlertErrorBox from './FormAlertErrorBox';
-import { SignInFormData } from '../../../types/formData.interface';
-import { userIdFromLocalStorage } from '../../../utils/getUserIdFromLocalStorage';
+import FormCheckbox from '../FormCheckbox';
 
 const initialFormData: SignInFormData = {
   username: userIdFromLocalStorage.get() || '',
   password: '',
   isRememberId: !!userIdFromLocalStorage.get(),
 };
+const validate: Validate<SignInFormData> = (values) => {
+  const { username, password } = values;
+  const errors = new Map();
+  if (username === '') errors.set('username', '아이디를 입력해주세요.');
+  if (password === '') errors.set('password', '비밀번호를 입력해주세요.');
+  return errors;
+};
 
 export default function SignInForm() {
   const {
     formData,
     handler: { onChange: handleChange, onSubmit: handleSubmit },
-  } = useForm<SignInFormData>(initialFormData);
-  const [error, setError] = useState({ isShow: false, message: '' });
+    error,
+  } = useForm<SignInFormData>(initialFormData, validate);
+  const [loginErrorMessage, setLoginErrorMessage] = useState<string | null>(
+    null
+  );
+  const { set } = useAccessTokenStore();
+  const navigate = useNavigate();
   const { username, password, isRememberId } = formData;
+  const validateErrorArray = [...error.values()];
 
-  const isFill = (...rest: string[]): boolean => {
-    return rest.every((value) => value !== '');
-  };
+  const signInCallback = async () => {
+    const { username, password } = formData;
 
-  const signIn = async () => {
     if (!isRememberId) userIdFromLocalStorage.remove();
     else userIdFromLocalStorage.set(username);
-    if (!isFill(username, password))
-      return setError({
-        isShow: true,
-        message: '아이디 또는 비밀번호를 입력해주세요.',
-      });
-    // 로그인 api 호출
-    alert('로그인 성공');
-    setError({ isShow: false, message: '' });
+
+    setLoginErrorMessage(null);
+
+    const response = await signIn({ username, password });
+    if (response.result === 'FAIL')
+      return setLoginErrorMessage(response.data.message as string);
+
+    set(response.data.access_token);
+    navigate('/');
   };
+
   return (
     <>
       <p className="text-text-medium text-gray-medium">
         서비스를 이용하시려면 로그인이 필요합니다.
       </p>
-      {error.isShow && <FormAlertErrorBox>{error.message}</FormAlertErrorBox>}
+      {validateErrorArray.length > 0 && (
+        <FormAlertErrorBox>{validateErrorArray[0]}</FormAlertErrorBox>
+      )}
+      {loginErrorMessage && (
+        <FormAlertErrorBox>{loginErrorMessage}</FormAlertErrorBox>
+      )}
       <form
         className="flex w-full flex-col items-start gap-3"
-        onSubmit={(e) => handleSubmit(e, signIn)}
+        onSubmit={(e) => handleSubmit(e, signInCallback)}
       >
         <div className="w-full">
           <FormInput
