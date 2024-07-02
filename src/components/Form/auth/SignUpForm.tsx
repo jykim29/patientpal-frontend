@@ -10,7 +10,7 @@ import {
   FormCheckbox,
 } from '@/components/Form';
 import Button from '@/components/common/Button';
-import { signUp } from '@/api/auth';
+import { authService } from '@/services/AuthService';
 
 import FormAlertErrorBox from './FormAlertErrorBox';
 
@@ -19,7 +19,6 @@ const initialFormData: SignUpFormData = {
   username: '',
   password: '',
   passwordConfirm: '',
-  // contact: '',
   termOfUse: false,
   personalInformation: false,
 };
@@ -29,7 +28,6 @@ const validate: Validate<SignUpFormData> = (values) => {
     username,
     password,
     passwordConfirm,
-    // contact,
     personalInformation,
     termOfUse,
   } = values;
@@ -38,7 +36,6 @@ const validate: Validate<SignUpFormData> = (values) => {
     password: new RegExp(
       '^(?=.*[a-zA-Z])(?=.*[0-9]|.*[!@#$_-])[A-Za-z0-9!@#$_-]{8,20}$'
     ),
-    // contact: new RegExp('^010[0-9]{8}$'),
   };
   const errors = new Map();
 
@@ -56,12 +53,6 @@ const validate: Validate<SignUpFormData> = (values) => {
 
   if (passwordConfirm.trim() === '' || password !== passwordConfirm)
     errors.set('passwordConfirm', '두 비밀번호가 일치하지 않습니다.');
-
-  // if (!regex.contact.test(contact))
-  //   errors.set(
-  //     'contact',
-  //     '휴대폰 번호는 "010"으로 시작하는 11자리의 숫자여야 합니다.'
-  //   );
 
   if (!termOfUse)
     errors.set('termOfUse', 'PatientPal 이용약관에 동의해주세요.');
@@ -87,7 +78,6 @@ export default function SignUpForm() {
       '알파벳 소문자 또는 숫자가 포함된 8~20자',
       '영문 필수, 숫자 또는 특수문자가 포함된 8~20자',
       '비밀번호를 다시 입력해주세요.',
-      // '010으로 시작하는 11자리의 숫자',
     ],
     []
   );
@@ -106,19 +96,17 @@ export default function SignUpForm() {
     setRoleErrorMessage(null);
   }, [step, formData.role]);
 
-  // const handleChangePhoneNumber = useCallback(
-  //   (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     if (Number.isNaN(Number(e.currentTarget.value))) return;
-  //     handleChange(e);
-  //   },
-  //   []
-  // );
-
-  const signUpCallback = async () => {
+  const submitCallback = async () => {
     // 회원가입 api 호출
-    const response = await signUp(formData);
-    if (response.result === 'FAIL') return;
-    alert('회원가입에 성공하였습니다. 로그인페이지로 이동합니다.');
+    const { role, username, password, passwordConfirm } = formData;
+    const { message, status } = await authService.signUp({
+      role,
+      username,
+      password,
+      passwordConfirm,
+    });
+    if (message && status === 'FAILED') return alert(message);
+
     navigate('/auth/signin');
   };
 
@@ -137,7 +125,7 @@ export default function SignUpForm() {
       )}
 
       <form
-        onSubmit={(e) => handleSubmit(e, signUpCallback)}
+        onSubmit={(e) => handleSubmit(e, submitCallback)}
         className="flex w-full flex-col items-start gap-3"
       >
         {/* 1단계 - 간병인 회원 선택 */}
@@ -246,24 +234,6 @@ export default function SignUpForm() {
                 {tooltipBoxArray[2]}
               </FormTooltipMessageBox>
             </div>
-            {/* <div className="mt-2.5 flex w-full gap-1">
-              <div className="peer flex w-[350px] items-center gap-1">
-                <FormInput
-                  type="text"
-                  label="휴대폰 번호"
-                  name="contact"
-                  value={formData.contact}
-                  isValid={!error.get('contact')}
-                  onChange={handleChangePhoneNumber}
-                />
-                <Button className="h-full w-[80px] px-1 py-1" type="button">
-                  인증요청
-                </Button>
-              </div>
-              <FormTooltipMessageBox>
-                {tooltipBoxArray[3]}
-              </FormTooltipMessageBox>
-            </div> */}
             <div className="mt-3 flex w-full items-center justify-center gap-5">
               <FormCheckbox
                 className="text-text-small"
