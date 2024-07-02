@@ -27,7 +27,10 @@ class AuthService {
     if (status === FETCH_FAILED) {
       return { message: data.message as string, status: FETCH_FAILED };
     }
-    return { message: null, status: FETCH_SUCCESS };
+    return {
+      message: '회원가입이 완료되었습니다. 로그인페이지로 이동합니다.',
+      status: FETCH_SUCCESS,
+    };
   }
 
   public async refreshToken(config = {}) {

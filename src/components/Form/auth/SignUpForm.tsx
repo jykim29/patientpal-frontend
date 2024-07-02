@@ -105,8 +105,8 @@ export default function SignUpForm() {
       password,
       passwordConfirm,
     });
-    if (message && status === 'FAILED') return alert(message);
-
+    if (status === 'FAILED') return alert(message);
+    alert(message);
     navigate('/auth/signin');
   };
 
