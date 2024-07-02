@@ -16,6 +16,11 @@ import { BoardWrite, BoardView, Forum, Notice } from './pages/community';
 import { loader as forumLoader } from './components/board/BoardList';
 import { ChatLobby, ChatRoom } from './pages/chat';
 import { ContractWrite } from './pages/contract';
+import SettingPage from './pages/setting/SettingPage';
+import ModifyPage from './pages/setting/ModifyPage';
+import SettingLayout from './components/layout/SettingLayout';
+import MatchRecordPage from './pages/setting/MatchRecordPage';
+import ReviewPage from './pages/setting/ReviewPage';
 
 function App() {
   const router = createBrowserRouter([
@@ -142,6 +147,29 @@ function App() {
         {
           path: 'map',
           element: <SearchPage searchType="map" />,
+        },
+      ],
+    },
+    {
+      path: '/settings',
+      element: <SettingLayout />,
+      errorElement: <Error />,
+      children: [
+        {
+          index: true,
+          element: <SettingPage />,
+        },
+        {
+          path: 'modify-info',
+          element: <ModifyPage />,
+        },
+        {
+          path: 'match-record',
+          element: <MatchRecordPage />,
+        },
+        {
+          path: 'review',
+          element: <ReviewPage />,
         },
       ],
     },
