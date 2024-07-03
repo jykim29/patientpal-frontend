@@ -2,6 +2,10 @@
 export const API_BASE_URL = import.meta.env.VITE_BACKEND_API_BASE_URL;
 export const PROXY_BASE_URL = '/api/v1';
 
+// 통신 상태
+export const FETCH_SUCCESS = 'SUCCESS';
+export const FETCH_FAILED = 'FAILED';
+
 // 에러 상황
 export const TIMEOUT_SECONDS = 10;
 export const RETRY_COUNT = 3;

@@ -1,26 +1,52 @@
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosRequestConfig } from 'axios';
+import { UserRole } from './user';
 
-type AuthError = { code?: string; errors?: []; message?: string };
-type AccessToken = string;
+// Request Body Type
+export interface RequestBody {
+  register: {
+    username: string;
+    password: string;
+    passwordConfirm: string;
+    role: UserRole;
+  };
+  login: {
+    username: string;
+    password: string;
+  };
+}
 
-type ApiResponse<T> = AxiosResponse<T>;
-type ApiResponseData<T> = {
-  result: T extends AuthError ? 'FAIL' : 'SUCCESS';
-  data: T;
+// Response Type
+type Success = 'SUCCESS';
+type Failed = 'FAILED';
+export type ErrorResponse = { code?: string; errors?: []; message?: string };
+export type SignUpResponse = any;
+export type SignInResponse = {
+  access_token: string;
 };
-export type AuthErrorResponse = AxiosError<AuthError>;
-export type AuthErrorResponseData = ApiResponseData<AuthError>;
+export type RefreshTokenResponse = { access_token: string };
 
-type SignUpData = any;
-export type SignUpResponse = ApiResponse<SignUpData>;
-export type SignUpResponseData = ApiResponseData<SignUpData>;
+// API Function Return Type
+type FetchSuccess<T> = { data: T; status: Success };
+type FetchFailure = { data: ErrorResponse; status: Failed };
+type FetchResult<T> = FetchSuccess<T> | FetchFailure;
 
-type SignInData = {
-  access_token: AccessToken;
+// API Function Type
+export type Register = (
+  formData: RequestBody['register'],
+  config?: AxiosRequestConfig
+) => Promise<FetchResult<SignUpResponse>>;
+
+export type Login = (
+  formData: RequestBody['login'],
+  config?: AxiosRequestConfig
+) => Promise<FetchResult<SignInResponse>>;
+
+export type Refresh = (
+  config?: AxiosRequestConfig
+) => Promise<FetchResult<RefreshTokenResponse>>;
+
+export type AuthApi = () => {
+  register: Register;
+  login: Login;
+  refresh: Refresh;
 };
-export type SignInResponse = ApiResponse<SignInData>;
-export type SignInResponseData = ApiResponseData<SignInData>;
-
-type RefreshTokenData = { access_token: string };
-export type RefreshTokenResponse = ApiResponse<RefreshTokenData>;
-export type RefreshTokenResponseData = ApiResponseData<RefreshTokenData>;

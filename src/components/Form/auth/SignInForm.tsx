@@ -5,8 +5,7 @@ import { SignInFormData } from '@/types/formData.interface';
 import { userIdFromLocalStorage } from '@/utils/getUserIdFromLocalStorage';
 import Button from '@/components/common/Button';
 import { Validate, useForm } from '@/hooks/useForm';
-import { signIn } from '@/api/auth';
-import { useAccessTokenStore } from '@/store/useAccessTokenStore';
+import { authService } from '@/services/AuthService';
 
 import FormInput from './FormInput';
 import FormAlertErrorBox from './FormAlertErrorBox';
@@ -34,24 +33,22 @@ export default function SignInForm() {
   const [loginErrorMessage, setLoginErrorMessage] = useState<string | null>(
     null
   );
-  const { set } = useAccessTokenStore();
   const navigate = useNavigate();
   const { username, password, isRememberId } = formData;
   const validateErrorArray = [...error.values()];
 
-  const signInCallback = async () => {
+  const submitCallback = async () => {
     const { username, password } = formData;
-
+    setLoginErrorMessage(null);
     if (!isRememberId) userIdFromLocalStorage.remove();
     else userIdFromLocalStorage.set(username);
 
-    setLoginErrorMessage(null);
-
-    const response = await signIn({ username, password });
-    if (response.result === 'FAIL')
-      return setLoginErrorMessage(response.data.message as string);
-
-    set(response.data.access_token);
+    const { status, message } = await authService.signInWithIdPassword({
+      username,
+      password,
+    });
+    if (message && status === 'FAILED')
+      return setLoginErrorMessage(message as string);
     navigate('/');
   };
 
@@ -68,7 +65,7 @@ export default function SignInForm() {
       )}
       <form
         className="flex w-full flex-col items-start gap-3"
-        onSubmit={(e) => handleSubmit(e, signInCallback)}
+        onSubmit={(e) => handleSubmit(e, submitCallback)}
       >
         <div className="w-full">
           <FormInput
