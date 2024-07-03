@@ -1,10 +1,12 @@
-// 기본 URL
+// Base URL
 export const API_BASE_URL = import.meta.env.VITE_BACKEND_API_BASE_URL;
 export const PROXY_BASE_URL = '/api/v1';
+export const BASE_URL =
+  import.meta.env.MODE === 'development' ? PROXY_BASE_URL : API_BASE_URL;
 
 // 통신 상태
-export const FETCH_SUCCESS = 'SUCCESS';
-export const FETCH_FAILED = 'FAILED';
+export const API_SUCCESS = 'SUCCESS';
+export const API_FAILED = 'FAILED';
 
 // 에러 상황
 export const TIMEOUT_SECONDS = 10;
