@@ -5,16 +5,12 @@ import {
   FaCommentDots,
   FaFileSignature,
   FaGear,
+  FaUser,
 } from 'react-icons/fa6';
 import SideBarItems from './SideBarItems';
 
 function SideBar() {
   const sideBarMenus = [
-    {
-      name: '홈',
-      path: '/',
-      icon: <FaHouse className="h-5 w-5" />,
-    },
     {
       name: '검색',
       path: '/search/city',
@@ -34,19 +30,31 @@ function SideBar() {
       ],
     },
     {
-      name: '채팅',
-      path: '/chat/lobby',
-      icon: <FaCommentDots className="h-5 w-5" />,
-    },
-    {
-      name: '나의 계약',
-      path: '/contract',
-      icon: <FaFileSignature className="h-5 w-5" />,
-    },
-    {
-      name: '설정',
-      path: '/settings',
-      icon: <FaGear className="h-5 w-5" />,
+      name: '마이페이지',
+      path: '/mypage',
+      icon: <FaUser />,
+      subMenu: [
+        {
+          name: '프로필 관리',
+          path: '/mypage/profile',
+        },
+        {
+          name: '채팅',
+          path: '/mypage/chat/lobby',
+        },
+        {
+          name: '계약',
+          path: '/mypage/contract',
+        },
+        {
+          name: '매칭 기록',
+          path: '/mypage/match-record',
+        },
+        {
+          name: '후기 관리',
+          path: '/mypage/review',
+        },
+      ],
     },
   ];
 
