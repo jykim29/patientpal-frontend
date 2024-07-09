@@ -38,6 +38,10 @@ function App() {
           errorElement: <Error />,
           children: [
             {
+              index: true,
+              element: <Navigate to={'city'} />,
+            },
+            {
               path: 'city',
               element: <SearchPage searchType="city" />,
             },
