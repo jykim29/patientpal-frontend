@@ -1,34 +1,42 @@
 import { FaRegAddressCard } from 'react-icons/fa';
-import { FaFileSignature } from 'react-icons/fa6';
-import { BsMegaphone } from 'react-icons/bs';
+import { MdOutlineRateReview } from 'react-icons/md';
+import { IoChatboxEllipsesOutline } from 'react-icons/io5';
+import { LuFileSignature } from 'react-icons/lu';
 import { FaRegFile } from 'react-icons/fa6';
 import { LuFileEdit } from 'react-icons/lu';
 import { Link } from 'react-router-dom';
 
 const Category = [
   {
-    title: '개인정보 수정',
+    title: '프로필 관리',
     icon: <FaRegAddressCard className="h-full w-full" />,
     description: 'Provide personal details and how we can reach you',
-    link: '/settings/modify-info',
+    link: '/mypage/profile',
+  },
+  {
+    title: '채팅',
+    icon: <IoChatboxEllipsesOutline className="h-full w-full" />,
+    description: 'Provide personal details and how we can reach you',
+    link: '/mypage/chat',
+  },
+  {
+    title: '계약',
+    icon: <LuFileSignature className="h-full w-full" />,
+    description: 'Provide personal details and how we can reach you',
+    link: '/community/notice',
   },
   {
     title: '매칭 기록',
     icon: <FaRegFile className="h-full w-full" />,
     description: 'Provide personal details and how we can reach you',
-    link: '/settings/match-record',
+    link: '/mypage/match-record',
   },
-  {
-    title: '공지사항',
-    icon: <BsMegaphone className="h-full w-full" />,
-    description: 'Provide personal details and how we can reach you',
-    link: '/community/notice',
-  },
+
   {
     title: '후기 관리',
-    icon: <LuFileEdit className="h-full w-full" />,
+    icon: <MdOutlineRateReview className="h-full w-full" />,
     description: 'Provide personal details and how we can reach you',
-    link: '/settings/review',
+    link: '/mypage/review',
   },
 ];
 
