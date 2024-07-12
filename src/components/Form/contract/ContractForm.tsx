@@ -21,7 +21,7 @@ export default function ContractForm() {
     setError,
     formState: { errors },
   } = useForm({
-    values: {
+    defaultValues: {
       ...initialContractFormData,
     },
     mode: 'onSubmit',
