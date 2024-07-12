@@ -1,4 +1,5 @@
 @import '../components/Form/auth/SignUpForm.css';
+@import '../components/Form/contract/ContractForm.css';
 @import '../components/board/BoardList.css';
 @import '../components/Chat/ChatListItem.css';
 @import '../components/ProgressIndicator/ProgressIndicator.css';

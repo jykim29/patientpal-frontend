@@ -101,7 +101,7 @@ function App() {
         },
         {
           path: '/contract',
-          element: <MainLayout title="나의 계약" />,
+          element: <MainLayout title="계약" />,
           errorElement: <Error />,
           children: [
             {
