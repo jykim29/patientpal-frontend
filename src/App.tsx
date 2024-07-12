@@ -112,46 +112,28 @@ function App() {
               element: <ModifyPage />,
             },
             {
+              path: 'chat/lobby',
+              element: <ChatLobby title="채팅 목록" />,
+            },
+            {
+              path: 'chat/room/:roomId',
+              element: <ChatRoom />,
+            },
+            {
+              path: 'contract',
+              element: <div>my contract</div>,
+            },
+            {
+              path: 'contract/write/:id',
+              element: <ContractWrite />,
+            },
+            {
               path: 'match-record',
               element: <MatchRecordPage />,
             },
             {
               path: 'review',
               element: <ReviewPage />,
-            },
-          ],
-        },
-        {
-          path: '/mypage/chat',
-          element: <MainLayout title="채팅" />,
-          errorElement: <Error />,
-          children: [
-            {
-              index: true,
-              element: <Navigate to={'lobby'} />,
-            },
-            {
-              path: 'lobby',
-              element: <ChatLobby title="채팅 목록" />,
-            },
-            {
-              path: 'room/:roomId',
-              element: <ChatRoom />,
-            },
-          ],
-        },
-        {
-          path: '/mypage/contract',
-          element: <MainLayout title="나의 계약" />,
-          errorElement: <Error />,
-          children: [
-            {
-              index: true,
-              element: <Navigate to={'contract'} />,
-            },
-            {
-              path: 'write/:contractId',
-              element: <ContractWrite />,
             },
           ],
         },
