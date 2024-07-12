@@ -25,7 +25,7 @@ export const Card = {
         onClick={() => moveTo(index)}
       >
         <p className="text-nowrap text-title-small">{text}</p>
-        <img src="public/assets/right circle icon.png"></img>
+        <img src="/assets/right circle icon.png"></img>
         <img src={img}></img>
       </div>
     );

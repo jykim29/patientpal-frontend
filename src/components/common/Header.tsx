@@ -24,7 +24,7 @@ function Header() {
 
   return (
     <div className="flex justify-center">
-      <header className="flex h-[80px] w-full min-w-[1440px] items-center justify-between border-b-[2px] px-[36px] py-[20px]">
+      <header className="flex h-[70px] w-full min-w-[1440px] items-center justify-between border-b-[2px] px-[36px] py-[20px]">
         <button onClick={moveToHome}>
           <img className="h-[50px]" src="/assets/logo-main.png"></img>
         </button>
