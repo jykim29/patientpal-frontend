@@ -1,7 +1,7 @@
 import MenuTitle from '@/components/common/MenuTitle';
-import CardMenu from '@/components/setting/CardMenu';
+import CardMenu from '@/components/MyPage/CardMenu';
 
-function SettingPage() {
+function MyPage() {
   return (
     <section className="flex flex-wrap gap-[30px] px-5 py-[10px]">
       <CardMenu />
@@ -9,4 +9,4 @@ function SettingPage() {
   );
 }
 
-export default SettingPage;
+export default MyPage;

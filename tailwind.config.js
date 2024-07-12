@@ -13,6 +13,7 @@ export default {
         background: '#FFFFFF',
         black: '#000000',
         orange: '#FF8B00',
+        footer: '#EBEBEB',
         'chathams-blue': '#175579',
         'gray-light': '#F4F4F4',
         'gray-light-medium': '#D8D8D8',

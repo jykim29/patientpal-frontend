@@ -16,11 +16,11 @@ import { BoardWrite, BoardView, Forum, Notice } from './pages/community';
 import { loader as forumLoader } from './components/board/BoardList';
 import { ChatLobby, ChatRoom } from './pages/chat';
 import { ContractWrite } from './pages/contract';
-import SettingPage from './pages/setting/SettingPage';
-import ModifyPage from './pages/setting/ModifyPage';
-import SettingLayout from './components/layout/SettingLayout';
-import MatchRecordPage from './pages/setting/MatchRecordPage';
-import ReviewPage from './pages/setting/ReviewPage';
+import MyPage from './pages/mypage/MyPage';
+import ModifyPage from './pages/mypage/ModifyPage';
+import MatchRecordPage from './pages/mypage/MatchRecordPage';
+import ReviewPage from './pages/mypage/ReviewPage';
+import MyPageLayout from './components/layout/MyPageLayout';
 
 function App() {
   const router = createBrowserRouter([
@@ -32,6 +32,24 @@ function App() {
         {
           path: '/',
           element: <Home />,
+        },
+        {
+          path: '/search',
+          errorElement: <Error />,
+          children: [
+            {
+              index: true,
+              element: <Navigate to={'city'} />,
+            },
+            {
+              path: 'city',
+              element: <SearchPage searchType="city" />,
+            },
+            {
+              path: 'map',
+              element: <SearchPage searchType="map" />,
+            },
+          ],
         },
         {
           path: '/community',
@@ -81,7 +99,30 @@ function App() {
           ],
         },
         {
-          path: '/chat',
+          path: '/mypage',
+          errorElement: <Error />,
+          element: <MyPageLayout />,
+          children: [
+            {
+              index: true,
+              element: <MyPage />,
+            },
+            {
+              path: 'profile',
+              element: <ModifyPage />,
+            },
+            {
+              path: 'match-record',
+              element: <MatchRecordPage />,
+            },
+            {
+              path: 'review',
+              element: <ReviewPage />,
+            },
+          ],
+        },
+        {
+          path: '/mypage/chat',
           element: <MainLayout title="채팅" />,
           errorElement: <Error />,
           children: [
@@ -100,8 +141,8 @@ function App() {
           ],
         },
         {
-          path: '/contract',
-          element: <MainLayout title="계약" />,
+          path: '/mypage/contract',
+          element: <MainLayout title="나의 계약" />,
           errorElement: <Error />,
           children: [
             {
@@ -132,44 +173,6 @@ function App() {
         {
           path: 'signup',
           element: <SignUp />,
-        },
-      ],
-    },
-    {
-      path: '/search',
-      element: <Layout />,
-      errorElement: <Error />,
-      children: [
-        {
-          path: 'city',
-          element: <SearchPage searchType="city" />,
-        },
-        {
-          path: 'map',
-          element: <SearchPage searchType="map" />,
-        },
-      ],
-    },
-    {
-      path: '/settings',
-      element: <SettingLayout />,
-      errorElement: <Error />,
-      children: [
-        {
-          index: true,
-          element: <SettingPage />,
-        },
-        {
-          path: 'modify-info',
-          element: <ModifyPage />,
-        },
-        {
-          path: 'match-record',
-          element: <MatchRecordPage />,
-        },
-        {
-          path: 'review',
-          element: <ReviewPage />,
         },
       ],
     },
