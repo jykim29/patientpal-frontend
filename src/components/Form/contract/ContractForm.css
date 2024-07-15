@@ -1,0 +1,20 @@
+@layer components {
+  .field-group {
+    @apply flex gap-2;
+
+    &.row {
+      @apply flex-row items-center;
+    }
+    &.col {
+      @apply flex-col items-start;
+    }
+
+    & .label {
+      @apply relative px-4 before:absolute before:left-0 before:top-1/2 before:h-2 before:w-2 before:-translate-y-1/2 before:bg-primary;
+    }
+
+    & .input {
+      @apply rounded-lg bg-gray-light p-1 text-gray-medium-dark;
+    }
+  }
+}
