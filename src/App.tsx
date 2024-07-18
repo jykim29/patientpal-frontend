@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   Navigate,
   RouterProvider,
@@ -21,8 +22,11 @@ import ModifyPage from './pages/mypage/ModifyPage';
 import MatchRecordPage from './pages/mypage/MatchRecordPage';
 import ReviewPage from './pages/mypage/ReviewPage';
 import MyPageLayout from './components/layout/MyPageLayout';
+import ProtectedRoute from './components/ProtectedRoute';
+import { authService } from './services/AuthService';
 
 function App() {
+  const [isInit, setIsInit] = useState<boolean>(false);
   const router = createBrowserRouter([
     {
       path: '/',
@@ -30,110 +34,116 @@ function App() {
       errorElement: <Error />,
       children: [
         {
-          path: '/',
+          index: true,
           element: <Home />,
         },
         {
-          path: '/search',
-          errorElement: <Error />,
+          path: '/',
+          element: <ProtectedRoute />,
           children: [
             {
-              index: true,
-              element: <Navigate to={'city'} />,
-            },
-            {
-              path: 'city',
-              element: <SearchPage searchType="city" />,
-            },
-            {
-              path: 'map',
-              element: <SearchPage searchType="map" />,
-            },
-          ],
-        },
-        {
-          path: '/community',
-          element: <MainLayout title="커뮤니티" />,
-          errorElement: <Error />,
-          children: [
-            {
-              index: true,
-              element: <Navigate to={'forum'} />,
-            },
-            {
-              path: 'forum',
+              path: '/search',
+              errorElement: <Error />,
               children: [
                 {
                   index: true,
-                  element: <Forum title="자유게시판" />,
-                  loader: forumLoader,
+                  element: <Navigate to={'city'} />,
                 },
                 {
-                  path: 'post',
-                  element: <BoardWrite />,
+                  path: 'city',
+                  element: <SearchPage searchType="city" />,
                 },
                 {
-                  path: 'view/:id',
-                  element: <BoardView />,
+                  path: 'map',
+                  element: <SearchPage searchType="map" />,
                 },
               ],
             },
             {
-              path: 'notice',
+              path: '/community',
+              element: <MainLayout title="커뮤니티" />,
+              errorElement: <Error />,
               children: [
                 {
                   index: true,
-                  element: <Notice title="공지사항" />,
-                  loader: forumLoader,
+                  element: <Navigate to={'forum'} />,
                 },
                 {
-                  path: 'post',
-                  element: <BoardWrite />,
+                  path: 'forum',
+                  children: [
+                    {
+                      index: true,
+                      element: <Forum title="자유게시판" />,
+                      loader: forumLoader,
+                    },
+                    {
+                      path: 'post',
+                      element: <BoardWrite />,
+                    },
+                    {
+                      path: 'view/:id',
+                      element: <BoardView />,
+                    },
+                  ],
                 },
                 {
-                  path: 'view/:postId',
-                  element: <BoardView />,
+                  path: 'notice',
+                  children: [
+                    {
+                      index: true,
+                      element: <Notice title="공지사항" />,
+                      loader: forumLoader,
+                    },
+                    {
+                      path: 'post',
+                      element: <BoardWrite />,
+                    },
+                    {
+                      path: 'view/:postId',
+                      element: <BoardView />,
+                    },
+                  ],
                 },
               ],
             },
-          ],
-        },
-        {
-          path: '/mypage',
-          errorElement: <Error />,
-          element: <MyPageLayout />,
-          children: [
             {
-              index: true,
-              element: <MyPage />,
-            },
-            {
-              path: 'profile',
-              element: <ModifyPage />,
-            },
-            {
-              path: 'chat/lobby',
-              element: <ChatLobby title="채팅 목록" />,
-            },
-            {
-              path: 'chat/room/:roomId',
-              element: <ChatRoom />,
-            },
-            {
-              path: 'contract',
-              element: <div>my contract</div>,
-            },
-            {
-              path: 'contract/write/:id',
-              element: <ContractWrite />,
-            },
-            {
-              path: 'match-record',
-              element: <MatchRecordPage />,
-            },
-            {
-              path: 'review',
-              element: <ReviewPage />,
+              path: '/mypage',
+              errorElement: <Error />,
+              element: <MyPageLayout />,
+              children: [
+                {
+                  index: true,
+                  element: <MyPage />,
+                },
+                {
+                  path: 'profile',
+                  element: <ModifyPage />,
+                },
+                {
+                  path: 'chat/lobby',
+                  element: <ChatLobby title="채팅 목록" />,
+                },
+                {
+                  path: 'chat/room/:roomId',
+                  element: <ChatRoom />,
+                },
+                {
+                  path: 'contract',
+                  element: <div>my contract</div>,
+                },
+                {
+                  path: 'contract/write/:id',
+                  element: <ContractWrite />,
+                },
+                {
+                  path: 'match-record',
+                  element: <MatchRecordPage />,
+                },
+                {
+                  path: 'review',
+                  element: <ReviewPage />,
+                },
+              ],
             },
           ],
         },
@@ -159,7 +169,11 @@ function App() {
       ],
     },
   ]);
-  return <RouterProvider router={router} />;
+  useEffect(() => {
+    authService.refreshToken().then(() => setIsInit(true));
+  }, []);
+
+  return isInit ? <RouterProvider router={router} /> : <></>;
 }
 
 export default App;
