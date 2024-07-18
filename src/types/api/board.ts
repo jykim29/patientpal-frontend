@@ -1,9 +1,7 @@
-import { FetchResult } from './common';
-
 // Board Type
 export type BoardTypes = {
   NOTICE: 'NOTICE';
-  BOARD: 'BOARD';
+  FREE: 'FREE';
 };
 export type BoardType = BoardTypes[keyof BoardTypes];
 
@@ -16,33 +14,41 @@ export interface RequestBody {
 }
 
 // Response Type
-export interface GetPostResponse {
+export interface PostResponse {
   id: number;
   name: string;
-  memberId: string;
+  memberId: number;
   title: string;
   content: string;
   createdAt: string;
   updatedAt: string;
+  postType: 'FREE';
 }
-export interface GetListResponse
-  extends Array<Omit<GetPostResponse, 'content'>> {
-  // 추가할 타입
-}
-export interface WritePostResponse {
-  id: number;
-  name: string;
-  title: string;
-  content: string;
-  createdDate: string;
-  updatedDate: string;
-}
-export interface UpdatePostResponse {
-  id: number;
-  name: string;
-  memberId: string;
-  title: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
+export interface GetListResponse {
+  totalElements: number;
+  totalPages: number;
+  numberOfElements: number;
+  pageable: {
+    paged: boolean;
+    unpaged: boolean;
+    pageNumber: number;
+    pageSize: number;
+    offset: number;
+    sort: {
+      unsorted: boolean;
+      sorted: boolean;
+      empty: boolean;
+    };
+  };
+  size: number;
+  content: Omit<PostResponse, 'content'>[];
+  number: number;
+  sort: {
+    unsorted: boolean;
+    sorted: boolean;
+    empty: boolean;
+  };
+  first: boolean;
+  last: boolean;
+  empty: boolean;
 }

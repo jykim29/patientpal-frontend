@@ -2,12 +2,10 @@ import { AxiosRequestConfig } from 'axios';
 import {
   BoardType,
   GetListResponse,
-  GetPostResponse,
+  PostResponse,
   RequestBody,
-  UpdatePostResponse,
-  WritePostResponse,
 } from '@/types/api/board';
-import { API_ENDPOINT } from '@/constants/api';
+import { API_ENDPOINT, API_FAILED, API_SUCCESS } from '@/constants/api';
 import { HTTPClient, httpClient } from '@/api/httpClient';
 import { BoardFormData } from '@/types/formData.interface';
 
@@ -19,7 +17,7 @@ class BoardService {
 
   async getList(
     boardType: BoardType,
-    pageNumber: number = 1,
+    pageNumber: string,
     config: AxiosRequestConfig = {}
   ) {
     try {
@@ -28,29 +26,29 @@ class BoardService {
         `${endPoint}?page=${pageNumber}`,
         config
       );
-      if (response.status === 'FAILED') {
-        // ...
+      if (response.status === API_FAILED) {
+        return { data: response.data, status: API_FAILED };
       }
-      // ...
+      return { data: response.data, status: API_SUCCESS };
     } catch (error) {
       console.error(error);
     }
   }
   async getPost(
     boardType: BoardType,
-    postId: number,
+    postId: string,
     config: AxiosRequestConfig = {}
   ) {
     try {
       const endPoint = API_ENDPOINT[boardType];
-      const response = await this.httpClient.GET<GetPostResponse>(
+      const response = await this.httpClient.GET<PostResponse>(
         `${endPoint}/${postId}`,
         config
       );
       if (response.status === 'FAILED') {
-        // ...
+        return { data: response.data, status: API_FAILED };
       }
-      // ...
+      return { data: response.data, status: API_SUCCESS };
     } catch (error) {
       console.error(error);
     }
@@ -81,7 +79,7 @@ class BoardService {
   ) {
     try {
       const endPoint = API_ENDPOINT[boardType];
-      const response = await httpClient.POST<BoardFormData, WritePostResponse>(
+      const response = await httpClient.POST<BoardFormData, PostResponse>(
         endPoint,
         formData,
         config
@@ -104,7 +102,7 @@ class BoardService {
       const endPoint = API_ENDPOINT[boardType];
       const response = await this.httpClient.PATCH<
         RequestBody['post'],
-        UpdatePostResponse
+        PostResponse
       >(`${endPoint}/${postId}`, formData, config);
       if (response.status === 'FAILED') {
         // ...
