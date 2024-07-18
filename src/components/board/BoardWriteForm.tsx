@@ -1,26 +1,25 @@
 import { memo, useCallback, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { BoardFormData } from '@/types/formData.interface';
-
+import { boardService } from '@/services/BoardService';
+import { useAuthStore } from '@/store/useAuthStore';
+import { API_FAILED } from '@/constants/api';
 import Input from '../common/Input';
-import Dropdown from '../Dropdown';
 import Button from '../common/Button';
 import CustomReactQuill from '../Editor/CustomReactQuill';
 
 interface BoardWriteFormProps {
   title: string;
 }
-const boardCategoryListArray = ['자유게시판'];
 
 function BoardWriteForm({ title }: BoardWriteFormProps) {
   const [writeFormData, setWriteFormData] = useState<BoardFormData>({
-    category: boardCategoryListArray[0],
     title: '',
     content: '',
-    password: '',
   });
-
+  const { accessToken } = useAuthStore();
+  const navigate = useNavigate();
   const handleChangeText = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.currentTarget;
@@ -28,31 +27,27 @@ function BoardWriteForm({ title }: BoardWriteFormProps) {
     },
     []
   );
-  const handleClickCategory = useCallback(
-    (e: React.MouseEvent<HTMLLIElement>) => {
-      const { innerText } = e.currentTarget;
-      return setWriteFormData((prev) => {
-        if (prev.category === innerText) return prev;
-        return { ...prev, category: innerText };
-      });
-    },
-    []
-  );
+
   const handleChangeQuill = useCallback((value: string) => {
     return setWriteFormData((prev) => ({ ...prev, content: value }));
   }, []);
   const handleSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
+    async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      const { category, title, password, content } = writeFormData;
-      if (title.replace(/\s/g, '').length === 0)
+      if (writeFormData.title.replace(/\s/g, '').length === 0)
         return alert('제목을 입력해주세요.');
-      if (content.replace(/\s/g, '').length === 0)
+      if (writeFormData.content.replace(/\s/g, '').length === 0)
         return alert('내용을 입력해주세요.');
-      alert(`category: ${category}
-    title: ${title}
-    password: ${password}
-    content: ${content}`);
+      const response = await boardService.writePost('FREE', writeFormData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response?.status === API_FAILED)
+        return alert(
+          '통신 중 오류가 발생하였습니다. 잠시후 다시 시도해주세요.'
+        );
+      return navigate('..', { replace: true });
     },
     [writeFormData]
   );
@@ -65,30 +60,13 @@ function BoardWriteForm({ title }: BoardWriteFormProps) {
 
       <div className="mt-3 flex w-full flex-col overflow-hidden rounded-md border border-gray-medium bg-white">
         <div className="border-b border-gray-medium bg-gray-light px-5 py-3">
-          <div className="flex items-center gap-3">
-            <Dropdown
-              className="h-9 border-gray-medium-dark"
-              currentCategory={writeFormData.category}
-              onClick={handleClickCategory}
-              list={boardCategoryListArray}
-            />
-            <div className="flex-1">
-              <Input
-                type="text"
-                className="h-9 w-full border-gray-medium-dark"
-                label="제목"
-                name="title"
-                placeholder="제목을 입력하세요."
-                isHideLabel={true}
-                onChange={handleChangeText}
-              />
-            </div>
+          <div className="w-full">
             <Input
-              type="password"
-              className="h-9 w-[140px] border-gray-medium-dark"
-              label="비밀번호"
-              name="password"
-              placeholder="비밀번호"
+              type="text"
+              className="h-9 w-full border-gray-medium-dark"
+              label="제목"
+              name="title"
+              placeholder="제목을 입력하세요."
               isHideLabel={true}
               onChange={handleChangeText}
             />
