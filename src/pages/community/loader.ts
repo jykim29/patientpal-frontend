@@ -14,3 +14,14 @@ export const listLoader: LoaderFunction = async ({ request }) => {
   if (response?.status === API_FAILED) return null;
   return response?.data;
 };
+
+export const postLoader: LoaderFunction = async ({ params }) => {
+  const accessToken = useAuthStore.getState().accessToken;
+  const postId = params['postId'];
+  if (!postId) return null;
+  const response = await boardService.getPost('FREE', postId, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (response?.status === API_FAILED) return null;
+  return response?.data;
+};

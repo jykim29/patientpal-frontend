@@ -19,6 +19,7 @@ import {
   Forum,
   Notice,
   listLoader,
+  postLoader,
 } from './pages/community';
 import { ChatLobby, ChatRoom } from './pages/chat';
 import { ContractWrite } from './pages/contract';
@@ -86,8 +87,9 @@ function App() {
                       element: <BoardWrite />,
                     },
                     {
-                      path: 'view/:id',
+                      path: 'view/:postId',
                       element: <BoardView />,
+                      loader: postLoader,
                     },
                   ],
                 },
@@ -106,6 +108,7 @@ function App() {
                     {
                       path: 'view/:postId',
                       element: <BoardView />,
+                      loader: postLoader,
                     },
                   ],
                 },
