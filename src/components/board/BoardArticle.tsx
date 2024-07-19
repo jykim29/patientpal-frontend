@@ -38,9 +38,12 @@ export default function BoardArticle() {
       </div>
 
       <div className="mt-3 text-right">
-        <Button type="button" className="mr-2 h-8 bg-gray-medium px-4 py-1">
+        <Link
+          to={`../modify/${id}`}
+          className="mr-2 inline-block h-8 rounded-md bg-gray-medium px-4 py-1 align-top text-text-medium text-white transition-all hover:brightness-[0.95] active:brightness-[1.05]"
+        >
           수정
-        </Button>
+        </Link>
         <Button type="button" className="mr-2 h-8 bg-negative px-4 py-1">
           삭제
         </Button>

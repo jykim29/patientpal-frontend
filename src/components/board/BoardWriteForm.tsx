@@ -1,56 +1,93 @@
-import { memo, useCallback, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useCallback, useEffect } from 'react';
+import { Link, useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { ReactQuillProps } from 'react-quill';
+import { useForm } from 'react-hook-form';
 
-import { BoardFormData } from '@/types/formData.interface';
 import { boardService } from '@/services/BoardService';
 import { useAuthStore } from '@/store/useAuthStore';
 import { API_FAILED } from '@/constants/api';
+import { PostResponse } from '@/types/api/board';
 import Input from '../common/Input';
 import Button from '../common/Button';
 import CustomReactQuill from '../Editor/CustomReactQuill';
 
-function BoardWriteForm({ title }: { title: string }) {
-  const [writeFormData, setWriteFormData] = useState<BoardFormData>({
-    title: '',
-    content: '',
+export default function BoardWriteForm({
+  title,
+  type,
+}: {
+  title: string;
+  type: 'write' | 'modify';
+}) {
+  const loaderData = useLoaderData() as PostResponse;
+  const { setValue, register, handleSubmit } = useForm({
+    defaultValues: {
+      title: loaderData?.title || '',
+      content: loaderData?.content || '',
+    },
+    reValidateMode: 'onSubmit',
   });
   const { accessToken } = useAuthStore();
   const navigate = useNavigate();
+  const { postId } = useParams();
 
-  const handleChangeText = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.currentTarget;
-      return setWriteFormData((prev) => ({ ...prev, [name]: value }));
+  useEffect(() => {
+    register('content', {
+      validate: {
+        required: (value) => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(value, 'text/html');
+          if (doc && doc.body.textContent?.trim().length === 0)
+            return '내용을 입력해주세요.';
+          return true;
+        },
+      },
+    });
+  }, []);
+  const handleChangeQuill = useCallback<Required<ReactQuillProps>['onChange']>(
+    (value) => {
+      return setValue('content', value);
     },
     []
   );
-  const handleChangeQuill = useCallback((value: string) => {
-    return setWriteFormData((prev) => ({ ...prev, content: value }));
-  }, []);
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      if (writeFormData.title.replace(/\s/g, '').length === 0)
-        return alert('제목을 입력해주세요.');
-      if (writeFormData.content.replace(/\s/g, '').length === 0)
-        return alert('내용을 입력해주세요.');
 
-      const response = await boardService.writePost('FREE', writeFormData, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (response?.status === API_FAILED)
-        return alert(
-          '통신 중 오류가 발생하였습니다. 잠시후 다시 시도해주세요.'
-        );
-      return navigate('..', { replace: true });
-    },
-    [writeFormData]
-  );
+  const submitCallback = async ({
+    title,
+    content,
+  }: {
+    title: string;
+    content: string;
+  }) => {
+    let response = null;
+    const axiosConfig = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+    if (type === 'write')
+      response = await boardService.writePost(
+        'FREE',
+        { title, content },
+        axiosConfig
+      );
+    if (type === 'modify' && postId)
+      response = await boardService.updatePost(
+        'FREE',
+        postId,
+        { title, content },
+        axiosConfig
+      );
+    if (response?.status === API_FAILED)
+      return alert('통신 중 오류가 발생하였습니다. 잠시후 다시 시도해주세요.');
+    return navigate('..', { replace: true });
+  };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={handleSubmit(submitCallback, (errors) => {
+        if (errors.title) return alert(errors.title.message);
+        if (errors.content) return alert(errors.content.message);
+      })}
+    >
       <div className="flex w-full items-center justify-between">
         <h3 className="text-title-small">{title}</h3>
       </div>
@@ -58,14 +95,17 @@ function BoardWriteForm({ title }: { title: string }) {
       <div className="mt-3 flex w-full flex-col overflow-hidden rounded-md border border-gray-medium bg-white">
         <div className="border-b border-gray-medium bg-gray-light px-5 py-3">
           <div className="w-full">
+            <label className="sr-only" htmlFor="title">
+              제목
+            </label>
             <Input
               type="text"
-              className="h-9 w-full border-gray-medium-dark"
-              label="제목"
-              name="title"
+              id="title"
+              className="h-9 w-full"
               placeholder="제목을 입력하세요."
-              isHideLabel={true}
-              onChange={handleChangeText}
+              {...register('title', {
+                required: '제목을 입력해주세요.',
+              })}
             />
           </div>
           <p className="mt-2 text-text-small text-gray-medium-dark">
@@ -78,7 +118,10 @@ function BoardWriteForm({ title }: { title: string }) {
         </div>
 
         <div>
-          <CustomReactQuill onChange={handleChangeQuill} />
+          <CustomReactQuill
+            onChange={handleChangeQuill}
+            defaultValue={loaderData?.content}
+          />
         </div>
       </div>
 
@@ -96,5 +139,3 @@ function BoardWriteForm({ title }: { title: string }) {
     </form>
   );
 }
-
-export default memo(BoardWriteForm);

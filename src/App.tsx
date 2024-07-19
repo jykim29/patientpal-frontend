@@ -20,6 +20,7 @@ import {
   Notice,
   listLoader,
   postLoader,
+  BoardModify,
 } from './pages/community';
 import { ChatLobby, ChatRoom } from './pages/chat';
 import { ContractWrite } from './pages/contract';
@@ -87,6 +88,11 @@ function App() {
                       element: <BoardWrite />,
                     },
                     {
+                      path: 'modify/:postId',
+                      element: <BoardModify />,
+                      loader: postLoader,
+                    },
+                    {
                       path: 'view/:postId',
                       element: <BoardView />,
                       loader: postLoader,
@@ -104,6 +110,11 @@ function App() {
                     {
                       path: 'post',
                       element: <BoardWrite />,
+                    },
+                    {
+                      path: 'modify/:postId',
+                      element: <BoardModify />,
+                      loader: postLoader,
                     },
                     {
                       path: 'view/:postId',

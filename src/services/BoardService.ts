@@ -94,7 +94,7 @@ class BoardService {
   }
   async updatePost(
     boardType: BoardType,
-    postId: number,
+    postId: string,
     formData: BoardFormData,
     config: AxiosRequestConfig = {}
   ) {
@@ -105,9 +105,9 @@ class BoardService {
         PostResponse
       >(`${endPoint}/${postId}`, formData, config);
       if (response.status === 'FAILED') {
-        // ...
+        return { data: response.data, status: API_FAILED };
       }
-      // ...
+      return { data: response.data, status: API_SUCCESS };
     } catch (error) {
       console.error(error);
     }
