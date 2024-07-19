@@ -34,13 +34,13 @@ export default function BoardArticle() {
           <span className="relative px-3 after:absolute after:-right-[2px] after:top-1/2 after:-translate-y-1/2 after:text-text-small after:text-gray-medium after:content-['|']">
             <span className="mr-2">작성일</span>
             <time className="text-gray-medium-dark" dateTime={createdAt}>
-              {`${convertDatetime(new Date(createdAt))[0]} ${convertDatetime(new Date(createdAt))[1]}`}
+              {`${convertDatetime(createdAt)[0]} ${convertDatetime(createdAt)[1]}`}
             </time>
           </span>
           <span className="relative px-3">
             <span className="mr-2">수정일</span>
             <time className="text-gray-medium-dark" dateTime={updatedAt}>
-              {`${convertDatetime(new Date(updatedAt))[0]} ${convertDatetime(new Date(updatedAt))[1]}`}
+              {`${convertDatetime(updatedAt)[0]} ${convertDatetime(updatedAt)[1]}`}
             </time>
           </span>
         </div>

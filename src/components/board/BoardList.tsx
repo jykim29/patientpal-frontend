@@ -31,7 +31,12 @@ export default function BoardList({ title }: { title: string }) {
           <span className="board-views">조회수</span>
         </li>
         {loaderData.content.map((data) => {
-          const convertedDate = convertDatetime(new Date(data.createdAt))[0];
+          let convertedDate = convertDatetime(data.createdAt)[0];
+          if (
+            convertDatetime(data.createdAt)[0] ===
+            convertDatetime(Date.now())[0]
+          )
+            convertedDate = convertDatetime(data.createdAt)[1];
           return (
             <li key={data.id} className="board-item board-body">
               <span className="board-id">{data.id}</span>

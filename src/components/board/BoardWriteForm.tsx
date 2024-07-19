@@ -128,12 +128,12 @@ export default function BoardWriteForm({
       <div className="mt-3 text-right">
         <Link
           to={'..'}
-          className="mr-2 inline-block h-8 rounded-md bg-gray-medium px-4 py-1 align-top text-text-medium text-white transition-all hover:brightness-[0.95] active:brightness-[1.05]"
+          className="mr-2 inline-block h-8 rounded-md bg-negative px-4 py-1 align-top text-text-medium text-white transition-all hover:brightness-[0.95] active:brightness-[1.05]"
         >
           취소
         </Link>
         <Button type="submit" className="h-8 px-4 py-1">
-          글쓰기
+          {type === 'write' ? '완료' : '수정'}
         </Button>
       </div>
     </form>

@@ -5,7 +5,7 @@ import { convertDatetime } from '@/utils/convertDatetime';
 import FormAlertErrorBox from '../auth/FormAlertErrorBox';
 
 const initialContractFormData: ContractFormData = {
-  startDate: convertDatetime(new Date())[0],
+  startDate: convertDatetime(new Date().getTime())[0],
   endDate: '',
   days: [],
   startTime: '0',
