@@ -1,14 +1,28 @@
-import { Link, useLoaderData } from 'react-router-dom';
+import { Link, useLoaderData, useNavigate } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 
 import { PostResponse } from '@/types/api/board';
 import { convertDatetime } from '@/utils/convertDatetime';
+import { boardService } from '@/services/BoardService';
+import { useAuthStore } from '@/store/useAuthStore';
+import { API_FAILED } from '@/constants/api';
+
 import Button from '../common/Button';
 
 export default function BoardArticle() {
   const { title, content, name, id, createdAt, updatedAt, memberId, postType } =
     useLoaderData() as PostResponse;
+  const { accessToken } = useAuthStore();
+  const navigate = useNavigate();
 
+  const handleDeletePost = async () => {
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+    const response = await boardService.deletePost('FREE', id, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    if (response?.status === API_FAILED) return alert('통신 실패');
+    return navigate('../', { replace: true });
+  };
   return (
     <>
       <div className="mt-3 flex w-full flex-col overflow-hidden rounded-md border border-gray-medium bg-white">
@@ -44,7 +58,11 @@ export default function BoardArticle() {
         >
           수정
         </Link>
-        <Button type="button" className="mr-2 h-8 bg-negative px-4 py-1">
+        <Button
+          type="button"
+          className="mr-2 h-8 bg-negative px-4 py-1"
+          onClick={handleDeletePost}
+        >
           삭제
         </Button>
         <Link

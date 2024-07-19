@@ -65,9 +65,9 @@ class BoardService {
         config
       );
       if (response.status === 'FAILED') {
-        // ...
+        return { data: response.data, status: API_FAILED };
       }
-      // ...
+      return { data: response.data, status: API_SUCCESS };
     } catch (error) {
       console.error(error);
     }
