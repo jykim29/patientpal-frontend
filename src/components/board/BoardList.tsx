@@ -38,7 +38,7 @@ export default function BoardList({ title }: { title: string }) {
               <div className="board-subject">
                 <Link to={`view/${data.id}`}>
                   <span>{data.title}</span>
-                  <span className="board-comments-count">[1]</span>
+                  {/* <span className="board-comments-count">[1]</span> */}
                 </Link>
               </div>
               <span className="board-author">{data.name}</span>

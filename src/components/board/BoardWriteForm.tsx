@@ -9,17 +9,14 @@ import Input from '../common/Input';
 import Button from '../common/Button';
 import CustomReactQuill from '../Editor/CustomReactQuill';
 
-interface BoardWriteFormProps {
-  title: string;
-}
-
-function BoardWriteForm({ title }: BoardWriteFormProps) {
+function BoardWriteForm({ title }: { title: string }) {
   const [writeFormData, setWriteFormData] = useState<BoardFormData>({
     title: '',
     content: '',
   });
   const { accessToken } = useAuthStore();
   const navigate = useNavigate();
+
   const handleChangeText = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.currentTarget;
@@ -27,7 +24,6 @@ function BoardWriteForm({ title }: BoardWriteFormProps) {
     },
     []
   );
-
   const handleChangeQuill = useCallback((value: string) => {
     return setWriteFormData((prev) => ({ ...prev, content: value }));
   }, []);
@@ -38,6 +34,7 @@ function BoardWriteForm({ title }: BoardWriteFormProps) {
         return alert('제목을 입력해주세요.');
       if (writeFormData.content.replace(/\s/g, '').length === 0)
         return alert('내용을 입력해주세요.');
+
       const response = await boardService.writePost('FREE', writeFormData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,

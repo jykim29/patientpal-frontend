@@ -1,4 +1,5 @@
 import { Link, useLoaderData } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 
 import { PostResponse } from '@/types/api/board';
 import { convertDatetime } from '@/utils/convertDatetime';
@@ -30,7 +31,10 @@ export default function BoardArticle() {
           </span>
         </div>
 
-        <div className="px-7 py-10">{content}</div>
+        <div
+          className="break-all px-7 py-10"
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }}
+        ></div>
       </div>
 
       <div className="mt-3 text-right">
