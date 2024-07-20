@@ -17,7 +17,7 @@ import { loader as forumLoader } from './components/board/BoardList';
 import { ChatLobby, ChatRoom } from './pages/chat';
 import { ContractWrite } from './pages/contract';
 import MyPage from './pages/mypage/MyPage';
-import ModifyPage from './pages/mypage/ModifyPage';
+import ProfilePage from './pages/mypage/ProfilePage';
 import MatchRecordPage from './pages/mypage/MatchRecordPage';
 import ReviewPage from './pages/mypage/ReviewPage';
 import MyPageLayout from './components/layout/MyPageLayout';
@@ -109,7 +109,7 @@ function App() {
             },
             {
               path: 'profile',
-              element: <ModifyPage />,
+              element: <ProfilePage />,
             },
             {
               path: 'match-record',
