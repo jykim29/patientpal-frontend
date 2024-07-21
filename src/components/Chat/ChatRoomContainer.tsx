@@ -122,7 +122,6 @@ function MessengerBody({ children }: { children: React.ReactNode }) {
 }
 
 function ChatList() {
-  console.log('ChatList 렌더링');
   return (
     <ul className="flex max-h-[500px] flex-col items-center gap-7 overflow-y-auto px-6 py-8">
       {dummyChatData.map(
@@ -196,13 +195,15 @@ function MessageForm() {
         accept=".jpg, .png"
       />
       <div className="flex-1">
+        <label className="sr-only" htmlFor="message">
+          메세지
+        </label>
         <Input
+          id="message"
           className="w-full border-gray-light-medium py-2.5"
           type="text"
-          label="메세지"
           name="message"
           placeholder="메세지 입력"
-          isHideLabel
         />
       </div>
       <Button type="submit" className="bg-primary px-2.5 py-3">

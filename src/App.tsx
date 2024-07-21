@@ -13,8 +13,15 @@ import SearchPage from './pages/SearchPage';
 import MainLayout from './components/layout/MainLayout';
 import Home from './pages/Home';
 import { SignIn, SignUp } from './pages/auth';
-import { BoardWrite, BoardView, Forum, Notice } from './pages/community';
-import { loader as forumLoader } from './components/board/BoardList';
+import {
+  BoardWrite,
+  BoardView,
+  Forum,
+  Notice,
+  listLoader,
+  postLoader,
+  BoardModify,
+} from './pages/community';
 import { ChatLobby, ChatRoom } from './pages/chat';
 import { ContractWrite } from './pages/contract';
 import MyPage from './pages/mypage/MyPage';
@@ -74,15 +81,21 @@ function App() {
                     {
                       index: true,
                       element: <Forum title="자유게시판" />,
-                      loader: forumLoader,
+                      loader: listLoader,
                     },
                     {
                       path: 'post',
                       element: <BoardWrite />,
                     },
                     {
-                      path: 'view/:id',
+                      path: 'modify/:postId',
+                      element: <BoardModify />,
+                      loader: postLoader,
+                    },
+                    {
+                      path: 'view/:postId',
                       element: <BoardView />,
+                      loader: postLoader,
                     },
                   ],
                 },
@@ -92,15 +105,21 @@ function App() {
                     {
                       index: true,
                       element: <Notice title="공지사항" />,
-                      loader: forumLoader,
+                      loader: listLoader,
                     },
                     {
                       path: 'post',
                       element: <BoardWrite />,
                     },
                     {
+                      path: 'modify/:postId',
+                      element: <BoardModify />,
+                      loader: postLoader,
+                    },
+                    {
                       path: 'view/:postId',
                       element: <BoardView />,
+                      loader: postLoader,
                     },
                   ],
                 },

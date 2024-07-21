@@ -1,12 +1,16 @@
 import { memo, useMemo, useRef } from 'react';
-import ReactQuill from 'react-quill';
+import ReactQuill, { ReactQuillProps } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 interface CustomReactQuillProps {
-  onChange: (value: string) => void;
+  onChange: ReactQuillProps['onChange'];
+  defaultValue?: string;
 }
 
-function CustomReactQuill({ onChange: handleChange }: CustomReactQuillProps) {
+function CustomReactQuill({
+  onChange,
+  defaultValue = '',
+}: CustomReactQuillProps) {
   const quillRef = useRef<ReactQuill>(null);
   const modules = useMemo(
     () => ({
@@ -30,8 +34,9 @@ function CustomReactQuill({ onChange: handleChange }: CustomReactQuillProps) {
     <ReactQuill
       ref={quillRef}
       placeholder="내용을 입력하세요."
-      onChange={handleChange}
+      onChange={onChange}
       modules={modules}
+      defaultValue={defaultValue}
     />
   );
 }

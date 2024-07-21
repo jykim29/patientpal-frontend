@@ -1,9 +1,9 @@
 import { BoardWriteForm } from '@/components/board';
 
-export default function BoardWrite() {
+export default function BoardModify() {
   return (
     <section>
-      <BoardWriteForm title="글쓰기" type="write" />
+      <BoardWriteForm title="수정하기" type="modify" />
     </section>
   );
 }

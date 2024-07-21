@@ -17,9 +17,7 @@ export interface SignInFormData {
 }
 
 export interface BoardFormData {
-  category: string;
   title: string;
-  password: string;
   content: string;
 }
 

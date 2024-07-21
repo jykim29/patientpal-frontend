@@ -23,7 +23,7 @@ export default function ChatRoomCard({
   return (
     <Link
       className="rounded-2xl border border-tertiary bg-white p-10 px-7 py-6 shadow-[0px_0px_8px_4px_#a2bffe40] transition-all hover:bg-blue-100"
-      to={`../room/${roomId}`}
+      to={`../chat/room/${roomId}`}
     >
       <li className="flex items-center gap-5">
         <img

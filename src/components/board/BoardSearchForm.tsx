@@ -51,12 +51,14 @@ function BoardSearchForm({ categoryList }: BoardSearchFormProps) {
         currentCategory={searchFormData.category}
         onClick={handleClickCategory}
       />
+      <label className="sr-only" htmlFor="keyword">
+        검색어
+      </label>
       <Input
-        label="검색어"
+        id="keyword"
         name="keyword"
         placeholder="검색어 입력"
         value={searchFormData.keyword}
-        isHideLabel={true}
         onChange={handleChangeKeyword}
       />
       <Button className="px-4 py-1" type="submit">

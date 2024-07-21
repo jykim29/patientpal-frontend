@@ -1,49 +1,41 @@
-import { HTMLInputTypeAttribute, memo, useCallback, useState } from 'react';
+import {
+  forwardRef,
+  HTMLInputTypeAttribute,
+  LegacyRef,
+  memo,
+  useCallback,
+  useState,
+} from 'react';
 import { twMerge } from 'tailwind-merge';
 
 interface InputProps {
   className?: string;
-  label: string;
   type?: HTMLInputTypeAttribute;
-  name: string;
-  placeholder?: string;
-  isHideLabel?: boolean;
   [key: string]: any;
 }
 
-function Input({
-  className = '',
-  label,
-  type = 'text',
-  name,
-  placeholder = '',
-  isHideLabel = false,
-  ...restProps
-}: InputProps) {
+const Input = forwardRef(function Input(
+  { className = '', type = 'text', ...restProps }: InputProps,
+  ref?: LegacyRef<HTMLInputElement>
+) {
   const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
   let inputType = type;
   if (type === 'password') inputType = isShowPassword ? 'text' : 'password';
   const combinedInputClassName = twMerge(
-    'w-[180px] rounded-lg border border-black pl-2 pr-9  py-0.5 shadow-[0_0_0_0.5px_#000] outline-none focus-visible:border-secondary focus-visible:shadow-[0_0_0_0.5px_#6495ED]',
+    'w-[180px] rounded-lg border border-black pl-2 pr-9  py-0.5 shadow-[0_0_0_0.3px_#000] outline-none focus-visible:border-secondary focus-visible:shadow-[0_0_0_0.5px_#6495ED]',
     className
   );
   const handleClick = useCallback(() => {
     setIsShowPassword((prev) => !prev);
   }, []);
   return (
-    <div className="relative flex items-center gap-2">
-      <label className={`${twMerge(isHideLabel && 'sr-only')}`} htmlFor={name}>
-        {label}
-      </label>
+    <div className="relative">
       <input
         type={inputType}
         className={combinedInputClassName}
-        id={name}
-        name={name}
-        placeholder={placeholder}
+        ref={ref}
         {...restProps}
       />
-
       {type === 'password' && (
         <button
           title={isShowPassword ? '비밀번호 숨기기' : '비밀번호 표시'}
@@ -54,6 +46,6 @@ function Input({
       )}
     </div>
   );
-}
+});
 
 export default memo(Input);
