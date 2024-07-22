@@ -120,3 +120,39 @@ export const modifyPatientProfile = async (
 
   return { data, status };
 };
+
+export const addPatientToMatchList = async (
+  memberId: string,
+  token: string,
+  config = {}
+) => {
+  const { data, status } = await httpClient.POST(
+    API_ENDPOINT.PATIENT.PROFILE.REGISTER(memberId),
+    {
+      ...config,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return { data, status };
+};
+
+export const addCaregiverToMatchList = async (
+  memberId: string,
+  token: string,
+  config = {}
+) => {
+  const { data, status } = await httpClient.POST(
+    API_ENDPOINT.CAREGIVER.PROFILE.REGISTER(memberId),
+    {
+      ...config,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return { data, status };
+};
