@@ -17,9 +17,7 @@ export interface SignInFormData {
 }
 
 export interface BoardFormData {
-  category: string;
   title: string;
-  password: string;
   content: string;
 }
 
@@ -34,4 +32,14 @@ export interface SearchFormData {
 export interface SearchMapFormData {
   city: string;
   district: string;
+}
+
+export interface ContractFormData {
+  startDate: string;
+  endDate: string;
+  days: string[];
+  startTime: string;
+  endTime: string;
+  location: 'home' | 'hospital';
+  etc: string;
 }
