@@ -1,0 +1,39 @@
+input[type='date'] {
+  /* // 캘린더 아이콘을 클릭해야만 달력이 보이는데 캘린더의 영역을 조절하기위함 */
+  position: relative;
+  /* // 배경에 원하는 아이콘 삽입 */
+
+  padding-right: 10px;
+  /* // 글자색 변경 */
+  color: #858585;
+}
+
+input[type='date']::-webkit-clear-button,
+input[type='date']::-webkit-inner-spin-button {
+  display: none;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator {
+  position: absolute;
+
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+
+  background: transparent;
+  color: transparent;
+}
+
+input[type='date']::before {
+  /* // html의 data-placeholder 속성에서 값을 받아와 content에 삽입
+  // -> placeholder는 작동안하고 data-placeholder로 값을 지정해야함 */
+  content: attr(data-placeholder);
+  width: 100%;
+}
+
+input[type='date']:focus::before,
+/* // 유효값이 입력된 경우 before에 있는 것을 없애준다. */
+input[type='date']:valid::before {
+  display: none;
+}
