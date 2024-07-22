@@ -14,14 +14,15 @@ export const useProfile = () => {
   if (!token) {
     return { message: '토큰이 없습니다', status: API_FAILED };
   }
-  //role 가져오는
-  const [role, setRole] = useState<'patient' | 'caregiver'>('patient');
+  //현재 role은 임의로 설정 -> 추후 토큰에서 제공하는 role 가져올 예정
+  const [role, setRole] = useState<'patient' | 'caregiver'>('caregiver');
 
   const registerCaregiver = async (userInputData: ICaregiverData) => {
     if (localStorage.getItem('memberId')) return;
     const res = await createCaregiverProfile(userInputData, token);
 
     if (res.status === 'SUCCESS') {
+      //memberId를 localstorage에 보관중 로그아웃시 초기화하는 기능 추가 필요
       localStorage.setItem('memberId', res.data['memberId']);
     }
     return res;
