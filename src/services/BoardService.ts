@@ -79,7 +79,7 @@ class BoardService {
   ) {
     try {
       const endPoint = API_ENDPOINT[boardType];
-      const response = await httpClient.POST<BoardFormData, PostResponse>(
+      const response = await this.httpClient.POST<BoardFormData, PostResponse>(
         endPoint,
         formData,
         config
