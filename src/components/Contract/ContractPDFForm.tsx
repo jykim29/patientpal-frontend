@@ -33,7 +33,7 @@ export default function ContractPDFForm() {
               <td>페이션트팔</td>
             </tr>
             <tr>
-              <th rowSpan={5}>간병인</th>
+              <th rowSpan={3}>간병인</th>
               <th>성명</th>
               <td></td>
             </tr>
@@ -45,14 +45,7 @@ export default function ContractPDFForm() {
               <th>주소</th>
               <td></td>
             </tr>
-            <tr>
-              <th>관련 자격</th>
-              <td></td>
-            </tr>
-            <tr>
-              <th>간병 교육 이수</th>
-              <td></td>
-            </tr>
+
             <tr>
               <th rowSpan={5}>구인자</th>
               <th>성명</th>
@@ -109,10 +102,9 @@ export default function ContractPDFForm() {
             서를 작성하여야 한다.
           </p>
           <ol className="contract-terms-list decimal">
-            <li>간병기간 및 시간</li>
+            <li>간병 기간</li>
             <li>간병 장소</li>
-            <li>간병 요금, 지불 방식</li>
-            <li>간병인의 휴게시간</li>
+            <li>간병 요금</li>
             <li>
               기타 사항 : 공휴일·명절 간병 시 요금, 휴일(유급 또는 무급), 식비,
               중개수수료, 현금영 수증 발급 여부 등
@@ -136,33 +128,17 @@ export default function ContractPDFForm() {
           <table className="contract-form-table">
             <tbody>
               <tr>
-                <th className="divided-left" rowSpan={2}>
-                  간병 기간
-                </th>
-                <th className="divided-right">기한 없음</th>
+                <th className="divided-left">기 간</th>
                 <td>
-                  <p>2024. 07. 01 부터 개시</p>
-                  <p>주 5일 : 월, 화, 수, 목, 금</p>
+                  <p>2024. 07. 01 ~ 2024. 10. 31</p>
                 </td>
               </tr>
               <tr>
-                <th className="divided-right">기한 있음</th>
+                <th>장 소</th>
                 <td></td>
               </tr>
               <tr>
-                <th colSpan={2}>간병시간</th>
-                <td></td>
-              </tr>
-              <tr>
-                <th colSpan={2}>간병장소</th>
-                <td></td>
-              </tr>
-              <tr>
-                <th colSpan={2}>휴게시간</th>
-                <td></td>
-              </tr>
-              <tr>
-                <th colSpan={2}>간병요금 지불방법</th>
+                <th>요 금</th>
                 <td></td>
               </tr>
             </tbody>
@@ -171,16 +147,11 @@ export default function ContractPDFForm() {
 
         <div>
           <span>
-            <strong>[기타 사항]</strong>
+            <strong>[특이 사항]</strong>
           </span>
           <table className="contract-etc-table">
             <tbody>
               <tr>
-                <th>간병인</th>
-                <td></td>
-              </tr>
-              <tr>
-                <th>구인자</th>
                 <td></td>
               </tr>
             </tbody>
@@ -317,9 +288,9 @@ export default function ContractPDFForm() {
 
         <div className="contract-footer">
           <p>작성일자 : 2024년 06월 21일</p>
-          <p>중개업체 : 페이션트팔 (인)</p>
-          <p>간병인 : 김 간 병 (인)</p>
-          <p>구인자 : 김 환 자 (인)</p>
+          <p>중개업체 : 페이션트팔</p>
+          <p>간병인 : 김 간 병</p>
+          <p>구인자 : 김 환 자</p>
         </div>
       </div>
     </div>
