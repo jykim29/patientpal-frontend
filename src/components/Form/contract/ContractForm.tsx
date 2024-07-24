@@ -19,7 +19,7 @@ const initialContractFormData: ContractFormData = {
     totalAmount: 0,
     significant: '',
     realCarePlace: 'home',
-    nok: '0',
+    nok: 'false',
   },
   CAREGIVER: {
     careStartDateTime: convertDatetime(new Date().getTime())[0],
@@ -57,37 +57,30 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
   const navigate = useNavigate();
   const errorMessageArray = Object.values(errors).map(({ message }) => message);
 
-  const submitCallback = async (data: any) => {
+  const submitCallback = async (
+    data: ContractFormData['USER'] | ContractFormData['CAREGIVER']
+  ) => {
     if (memberId === '') return;
     if (!confirm('정말 전송하시겠습니까?')) return;
-    const {
-      careStartDateTime,
-      careEndDateTime,
-      nok,
-      totalAmount,
-      significant,
-      realCarePlace,
-    } = data;
     if (
-      new Date(careEndDateTime).getTime() -
-        new Date(careStartDateTime).getTime() <
+      new Date(data.careEndDateTime).getTime() -
+        new Date(data.careStartDateTime).getTime() <
       0
     )
       return setError('root', {
         message: '시작 날짜와 종료 날짜가 올바르지 않습니다.',
       });
-    let requestBody: SendRequestBody['USER'] | SendRequestBody['CAREGIVER'] = {
-      careStartDateTime: new Date(careStartDateTime).toISOString(),
-      careEndDateTime: new Date(careEndDateTime).toISOString(),
-      totalAmount: Number(totalAmount),
-      significant: significant,
-    };
-    if (TEMP_ROLE === 'USER')
-      requestBody = {
-        ...requestBody,
-        realCarePlace: realCarePlace,
-        nok: !!Number(nok),
+    const requestBody: SendRequestBody['USER'] | SendRequestBody['CAREGIVER'] =
+      {
+        ...data,
+        careStartDateTime: new Date(data.careStartDateTime).toISOString(),
+        careEndDateTime: new Date(data.careEndDateTime).toISOString(),
+        totalAmount: Number(data.totalAmount),
       };
+    if (TEMP_ROLE === 'USER')
+      (requestBody as SendRequestBody['USER']).nok = JSON.parse(
+        (data as ContractFormData['USER']).nok
+      );
 
     const response = await matchService.sendContract(
       TEMP_ROLE,
@@ -118,29 +111,29 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
         <div className="w-full rounded-lg border border-tertiary px-6 py-4">
           {/* 관계 */}
           {TEMP_ROLE === 'USER' && (
-            <div role="group" className="field-group row">
+            <div className="field-group row">
               <span className="label">계약자와의 관계</span>
               <input
                 type="radio"
                 id="me"
-                value={0}
+                value="false"
                 {...register('nok', {
                   validate: {
                     isValidValue: (value) => {
-                      if (value === '0' || value === '1') return true;
+                      if (value === 'true' || value === 'false') return true;
                       return '정상적인 값이 아닙니다.';
                     },
                   },
                 })}
               />
               <label htmlFor="me">본인</label>
-              <input type="radio" id="nok" value={1} {...register('nok')} />
+              <input type="radio" id="nok" value="true" {...register('nok')} />
               <label htmlFor="nok">보호자</label>
             </div>
           )}
 
           {/* 기간 */}
-          <div role="group" className="field-group row mt-3">
+          <div className="field-group row mt-3">
             <span className="label">기 간</span>
             <label htmlFor="startDate" className="sr-only">
               시작 날짜
@@ -179,12 +172,11 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
                 },
               })}
             />
-            <span className="text-text-small text-negative">(총 00일)</span>
           </div>
 
           {/* 장소 */}
           {TEMP_ROLE === 'USER' && (
-            <div role="group" className="field-group row mt-3">
+            <div className="field-group row mt-3">
               <span className="label">장 소</span>
               <input
                 type="radio"
@@ -211,7 +203,7 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
           )}
 
           {/* 금액 */}
-          <div role="group" className="field-group row mt-3">
+          <div className="field-group row mt-3">
             <span className="label">금 액</span>
             <label className="sr-only" htmlFor="totalAmount">
               금액
@@ -236,7 +228,7 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
           </div>
 
           {/* 특이사항 */}
-          <div role="group" className="field-group col mt-3">
+          <div className="field-group col mt-3">
             <span className="label">특이사항</span>
             <label htmlFor="significant" className="sr-only">
               특이사항

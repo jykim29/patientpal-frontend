@@ -41,7 +41,7 @@ export interface ContractFormData {
     totalAmount: number;
     significant: string;
     realCarePlace: string;
-    nok: '0' | '1';
+    nok: 'true' | 'false';
   };
   CAREGIVER: {
     careStartDateTime: string;
