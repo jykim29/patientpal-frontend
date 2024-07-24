@@ -1,4 +1,6 @@
+import { Navigate } from 'react-router-dom';
 import { GetMatchUserInfoResponse } from '@/types/api/match';
+import { validateObject } from '@/utils/validateObject';
 
 export default function ContractUserInfo({
   matchUserInfo,
@@ -19,7 +21,11 @@ export default function ContractUserInfo({
     patientContact,
     patientSignificant,
   } = matchUserInfo;
-
+  const isValidInfo = validateObject(matchUserInfo);
+  if (!isValidInfo) {
+    alert('프로필을 등록하지 않은 사용자입니다.');
+    return <Navigate to={'/'} replace />;
+  }
   return (
     <>
       <p className="my-2 text-text-large font-semibold">1. 인적사항 확인</p>
@@ -66,7 +72,7 @@ export default function ContractUserInfo({
             </li>
             <li className="field-group row border-b border-b-gray-light-medium">
               <span className="label">주 소</span>
-              <span>{`${caregiverAddress.addr}, ${caregiverAddress.addrDetail}`}</span>
+              <span>{`${caregiverAddress?.addr}, ${caregiverAddress?.addrDetail}`}</span>
             </li>
             <li className="field-group row border-b border-b-gray-light-medium">
               <span className="label">연락처</span>
