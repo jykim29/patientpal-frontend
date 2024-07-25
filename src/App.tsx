@@ -151,7 +151,7 @@ function App() {
                   element: <div>my contract</div>,
                 },
                 {
-                  path: 'contract/write/:id',
+                  path: 'contract/write/:memberId',
                   element: <ContractWrite />,
                 },
                 {

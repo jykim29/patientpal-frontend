@@ -49,7 +49,7 @@ export class HTTPClient {
    * @param config Axios config
    * @returns
    */
-  async POST<T, U>(
+  async POST<T, U = any>(
     url: string,
     data: T,
     config: AxiosRequestConfig = {}

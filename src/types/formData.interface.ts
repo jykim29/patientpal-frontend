@@ -35,11 +35,18 @@ export interface SearchMapFormData {
 }
 
 export interface ContractFormData {
-  startDate: string;
-  endDate: string;
-  days: string[];
-  startTime: string;
-  endTime: string;
-  location: 'home' | 'hospital';
-  etc: string;
+  USER: {
+    careStartDateTime: string;
+    careEndDateTime: string;
+    totalAmount: number;
+    significant: string;
+    realCarePlace: string;
+    nok: 'true' | 'false';
+  };
+  CAREGIVER: {
+    careStartDateTime: string;
+    careEndDateTime: string;
+    totalAmount: number;
+    significant: string;
+  };
 }
