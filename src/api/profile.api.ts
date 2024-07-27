@@ -156,3 +156,39 @@ export const addCaregiverToMatchList = async (
 
   return { data, status };
 };
+
+export const removePatientFromMatchList = async (
+  memberId: string,
+  token: string,
+  config = {}
+) => {
+  const { data, status } = await httpClient.POST(
+    API_ENDPOINT.PATIENT.PROFILE.UNREGISTER(memberId),
+    {
+      ...config,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return { data, status };
+};
+
+export const removeCaregiverFromMatchList = async (
+  memberId: string,
+  token: string,
+  config = {}
+) => {
+  const { data, status } = await httpClient.POST(
+    API_ENDPOINT.CAREGIVER.PROFILE.UNREGISTER(memberId),
+    {
+      ...config,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return { data, status };
+};
