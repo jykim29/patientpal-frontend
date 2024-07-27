@@ -7,6 +7,9 @@ import svgrPlugin from 'vite-plugin-svgr';
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
   return {
+    define: {
+      global: {},
+    },
     plugins: [react(), svgrPlugin()],
     server: {
       port: 3000,
