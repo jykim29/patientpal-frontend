@@ -50,13 +50,6 @@ const patientInfoList: IUserInfo[] = [
     type: 'address',
   },
   {
-    label: '경력',
-    key: 'experienceYears',
-    value: '',
-    placeholder: '경력을 입력해주세요',
-    type: 'text',
-  },
-  {
     label: '상세 주소',
     key: 'address.addrDetail',
     value: '',
