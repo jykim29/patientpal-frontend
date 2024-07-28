@@ -147,10 +147,6 @@ function App() {
                   element: <ChatRoom />,
                 },
                 {
-                  path: 'contract',
-                  element: <div>my contract</div>,
-                },
-                {
                   path: 'contract/write/:memberId',
                   element: <ContractWrite />,
                 },
