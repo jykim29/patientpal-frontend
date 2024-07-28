@@ -18,7 +18,7 @@ class MathService {
   }
 
   async getMatchUserInfo(
-    memberId: string,
+    memberId: number,
     config: AxiosRequestConfig = {}
   ): Promise<FetchResult<GetMatchUserInfoResponse>> {
     const response = await this.httpClient.GET<GetMatchUserInfoResponse>(
@@ -32,7 +32,7 @@ class MathService {
 
   async sendContract(
     myRole: UserRole,
-    memberId: string,
+    memberId: number,
     data: SendRequestBody['USER'] | SendRequestBody['CAREGIVER'],
     config: AxiosRequestConfig = {}
   ): Promise<FetchResult<SendContractResponse>> {
@@ -49,7 +49,7 @@ class MathService {
     return { data: response.data, status: API_SUCCESS };
   }
 
-  async acceptContract(matchId: string, config: AxiosRequestConfig = {}) {
+  async acceptContract(matchId: number, config: AxiosRequestConfig = {}) {
     const response = await this.httpClient.POST<null>(
       API_ENDPOINT.MATCH.ACCEPT(matchId),
       null,
@@ -60,7 +60,7 @@ class MathService {
     return { data: response.data, status: API_SUCCESS };
   }
 
-  async cancelContract(matchId: string, config: AxiosRequestConfig = {}) {
+  async cancelContract(matchId: number, config: AxiosRequestConfig = {}) {
     const response = await this.httpClient.POST<null>(
       API_ENDPOINT.MATCH.CANCEL(matchId),
       null,
@@ -72,11 +72,11 @@ class MathService {
   }
 
   async getSendContractList(
-    memberId: string,
+    memberId: number,
     page: number = 0,
     size: number = 10,
     config: AxiosRequestConfig = {}
-  ) {
+  ): Promise<FetchResult<GetContractListResponse>> {
     const response = await this.httpClient.GET<GetContractListResponse>(
       `${API_ENDPOINT.MATCH.REQUEST(memberId)}?page=${page}&size=${size}`,
       config
@@ -87,11 +87,11 @@ class MathService {
   }
 
   async getReceivedContractList(
-    memberId: string,
+    memberId: number,
     page: number = 0,
     size: number = 10,
     config: AxiosRequestConfig = {}
-  ) {
+  ): Promise<FetchResult<GetContractListResponse>> {
     const response = await this.httpClient.GET<GetContractListResponse>(
       `${API_ENDPOINT.MATCH.RECEIVED(memberId)}?page=${page}&size=${size}`,
       config
@@ -101,7 +101,10 @@ class MathService {
     return { data: response.data, status: API_SUCCESS };
   }
 
-  async getContractData(matchId: string, config: AxiosRequestConfig = {}) {
+  async getContractData(
+    matchId: number,
+    config: AxiosRequestConfig = {}
+  ): Promise<FetchResult<GetContractDataResponse>> {
     const response = await this.httpClient.GET<GetContractDataResponse>(
       API_ENDPOINT.MATCH.INFO(matchId),
       config
@@ -111,7 +114,7 @@ class MathService {
     return { data: response.data, status: API_SUCCESS };
   }
 
-  async downloadContractPDF(matchId: string, config: AxiosRequestConfig = {}) {
+  async downloadContractPDF(matchId: number, config: AxiosRequestConfig = {}) {
     const response = await this.httpClient.GET<any>(
       API_ENDPOINT.MATCH.PDF(matchId),
       config

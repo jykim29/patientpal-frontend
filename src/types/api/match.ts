@@ -66,16 +66,19 @@ export interface SendContractResponse {
   nokContact: string;
 }
 
+export interface MatchItem {
+  receivedMemberName: string;
+  createdDate: string;
+  matchStatus: MatchStatus;
+  readStatus?: ReadStatus;
+  careStartDateTime: string;
+  careEndDateTime: string;
+  totalAmount: number;
+  type: string;
+}
+
 export interface GetContractListResponse {
-  matchList: {
-    receivedMemberName: string;
-    createdDate: string;
-    matchStatus: MatchStatus;
-    readStatus?: ReadStatus;
-    careStartDateTime: string;
-    careEndDateTime: string;
-    totalAmount: number;
-  }[];
+  matchList: MatchItem[];
   currentPage: number;
   totalPages: number;
   totalItems: number;
