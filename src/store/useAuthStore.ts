@@ -1,9 +1,15 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+import { UserRole } from '@/types/user';
 
 type InitialState = {
   isLoggedIn: boolean;
-  user: { [key: string]: any } | null;
+  user: {
+    memberId: number;
+    memberName: string;
+    isCompleteProfile: boolean;
+    role: UserRole;
+  } | null;
   accessToken: string | null;
   lastLogin: string | null;
 };
