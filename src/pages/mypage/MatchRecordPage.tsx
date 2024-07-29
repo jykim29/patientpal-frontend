@@ -371,15 +371,15 @@ function ContractViewModal({ matchId }: { matchId: number }) {
                 </Button>
               )}
             {contractData && contractData.matchStatus === 'ACCEPTED' && (
-              <Button
-                type="button"
-                className="bg-naver"
-                onClick={() => {
-                  window.open(pdfUrl);
-                }}
+              <a
+                href={pdfUrl}
+                className="inline-flex items-center justify-center gap-2 rounded-md bg-naver px-4 py-2.5 text-white transition-all hover:brightness-[0.95] active:brightness-[1.05]"
+                target="_blank"
+                rel="noreferrer noopener"
+                download
               >
                 PDF파일 다운로드
-              </Button>
+              </a>
             )}
             <Button
               className="bg-gray-medium"
