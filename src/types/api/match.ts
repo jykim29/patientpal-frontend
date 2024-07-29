@@ -67,7 +67,9 @@ export interface SendContractResponse {
 }
 
 export interface MatchItem {
-  receivedMemberName: string;
+  matchId: number;
+  receivedMemberName?: string;
+  requestMemberName?: string;
   createdDate: string;
   matchStatus: MatchStatus;
   readStatus?: ReadStatus;
@@ -85,18 +87,24 @@ export interface GetContractListResponse {
 }
 
 export interface GetContractDataResponse {
-  id: number;
-  requestMemberName: string;
-  receivedMemberName: string;
-  createdDate: string;
-  matchStatus: MatchStatus;
-  readStatus: ReadStatus;
-  firstRequest: FirstRequest;
-  careStartDateTime: string;
   careEndDateTime: string;
-  totalAmount: number;
-  requestMemberCurrentSignificant: string;
+  careStartDateTime: string;
+  createdDate: string;
+  firstRequest: FirstRequest;
+  id: number;
   isNok: boolean;
-  nokName: string;
+  matchStatus: MatchStatus;
   nokContact: string;
+  nokName: string;
+  readStatus: ReadStatus;
+  realCarePlace: string;
+  receivedMemberAddress: string;
+  receivedMemberContact: string;
+  receivedMemberName: string;
+  requestMemberAddress: string;
+  requestMemberContact: string;
+  requestMemberCurrentSignificant: string;
+  requestMemberName: string;
+  totalAmount: number;
+  type?: string; // 직접 만든 type = 'send' | 'receive'
 }

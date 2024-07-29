@@ -49,7 +49,10 @@ class MathService {
     return { data: response.data, status: API_SUCCESS };
   }
 
-  async acceptContract(matchId: number, config: AxiosRequestConfig = {}) {
+  async acceptContract(
+    matchId: number,
+    config: AxiosRequestConfig = {}
+  ): Promise<FetchResult<null>> {
     const response = await this.httpClient.POST<null>(
       API_ENDPOINT.MATCH.ACCEPT(matchId),
       null,
