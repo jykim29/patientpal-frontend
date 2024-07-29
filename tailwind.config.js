@@ -26,6 +26,7 @@ export default {
         'light-bronze': '#D4A96B',
         kakao: '#FEE500',
         naver: '#03C75A',
+        overlay: 'rgba(0, 0, 0, 0.5)',
       },
       fontSize: {
         'title-large': [
