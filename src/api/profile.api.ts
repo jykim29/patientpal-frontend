@@ -91,7 +91,7 @@ export const createPatientProfile = async (
   const { data, status } = await httpClient.POST<
     IPatientData,
     ProfileResponse['patient']
-  >(API_ENDPOINT.CAREGIVER.PROFILE.CREATE, userData, {
+  >(API_ENDPOINT.PATIENT.PROFILE.CREATE, userData, {
     ...config,
     headers: {
       Authorization: `Bearer ${token}`,
