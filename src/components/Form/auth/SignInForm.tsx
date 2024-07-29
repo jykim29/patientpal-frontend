@@ -6,6 +6,7 @@ import { userIdFromLocalStorage } from '@/utils/getUserIdFromLocalStorage';
 import Button from '@/components/common/Button';
 import { Validate, useForm } from '@/hooks/useForm';
 import { authService } from '@/services/AuthService';
+import { API_FAILED } from '@/constants/api';
 
 import FormInput from './FormInput';
 import FormAlertErrorBox from './FormAlertErrorBox';
@@ -43,13 +44,23 @@ export default function SignInForm() {
     if (!isRememberId) userIdFromLocalStorage.remove();
     else userIdFromLocalStorage.set(username);
 
-    const { status, message } = await authService.signInWithIdPassword({
+    const signInResponse = await authService.signInWithIdPassword({
       username,
       password,
     });
-    if (message && status === 'FAILED')
-      return setLoginErrorMessage(message as string);
-    navigate('/');
+    if (signInResponse.status === API_FAILED)
+      return setLoginErrorMessage(signInResponse.data.message as string);
+    const getUserDataResponse = await authService.getUserData(
+      signInResponse.data.access_token,
+      {
+        headers: {
+          Authorization: `Bearer ${signInResponse.data.access_token}`,
+        },
+      }
+    );
+    if (getUserDataResponse.status === API_FAILED)
+      return setLoginErrorMessage('서버와 통신 중 오류가 발생했습니다.');
+    return navigate('/');
   };
 
   return (

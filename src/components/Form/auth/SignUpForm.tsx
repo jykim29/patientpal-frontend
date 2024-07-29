@@ -99,14 +99,14 @@ export default function SignUpForm() {
   const submitCallback = async () => {
     // 회원가입 api 호출
     const { role, username, password, passwordConfirm } = formData;
-    const { message, status } = await authService.signUp({
+    const { data, status } = await authService.signUp({
       role,
       username,
       password,
       passwordConfirm,
     });
-    if (status === 'FAILED') return alert(message);
-    alert(message);
+    if (status === 'FAILED') return alert(data.message);
+    alert(data.message);
     navigate('/auth/signin');
   };
 
