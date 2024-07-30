@@ -38,11 +38,9 @@ const initialContractFormData: ContractFormData = {
   5. 최종적으로 전송
 */
 
-// 임시 Role 할당
-const TEMP_ROLE: UserRole = 'USER'; // 임시 Role 설정
-
 export default function ContractForm({ memberId = '' }: { memberId?: string }) {
-  const { accessToken } = useAuthStore();
+  const { accessToken, user } = useAuthStore();
+  const myRole = user?.role as UserRole;
   const {
     register,
     handleSubmit,
@@ -50,7 +48,7 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      ...initialContractFormData[TEMP_ROLE],
+      ...initialContractFormData[myRole],
     },
     reValidateMode: 'onSubmit',
   });
@@ -77,14 +75,14 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
         careEndDateTime: new Date(data.careEndDateTime).toISOString(),
         totalAmount: Number(data.totalAmount),
       };
-    if (TEMP_ROLE === 'USER')
+    if (myRole === 'USER')
       (requestBody as SendRequestBody['USER']).nok = JSON.parse(
         (data as ContractFormData['USER']).nok
       );
 
     const response = await matchService.sendContract(
-      TEMP_ROLE,
-      memberId as string,
+      myRole,
+      Number(memberId),
       requestBody,
       {
         headers: {
@@ -94,7 +92,7 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
     );
     if (response?.status === API_FAILED) alert(response.data.message);
     else alert('계약서 전송이 완료되었습니다.');
-    return navigate('/mypage/contract', { replace: true });
+    return navigate('/mypage/match-record', { replace: true });
   };
 
   return (
@@ -110,7 +108,7 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
         )}
         <div className="w-full rounded-lg border border-tertiary px-6 py-4">
           {/* 관계 */}
-          {TEMP_ROLE === 'USER' && (
+          {myRole === 'USER' && (
             <div className="field-group row">
               <span className="label">계약자와의 관계</span>
               <input
@@ -175,7 +173,7 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
           </div>
 
           {/* 장소 */}
-          {TEMP_ROLE === 'USER' && (
+          {myRole === 'USER' && (
             <div className="field-group row mt-3">
               <span className="label">장 소</span>
               <input

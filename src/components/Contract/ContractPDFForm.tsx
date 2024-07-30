@@ -1,8 +1,64 @@
 import { useRef } from 'react';
+import { differenceInDays, format } from 'date-fns';
+import { GetContractDataResponse } from '@/types/api/match';
+import { useAuthStore } from '@/store/useAuthStore';
+import { UserRole } from '@/types/user';
 import ScrollProgressBar, { ScrollHandle } from '../common/ScrollProgressBar';
 
-export default function ContractPDFForm() {
+export default function ContractPDFForm({
+  contractData,
+}: {
+  contractData: GetContractDataResponse;
+}) {
+  const user = useAuthStore((state) => state.user);
+  const {
+    type,
+    careStartDateTime,
+    careEndDateTime,
+    isNok,
+    nokName,
+    nokContact,
+    receivedMemberName,
+    receivedMemberAddress,
+    receivedMemberContact,
+    requestMemberName,
+    requestMemberAddress,
+    requestMemberContact,
+    requestMemberCurrentSignificant,
+    realCarePlace,
+    totalAmount,
+    firstRequest,
+    createdDate,
+  } = contractData;
   const progressBarRef = useRef<ScrollHandle>(null);
+  const myRole = user?.role as UserRole;
+  const isRequest = firstRequest.includes(myRole);
+  const myInfo = {
+    name: isRequest ? requestMemberName : receivedMemberName,
+    address: isRequest ? requestMemberAddress : receivedMemberAddress,
+    contact: isRequest ? requestMemberContact : receivedMemberContact,
+  };
+  const partnerInfo = {
+    name: !isRequest ? requestMemberName : receivedMemberName,
+    address: !isRequest ? requestMemberAddress : receivedMemberAddress,
+    contact: !isRequest ? requestMemberContact : receivedMemberContact,
+  };
+  const patientData = {
+    name: myRole === 'USER' ? myInfo.name : partnerInfo.name,
+    address: myRole === 'USER' ? myInfo.address : partnerInfo.address,
+    contact: myRole === 'USER' ? myInfo.contact : partnerInfo.contact,
+  };
+  const caregiverData = {
+    name: myRole === 'CAREGIVER' ? myInfo.name : partnerInfo.name,
+    address: myRole === 'CAREGIVER' ? myInfo.address : partnerInfo.address,
+    contact: myRole === 'CAREGIVER' ? myInfo.contact : partnerInfo.contact,
+  };
+  if (isNok) {
+    patientData.name = nokName;
+    patientData.contact = nokContact;
+  }
+  const period = `${format(careStartDateTime, 'yyyy. MM. dd')} ~ ${format(careEndDateTime, 'yyyy. MM. dd')}`;
+  const duration = differenceInDays(careEndDateTime, careStartDateTime);
 
   const handleScroll = (e: React.UIEvent) => {
     const { scrollHeight, clientHeight, scrollTop } = e.currentTarget;
@@ -35,33 +91,33 @@ export default function ContractPDFForm() {
             <tr>
               <th rowSpan={3}>간병인</th>
               <th>성명</th>
-              <td></td>
+              <td>{caregiverData.name}</td>
             </tr>
             <tr>
               <th>연락처</th>
-              <td></td>
+              <td>{caregiverData.contact}</td>
             </tr>
             <tr>
               <th>주소</th>
-              <td></td>
+              <td>{caregiverData.address}</td>
             </tr>
 
             <tr>
               <th rowSpan={5}>구인자</th>
               <th>성명</th>
-              <td></td>
+              <td>{patientData.name}</td>
             </tr>
             <tr>
               <th>연락처</th>
-              <td></td>
+              <td>{patientData.contact}</td>
             </tr>
             <tr>
               <th>주소</th>
-              <td></td>
+              <td>{patientData.address}</td>
             </tr>
             <tr>
               <th>환자와의 관계</th>
-              <td></td>
+              <td>{isNok ? '보호자' : '본인'}</td>
             </tr>
           </tbody>
         </table>
@@ -130,16 +186,18 @@ export default function ContractPDFForm() {
               <tr>
                 <th className="divided-left">기 간</th>
                 <td>
-                  <p>2024. 07. 01 ~ 2024. 10. 31</p>
+                  <p>
+                    {period} <span>{`(총 ${duration}일)`}</span>
+                  </p>
                 </td>
               </tr>
               <tr>
                 <th>장 소</th>
-                <td></td>
+                <td>{realCarePlace}</td>
               </tr>
               <tr>
                 <th>요 금</th>
-                <td></td>
+                <td>{`${totalAmount.toLocaleString('ko-KR')} 원`}</td>
               </tr>
             </tbody>
           </table>
@@ -152,7 +210,7 @@ export default function ContractPDFForm() {
           <table className="contract-etc-table">
             <tbody>
               <tr>
-                <td></td>
+                <td>{requestMemberCurrentSignificant}</td>
               </tr>
             </tbody>
           </table>
@@ -287,10 +345,10 @@ export default function ContractPDFForm() {
         </p>
 
         <div className="contract-footer">
-          <p>작성일자 : 2024년 06월 21일</p>
+          <p>{`작성일자 : ${format(createdDate, 'yyyy년 MM월 dd일')}`}</p>
           <p>중개업체 : 페이션트팔</p>
-          <p>간병인 : 김 간 병</p>
-          <p>구인자 : 김 환 자</p>
+          <p>{`간병인 : ${caregiverData.name}`}</p>
+          <p>{`구인자 : ${patientData.name}`}</p>
         </div>
       </div>
     </div>
