@@ -16,6 +16,7 @@ import {
   getCaregiverProfile,
   getPatientProfile,
 } from '@/api/profile.api';
+import MatchingListControls from './MatchingListControls';
 
 export interface IUserInfo {
   label: string;
@@ -47,13 +48,6 @@ const patientInfoList: IUserInfo[] = [
     value: '',
     placeholder: '주소 찾기 버튼으로 검색해주세요',
     type: 'address',
-  },
-  {
-    label: '경력',
-    key: 'experienceYears',
-    value: '',
-    placeholder: '경력을 입력해주세요',
-    type: 'text',
   },
   {
     label: '상세 주소',
@@ -231,12 +225,11 @@ function ProfileModifyForm() {
     registerPatient,
     modifyCaregiverData,
     modifyPatientData,
-    token,
+    accessToken,
     role,
   } = useProfile();
 
   const [isEditMode, setIsEditMode] = useState(false);
-
   const [buttonLabel, setButtonLabel] = useState<string>('등록');
   const memberId = localStorage.getItem('memberId');
 
@@ -246,10 +239,10 @@ function ProfileModifyForm() {
       // 역할에 따라 프로필 가져오기
       const fetchData = async () => {
         if (role === 'caregiver') {
-          const profileData = await getCaregiverProfile(memberId, token);
+          const profileData = await getCaregiverProfile(memberId, accessToken);
           reset(profileData.data);
         } else {
-          const profileData = await getPatientProfile(memberId, token);
+          const profileData = await getPatientProfile(memberId, accessToken);
           reset(profileData.data);
         }
       };
@@ -320,16 +313,10 @@ function ProfileModifyForm() {
         const response = await registerCaregiver(
           transformedData as ICaregiverData
         );
-        if (response?.status === 'SUCCESS') {
-          const res = addCaregiverToMatchList(response.data['memberId'], token);
-          console.log('간병인 등록 완료:', response, res);
-        }
+        console.log(response);
       } else if (role === 'patient' && registerPatient) {
         const response = await registerPatient(transformedData as IPatientData);
-        if (response?.status === 'SUCCESS') {
-          const res = addPatientToMatchList(response.data['memberId'], token);
-          console.log('간병인 등록 완료:', response, res);
-        }
+        console.log(response);
       }
     } else if (buttonLabel === '수정' && memberId) {
       if (role === 'caregiver' && modifyCaregiverData) {
@@ -360,89 +347,93 @@ function ProfileModifyForm() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="relative mb-12 flex flex-col gap-[65px] rounded-lg border p-[52px]"
-    >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-[10px]">
-          <FaUserCircle className="h-[90px] w-[90px] text-gray-medium" />
-          <input
-            className={`w-[70px] bg-transparent text-text-large outline-none ${
-              isEditMode ? 'border-b-2' : 'border-transparent'
-            } text-center`}
-            {...register('name', { required: true })}
-            type="text"
-            disabled={!isEditMode}
-          />
-        </div>
-        <span className="flex justify-end gap-4">
-          {isEditMode ? (
-            <>
-              <Button
-                className="w-[100px] bg-gray-medium"
-                type="button"
-                onClick={handleCancel}
-              >
-                취소
+    <>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="relative mb-12 flex flex-col gap-[65px] rounded-lg border p-[52px]"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-[10px]">
+            <FaUserCircle className="h-[90px] w-[90px] text-gray-medium" />
+            <input
+              className={`w-[70px] bg-transparent text-text-large outline-none ${
+                isEditMode ? 'border-b-2' : 'border-transparent'
+              } text-center`}
+              {...register('name', { required: true })}
+              type="text"
+              disabled={!isEditMode}
+            />
+          </div>
+          <span className="flex justify-end gap-4">
+            {isEditMode ? (
+              <>
+                <Button
+                  className="w-[100px] bg-gray-medium"
+                  type="button"
+                  onClick={handleCancel}
+                >
+                  취소
+                </Button>
+                <Button className="w-[100px] bg-red-500" type="submit">
+                  저장
+                </Button>
+              </>
+            ) : (
+              <Button className="w-[100px]" type="button" onClick={handleEdit}>
+                {buttonLabel}
               </Button>
-              <Button className="w-[100px] bg-red-500" type="submit">
-                저장
-              </Button>
-            </>
-          ) : (
-            <Button className="w-[100px]" type="button" onClick={handleEdit}>
-              {buttonLabel}
-            </Button>
-          )}
-        </span>
-      </div>
-      <div className="flex flex-wrap items-center justify-between gap-[15px]">
-        {role === 'caregiver'
-          ? caregiverInfoList.map(
-              (item) =>
-                item.key !== 'name' && (
-                  <dl
-                    key={item.key}
-                    className="flex w-[477px] flex-col gap-[19px]"
-                  >
-                    <dt className="flex w-full text-text-medium">
-                      {item.label}
-                    </dt>
-                    <dd className="w-full flex-1 text-text-large">
-                      <ProfileDetailForm
-                        item={item}
-                        register={register}
-                        setValue={setValue}
-                        isEditMode={isEditMode}
-                      />
-                    </dd>
-                  </dl>
-                )
-            )
-          : patientInfoList.map(
-              (item) =>
-                item.key !== 'name' && (
-                  <dl
-                    key={item.key}
-                    className="flex w-[477px] flex-col gap-[19px]"
-                  >
-                    <dt className="flex w-full text-text-medium">
-                      {item.label}
-                    </dt>
-                    <dd className="w-full flex-1 text-text-large">
-                      <ProfileDetailForm
-                        item={item}
-                        register={register}
-                        setValue={setValue}
-                        isEditMode={isEditMode}
-                      />
-                    </dd>
-                  </dl>
-                )
             )}
-      </div>
-    </form>
+          </span>
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-[15px]">
+          {role === 'caregiver'
+            ? caregiverInfoList.map(
+                (item) =>
+                  item.key !== 'name' && (
+                    <dl
+                      key={item.key}
+                      className="flex w-[477px] flex-col gap-[19px]"
+                    >
+                      <dt className="flex w-full text-text-medium">
+                        {item.label}
+                      </dt>
+                      <dd className="w-full flex-1 text-text-large">
+                        <ProfileDetailForm
+                          item={item}
+                          register={register}
+                          setValue={setValue}
+                          isEditMode={isEditMode}
+                        />
+                      </dd>
+                    </dl>
+                  )
+              )
+            : patientInfoList.map(
+                (item) =>
+                  item.key !== 'name' && (
+                    <dl
+                      key={item.key}
+                      className="flex w-[477px] flex-col gap-[19px]"
+                    >
+                      <dt className="flex w-full text-text-medium">
+                        {item.label}
+                      </dt>
+                      <dd className="w-full flex-1 text-text-large">
+                        <ProfileDetailForm
+                          item={item}
+                          register={register}
+                          setValue={setValue}
+                          isEditMode={isEditMode}
+                        />
+                      </dd>
+                    </dl>
+                  )
+              )}
+        </div>
+        {/*todo: token에서 프로필 등록 여부에 따라 버튼 보여주기 */}
+        <MatchingListControls />
+      </form>
+    </>
   );
 }
 

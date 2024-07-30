@@ -20,15 +20,18 @@ export const API_ENDPOINT = Object.freeze({
     LOGIN: '/auth/login', // 로그인
     REFRESH: '/auth/refresh', // 토큰 재발급
   },
+  MEMBER: {
+    INFORMATION: '/member/information',
+  },
   MATCH: {
     USER_INFO: '/matches', // 계약서 생성 위한 요청 정보 조회
     SEND: (role: string) => `/matches/${role}`, /// 계약서 전송
-    ACCEPT: (matchId: string) => `/matches/${matchId}/accept`, // 받은 계약서 수락
-    CANCEL: (matchId: string) => `/matches/${matchId}/cancel`, // 보낸 계약서 신청 취소
-    REQUEST: (memberId: string) => `/matches/${memberId}/all/request`, // 요청 보낸 계약 리스트 요약 조회
-    RECEIVED: (memberId: string) => `/matches/${memberId}/all/received`, // 요청 받은 계약 리스트 요약 조회
-    INFO: (matchId: string) => `/matches/${matchId}`, // 계약서 정보 단일 조회
-    PDF: (matchId: string) => `/matches/${matchId}/pdf`, // 받은 계약서 PDF 다운로드
+    ACCEPT: (matchId: number) => `/matches/${matchId}/accept`, // 받은 계약서 수락
+    CANCEL: (matchId: number) => `/matches/${matchId}/cancel`, // 보낸 계약서 신청 취소
+    REQUEST: (memberId: number) => `/matches/${memberId}/all/request`, // 요청 보낸 계약 리스트 요약 조회
+    RECEIVED: (memberId: number) => `/matches/${memberId}/all/received`, // 요청 받은 계약 리스트 요약 조회
+    INFO: (matchId: number) => `/matches/${matchId}`, // 계약서 정보 단일 조회
+    PDF: (matchId: number) => `/matches/${matchId}/pdf`, // 받은 계약서 PDF 다운로드
   },
   CAREGIVER: {
     PROFILE: {

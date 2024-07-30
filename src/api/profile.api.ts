@@ -91,7 +91,7 @@ export const createPatientProfile = async (
   const { data, status } = await httpClient.POST<
     IPatientData,
     ProfileResponse['patient']
-  >(API_ENDPOINT.CAREGIVER.PROFILE.CREATE, userData, {
+  >(API_ENDPOINT.PATIENT.PROFILE.CREATE, userData, {
     ...config,
     headers: {
       Authorization: `Bearer ${token}`,
@@ -146,6 +146,42 @@ export const addCaregiverToMatchList = async (
 ) => {
   const { data, status } = await httpClient.POST(
     API_ENDPOINT.CAREGIVER.PROFILE.REGISTER(memberId),
+    {
+      ...config,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return { data, status };
+};
+
+export const removePatientFromMatchList = async (
+  memberId: string,
+  token: string,
+  config = {}
+) => {
+  const { data, status } = await httpClient.POST(
+    API_ENDPOINT.PATIENT.PROFILE.UNREGISTER(memberId),
+    {
+      ...config,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return { data, status };
+};
+
+export const removeCaregiverFromMatchList = async (
+  memberId: string,
+  token: string,
+  config = {}
+) => {
+  const { data, status } = await httpClient.POST(
+    API_ENDPOINT.CAREGIVER.PROFILE.UNREGISTER(memberId),
     {
       ...config,
       headers: {

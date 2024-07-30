@@ -31,6 +31,7 @@ import ReviewPage from './pages/mypage/ReviewPage';
 import MyPageLayout from './components/layout/MyPageLayout';
 import ProtectedRoute from './components/ProtectedRoute';
 import { authService } from './services/AuthService';
+import { API_FAILED } from './constants/api';
 
 function App() {
   const [isInit, setIsInit] = useState<boolean>(false);
@@ -147,10 +148,6 @@ function App() {
                   element: <ChatRoom />,
                 },
                 {
-                  path: 'contract',
-                  element: <div>my contract</div>,
-                },
-                {
                   path: 'contract/write/:memberId',
                   element: <ContractWrite />,
                 },
@@ -189,7 +186,20 @@ function App() {
     },
   ]);
   useEffect(() => {
-    authService.refreshToken().then(() => setIsInit(true));
+    authService
+      .refreshToken()
+      .then((res) => {
+        if (res.status === API_FAILED) return;
+        return authService.getUserData(res.data.access_token, {
+          headers: {
+            Authorization: `Bearer ${res.data.access_token}`,
+          },
+        });
+      })
+      .then((res) => {
+        if (res?.status === API_FAILED) return;
+        return setIsInit(true);
+      });
   }, []);
 
   return isInit ? <RouterProvider router={router} /> : <></>;
