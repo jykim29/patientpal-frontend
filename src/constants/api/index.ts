@@ -20,6 +20,9 @@ export const API_ENDPOINT = Object.freeze({
     LOGIN: '/auth/login', // 로그인
     REFRESH: '/auth/refresh', // 토큰 재발급
   },
+  MEMBER: {
+    INFORMATION: '/member/information',
+  },
   MATCH: {
     USER_INFO: '/matches', // 계약서 생성 위한 요청 정보 조회
     SEND: (role: string) => `/matches/${role}`, /// 계약서 전송
