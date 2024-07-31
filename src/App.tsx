@@ -14,10 +14,9 @@ import MainLayout from './components/layout/MainLayout';
 import Home from './pages/Home';
 import { SignIn, SignUp } from './pages/auth';
 import {
+  Board,
   BoardWrite,
   BoardView,
-  Forum,
-  Notice,
   listLoader,
   postLoader,
   BoardModify,
@@ -81,7 +80,7 @@ function App() {
                   children: [
                     {
                       index: true,
-                      element: <Forum title="자유게시판" />,
+                      element: <Board title="자유게시판" boardType="board" />,
                       loader: listLoader,
                     },
                     {
@@ -105,7 +104,7 @@ function App() {
                   children: [
                     {
                       index: true,
-                      element: <Notice title="공지사항" />,
+                      element: <Board title="공지사항" boardType="notice" />,
                       loader: listLoader,
                     },
                     {
