@@ -58,5 +58,5 @@ export const API_ENDPOINT = Object.freeze({
     GENERATE_S3_PRESIGNED_URL: '/patient/presigned',
   },
   NOTICE: '/notice',
-  FREE: '/board',
+  BOARD: '/board',
 });
