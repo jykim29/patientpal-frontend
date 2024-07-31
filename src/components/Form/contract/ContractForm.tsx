@@ -19,7 +19,7 @@ const initialContractFormData: ContractFormData = {
     totalAmount: 0,
     significant: '',
     realCarePlace: 'home',
-    nok: 'false',
+    isNok: 'false',
   },
   CAREGIVER: {
     careStartDateTime: convertDatetime(new Date().getTime())[0],
@@ -76,8 +76,8 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
         totalAmount: Number(data.totalAmount),
       };
     if (myRole === 'USER')
-      (requestBody as SendRequestBody['USER']).nok = JSON.parse(
-        (data as ContractFormData['USER']).nok
+      (requestBody as SendRequestBody['USER']).isNok = JSON.parse(
+        (data as ContractFormData['USER']).isNok
       );
 
     const response = await matchService.sendContract(
@@ -115,7 +115,7 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
                 type="radio"
                 id="me"
                 value="false"
-                {...register('nok', {
+                {...register('isNok', {
                   validate: {
                     isValidValue: (value) => {
                       if (value === 'true' || value === 'false') return true;
@@ -125,7 +125,12 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
                 })}
               />
               <label htmlFor="me">본인</label>
-              <input type="radio" id="nok" value="true" {...register('nok')} />
+              <input
+                type="radio"
+                id="nok"
+                value="true"
+                {...register('isNok')}
+              />
               <label htmlFor="nok">보호자</label>
             </div>
           )}

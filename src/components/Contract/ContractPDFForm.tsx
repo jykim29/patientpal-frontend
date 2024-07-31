@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { differenceInDays, format } from 'date-fns';
 import { GetContractDataResponse } from '@/types/api/match';
 import { useAuthStore } from '@/store/useAuthStore';
-import { UserRole } from '@/types/user';
+import { Role } from '@/types/user';
 import ScrollProgressBar, { ScrollHandle } from '../common/ScrollProgressBar';
 
 export default function ContractPDFForm({
@@ -31,7 +31,7 @@ export default function ContractPDFForm({
     createdDate,
   } = contractData;
   const progressBarRef = useRef<ScrollHandle>(null);
-  const myRole = user?.role as UserRole;
+  const myRole = user?.role as Role;
   const isRequest = firstRequest.includes(myRole);
   const myInfo = {
     name: isRequest ? requestMemberName : receivedMemberName,
