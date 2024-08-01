@@ -17,6 +17,7 @@ import {
   getPatientProfile,
 } from '@/api/profile.api';
 import MatchingListControls from './MatchingListControls';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export interface IUserInfo {
   label: string;
@@ -36,10 +37,10 @@ const patientInfoList: IUserInfo[] = [
     type: 'text',
   },
   {
-    label: '주민등록번호',
-    key: 'residentRegistrationNumber',
+    label: '나이',
+    key: 'age',
     value: '',
-    placeholder: '뒷번호 첫번째 자리까지 입력해주세요',
+    placeholder: '나이를 입력해주세요',
     type: 'text',
   },
   {
@@ -50,13 +51,6 @@ const patientInfoList: IUserInfo[] = [
     type: 'address',
   },
   {
-    label: '상세 주소',
-    key: 'address.addrDetail',
-    value: '',
-    placeholder: '상세 주소를 작성해주세요',
-    type: 'text',
-  },
-  {
     label: '전화번호',
     key: 'contact',
     value: '',
@@ -64,11 +58,11 @@ const patientInfoList: IUserInfo[] = [
     type: 'text',
   },
   {
-    label: '우편번호',
-    key: 'address.zipCode',
+    label: '상세 주소',
+    key: 'address.addrDetail',
     value: '',
-    placeholder: '주소 찾기 버튼으로 검색해주세요',
-    type: 'zipCode',
+    placeholder: '상세 주소를 작성해주세요',
+    type: 'text',
   },
   {
     label: '성별',
@@ -77,6 +71,13 @@ const patientInfoList: IUserInfo[] = [
     placeholder: '성별을 선택해주세요',
     type: 'select',
     options: ['남', '여'],
+  },
+  {
+    label: '우편번호',
+    key: 'address.zipCode',
+    value: '',
+    placeholder: '주소 찾기 버튼으로 검색해주세요',
+    type: 'zipCode',
   },
   {
     label: '보호자',
@@ -139,10 +140,10 @@ const caregiverInfoList: IUserInfo[] = [
     type: 'text',
   },
   {
-    label: '주민등록번호',
-    key: 'residentRegistrationNumber',
+    label: '나이',
+    key: 'age',
     value: '',
-    placeholder: '뒷번호 첫번째 자리까지 입력해주세요',
+    placeholder: '나이를 입력해주세요',
     type: 'text',
   },
   {
@@ -231,19 +232,26 @@ function ProfileModifyForm() {
 
   const [isEditMode, setIsEditMode] = useState(false);
   const [buttonLabel, setButtonLabel] = useState<string>('등록');
-  const memberId = localStorage.getItem('memberId');
 
+  const { user } = useAuthStore();
+  const memberId = user?.memberId;
+  const isCompletedProfile = user?.isCompleteProfile;
+  console.log(user);
   useEffect(() => {
-    if (memberId) {
+    if (isCompletedProfile) {
       setButtonLabel('수정');
       // 역할에 따라 프로필 가져오기
       const fetchData = async () => {
-        if (role === 'caregiver') {
-          const profileData = await getCaregiverProfile(memberId, accessToken);
-          reset(profileData.data);
-        } else {
-          const profileData = await getPatientProfile(memberId, accessToken);
-          reset(profileData.data);
+        let profileData;
+        if (role === 'CAREGIVER') {
+          profileData = await getCaregiverProfile(memberId, accessToken);
+        } else if (role === 'USER') {
+          profileData = await getPatientProfile(memberId, accessToken);
+        }
+        if (profileData && profileData.data) {
+          const data = profileData.data;
+          data.gender = data.gender === 'MALE' ? '남' : '여';
+          reset(data);
         }
       };
       fetchData();
@@ -257,7 +265,7 @@ function ProfileModifyForm() {
     );
     const transformedData: ICaregiverData | IPatientData = {
       name: data.name,
-      residentRegistrationNumber: data.residentRegistrationNumber,
+      age: data.age,
       contact: data.contact,
       gender: data.gender === '남' ? 'MALE' : 'FEMALE',
       address: {
@@ -267,7 +275,7 @@ function ProfileModifyForm() {
       },
       wantCareStartDate: new Date(data.wantCareStartDate).toISOString(),
       wantCareEndDate: new Date(data.wantCareEndDate).toISOString(),
-      ...(role === 'caregiver'
+      ...(role === 'CAREGIVER'
         ? {
             experienceYears: (data as ICaregiverData).experienceYears,
             specialization: (data as ICaregiverData).specialization,
@@ -289,9 +297,10 @@ function ProfileModifyForm() {
         addrDetail: data.address.addrDetail,
         zipCode: data.address.zipCode,
       },
+      age: data.age,
       wantCareStartDate: new Date(data.wantCareStartDate).toISOString(),
       wantCareEndDate: new Date(data.wantCareEndDate).toISOString(),
-      ...(role === 'caregiver'
+      ...(role === 'CAREGIVER'
         ? {
             experienceYears: (data as ICaregiverEditData).experienceYears,
             specialization: (data as ICaregiverEditData).specialization,
@@ -309,23 +318,23 @@ function ProfileModifyForm() {
     };
 
     if (buttonLabel === '등록') {
-      if (role === 'caregiver' && registerCaregiver) {
+      if (role === 'CAREGIVER' && registerCaregiver) {
         const response = await registerCaregiver(
           transformedData as ICaregiverData
         );
         console.log(response);
-      } else if (role === 'patient' && registerPatient) {
+      } else if (role === 'USER' && registerPatient) {
         const response = await registerPatient(transformedData as IPatientData);
         console.log(response);
       }
     } else if (buttonLabel === '수정' && memberId) {
-      if (role === 'caregiver' && modifyCaregiverData) {
+      if (role === 'CAREGIVER' && modifyCaregiverData) {
         const response = await modifyCaregiverData(
           memberId,
           editedData as ICaregiverEditData
         );
         console.log('간병인 수정 완료:', response);
-      } else if (role === 'patient' && modifyPatientData) {
+      } else if (role === 'USER' && modifyPatientData) {
         const response = await modifyPatientData(
           memberId,
           editedData as IPatientEditData
@@ -361,7 +370,7 @@ function ProfileModifyForm() {
               } text-center`}
               {...register('name', { required: true })}
               type="text"
-              disabled={!isEditMode}
+              disabled={isCompletedProfile}
             />
           </div>
           <span className="flex justify-end gap-4">
@@ -386,7 +395,7 @@ function ProfileModifyForm() {
           </span>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-[15px]">
-          {role === 'caregiver'
+          {role === 'CAREGIVER'
             ? caregiverInfoList.map(
                 (item) =>
                   item.key !== 'name' && (
@@ -398,11 +407,13 @@ function ProfileModifyForm() {
                         {item.label}
                       </dt>
                       <dd className="w-full flex-1 text-text-large">
+                        {/* 수정할때 다른 값도 수정되는 문제 */}
                         <ProfileDetailForm
                           item={item}
                           register={register}
                           setValue={setValue}
                           isEditMode={isEditMode}
+                          isCompletedProfile={isCompletedProfile}
                         />
                       </dd>
                     </dl>
@@ -424,14 +435,14 @@ function ProfileModifyForm() {
                           register={register}
                           setValue={setValue}
                           isEditMode={isEditMode}
+                          isCompletedProfile={isCompletedProfile}
                         />
                       </dd>
                     </dl>
                   )
               )}
         </div>
-        {/*todo: token에서 프로필 등록 여부에 따라 버튼 보여주기 */}
-        <MatchingListControls />
+        {isCompletedProfile && <MatchingListControls />}
       </form>
     </>
   );

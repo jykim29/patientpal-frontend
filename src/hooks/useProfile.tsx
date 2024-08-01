@@ -7,34 +7,33 @@ import {
 import { API_FAILED } from '@/constants/api';
 import { useAuthStore } from '@/store/useAuthStore';
 import { ICaregiverData, IPatientData } from '@/types/api/profile';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const useProfile = () => {
-  const { accessToken } = useAuthStore();
+  const { accessToken, user } = useAuthStore();
   if (!accessToken) {
     return { message: '토큰이 없습니다', status: API_FAILED };
   }
   //현재 role은 임의로 설정 -> 추후 토큰에서 제공하는 role 가져올 예정
-  const [role, setRole] = useState<'patient' | 'caregiver'>('caregiver');
+  const [role, setRole] = useState<'USER' | 'CAREGIVER'>();
+
+  useEffect(() => {
+    if (user) {
+      setRole(user.role);
+    }
+  }, []);
 
   const registerCaregiver = async (userInputData: ICaregiverData) => {
-    if (localStorage.getItem('memberId')) return;
+    if (user?.memberId === null) return;
     const res = await createCaregiverProfile(userInputData, accessToken);
 
-    if (res.status === 'SUCCESS') {
-      //memberId를 localstorage에 보관중 로그아웃시 초기화하는 기능 추가 필요
-      localStorage.setItem('memberId', res.data['memberId']);
-    }
     return res;
   };
 
   const registerPatient = async (userInputData: IPatientData) => {
-    if (localStorage.getItem('memberId')) return;
+    if (user?.memberId === null) return;
     const res = await createPatientProfile(userInputData, accessToken);
 
-    if (res.status === 'SUCCESS') {
-      localStorage.setItem('memberId', res.data['memberId']);
-    }
     return res;
   };
 

@@ -94,7 +94,7 @@ export interface IAddress {
 
 export interface ICommonData {
   name: string;
-  residentRegistrationNumber: string;
+  age: number;
   contact: string;
   gender: 'MALE' | 'FEMALE';
   address: IAddress;
@@ -128,6 +128,7 @@ export type IPatientEditData = Pick<
   | 'isNok'
   | 'wantCareEndDate'
   | 'wantCareStartDate'
+  | 'age'
 >;
 
 export type ICaregiverEditData = Pick<
@@ -138,4 +139,5 @@ export type ICaregiverEditData = Pick<
   | 'caregiverSignificant'
   | 'wantCareEndDate'
   | 'wantCareStartDate'
+  | 'age'
 >;

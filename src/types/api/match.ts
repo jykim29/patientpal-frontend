@@ -5,7 +5,7 @@ export interface SendRequestBody {
     totalAmount: number;
     significant: string;
     realCarePlace: string;
-    nok: boolean;
+    isNok: boolean;
   };
   CAREGIVER: {
     careStartDateTime: string;

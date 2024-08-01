@@ -1,7 +1,7 @@
 // Board Type
 export type BoardTypes = {
-  NOTICE: 'NOTICE';
-  FREE: 'FREE';
+  notice: 'notice';
+  board: 'board';
 };
 export type BoardType = BoardTypes[keyof BoardTypes];
 
@@ -22,7 +22,7 @@ export interface PostResponse {
   content: string;
   createdAt: string;
   updatedAt: string;
-  postType: 'FREE';
+  postType: 'FREE' | 'NOTICE';
 }
 export interface GetListResponse {
   totalElements: number;

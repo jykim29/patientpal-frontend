@@ -1,0 +1,24 @@
+@layer components {
+  .article-container {
+    @apply mt-3 flex w-full flex-col overflow-hidden border-y-2 border-primary bg-white;
+  }
+  .article-header {
+    @apply flex flex-col justify-center gap-1 border-b border-gray-light-medium bg-gray-50 px-5 py-3;
+
+    & .article-title-label {
+    }
+    & .article-title {
+      @apply text-text-large font-semibold;
+    }
+    & .divider {
+      @apply relative after:absolute after:-right-[2px] after:top-1/2 after:-translate-y-1/2 after:text-text-small after:text-gray-medium after:content-['|'];
+    }
+  }
+  .article-button-container {
+    @apply mt-3 text-right;
+
+    & .link-button {
+      @apply mr-2 inline-block h-8 rounded-md px-4 py-1 align-top text-text-medium text-white transition-all hover:brightness-[0.95] active:brightness-[1.05];
+    }
+  }
+}

@@ -1,4 +1,5 @@
-import { httpClient } from './http';
+import { API_ENDPOINT } from '@/constants/api';
+import { httpClient } from './httpClient';
 
 interface FetchSearchParams {
   sort?: string | null;
@@ -6,12 +7,42 @@ interface FetchSearchParams {
 
 interface FetchSearchResultResponse {}
 
-const fetchSearchResult = async (params: FetchSearchParams) => {
-  const response = await httpClient.get<FetchSearchResultResponse>('/search', {
-    params: params,
-  });
+const getPatientSearchResult = async (
+  token: string,
+  searchParams = {},
+  config = {}
+) => {
+  const { data, status } = await httpClient.GET(
+    API_ENDPOINT.PATIENT.PROFILE.SEARCH,
+    {
+      ...config,
+      params: searchParams,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
-  return response.data;
+  return { data, status };
 };
 
-export { fetchSearchResult };
+const getCaregiverSearchResult = async (
+  token: string,
+  searchParams = {},
+  config = {}
+) => {
+  const { data, status } = await httpClient.GET(
+    API_ENDPOINT.CAREGIVER.PROFILE.SEARCH,
+    {
+      ...config,
+      params: searchParams,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return { data, status };
+};
+
+export { getPatientSearchResult, getCaregiverSearchResult };
