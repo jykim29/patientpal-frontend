@@ -10,12 +10,12 @@ import { useAuthStore } from '@/store/useAuthStore';
 
 function MatchingListControls() {
   const [isOnMatchList, setIsOnMatchList] = useState(false);
-
   const { accessToken } = useAuthStore();
-  const role = 'caregiver';
-  console.log(accessToken);
-  const memberId = localStorage.getItem('memberId');
-
+  const { user } = useAuthStore();
+  const role = user?.role;
+  const memberId = user?.memberId;
+  const isCompletedProfile = user?.isCompleteProfile;
+  console.log(memberId, '매칭리스트');
   useEffect(() => {
     const onMatchList = localStorage.getItem('isOnMatchList');
     if (onMatchList !== null) setIsOnMatchList(JSON.parse(onMatchList));
@@ -28,13 +28,13 @@ function MatchingListControls() {
     }
 
     let response;
-    if (role === 'caregiver') {
+    if (role === 'CAREGIVER') {
       response = await addCaregiverToMatchList(memberId, accessToken);
-    } else {
+    } else if (role === 'USER') {
       response = await addPatientToMatchList(memberId, accessToken);
     }
 
-    if (response.status === 'SUCCESS') {
+    if (response && response.status === 'SUCCESS') {
       alert('매칭리스트에 추가되었습니다.');
       setIsOnMatchList(true);
       localStorage.setItem('isOnMatchList', 'true');
@@ -48,13 +48,13 @@ function MatchingListControls() {
     }
 
     let response;
-    if (role === 'caregiver') {
+    if (role === 'CAREGIVER') {
       response = await removeCaregiverFromMatchList(memberId, accessToken);
-    } else {
+    } else if (role === 'USER') {
       response = await removePatientFromMatchList(memberId, accessToken);
     }
 
-    if (response.status === 'SUCCESS') {
+    if (response && response.status === 'SUCCESS') {
       alert('매칭리스트에서 삭제되었습니다.');
       setIsOnMatchList(false);
       localStorage.setItem('isOnMatchList', 'false');

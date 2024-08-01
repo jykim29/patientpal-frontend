@@ -82,25 +82,6 @@ export const getPatientProfile = async (
   return { data, status };
 };
 
-export const createPatientProfile = async (
-  userData: IPatientData,
-  token: string,
-  config = {}
-) => {
-  //post에 제네릭이 필요한가?
-  const { data, status } = await httpClient.POST<
-    IPatientData,
-    ProfileResponse['patient']
-  >(API_ENDPOINT.PATIENT.PROFILE.CREATE, userData, {
-    ...config,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  return { data, status };
-};
-
 export const modifyPatientProfile = async (
   memberId: string,
   token: string,
@@ -124,10 +105,12 @@ export const modifyPatientProfile = async (
 export const addPatientToMatchList = async (
   memberId: string,
   token: string,
+  payload = null,
   config = {}
 ) => {
   const { data, status } = await httpClient.POST(
     API_ENDPOINT.PATIENT.PROFILE.REGISTER(memberId),
+    payload,
     {
       ...config,
       headers: {
@@ -139,13 +122,34 @@ export const addPatientToMatchList = async (
   return { data, status };
 };
 
+export const createPatientProfile = async (
+  userData: IPatientData,
+  token: string,
+  config = {}
+) => {
+  //post에 제네릭이 필요한가?
+  const { data, status } = await httpClient.POST<
+    IPatientData,
+    ProfileResponse['patient']
+  >(API_ENDPOINT.PATIENT.PROFILE.CREATE, userData, {
+    ...config,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return { data, status };
+};
+
 export const addCaregiverToMatchList = async (
   memberId: string,
   token: string,
+  payload = null,
   config = {}
 ) => {
   const { data, status } = await httpClient.POST(
     API_ENDPOINT.CAREGIVER.PROFILE.REGISTER(memberId),
+    payload,
     {
       ...config,
       headers: {

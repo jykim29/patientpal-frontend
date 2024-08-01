@@ -18,7 +18,6 @@ function SearchPage({ searchType }: Props) {
       <MenuTitle title="간병인 찾기" />
       {searchType === 'city' && <SearchByCity />}
       {searchType === 'map' && <SearchByMap />}
-      <SearchResult />
     </main>
   );
 }
