@@ -8,7 +8,7 @@ export default function BoardListItem({
 }: {
   data: Omit<PostResponse, 'content'>;
 }) {
-  const { id, title, name } = data;
+  const { id, title, name, views } = data;
   const [createDate, createTime] = convertDatetime(data.createdAt);
   const [nowDate] = convertDatetime(Date.now());
   const convertedDate = createDate === nowDate ? createTime : createDate;
@@ -24,7 +24,7 @@ export default function BoardListItem({
       </div>
       <span className="board-author">{name}</span>
       <span className="board-date">{convertedDate}</span>
-      <span className="board-views">152</span>
+      <span className="board-views">{views}</span>
     </li>
   );
 }

@@ -10,8 +10,17 @@ import { API_FAILED } from '@/constants/api';
 import Button from '../common/Button';
 
 export default function BoardArticle() {
-  const { title, content, name, id, createdAt, updatedAt, memberId, postType } =
-    useLoaderData() as PostResponse;
+  const {
+    title,
+    content,
+    name,
+    id,
+    createdAt,
+    updatedAt,
+    memberId,
+    postType,
+    views,
+  } = useLoaderData() as PostResponse;
   const { accessToken, user } = useAuthStore();
   const navigate = useNavigate();
   const boardType = postType === 'FREE' ? 'board' : 'notice';
@@ -44,20 +53,26 @@ export default function BoardArticle() {
           </div>
 
           <div className="flex gap-2">
-            <span className="">작성자</span>
-            <span className="divider pr-3 text-gray-dark">{name}</span>
-            <span className="divider px-3">
+            <div className="divider pr-3">
+              <span className="mr-2">작성자</span>
+              <span className="text-gray-dark">{name}</span>
+            </div>
+            <div className="divider pl-1 pr-3">
               <span className="mr-2">작성일</span>
               <time className="text-gray-dark" dateTime={createdAt}>
                 {`${createDate} ${createTime}`}
               </time>
-            </span>
-            <span className="relative px-3">
+            </div>
+            <div className="pl-1 pr-3">
               <span className="mr-2">수정일</span>
               <time className="text-gray-dark" dateTime={updatedAt}>
                 {`${updateDate} ${updateTime}`}
               </time>
-            </span>
+            </div>
+            <div className="ml-auto pl-1 pr-5">
+              <span className="mr-2">조회수</span>
+              <span className="text-gray-dark">{views}</span>
+            </div>
           </div>
         </div>
 
