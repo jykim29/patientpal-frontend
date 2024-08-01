@@ -1,5 +1,12 @@
 import { useCallback, useEffect } from 'react';
-import { Link, useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import {
+  Link,
+  Navigate,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import { ReactQuillProps } from 'react-quill';
 import { useForm } from 'react-hook-form';
 
@@ -7,18 +14,34 @@ import { boardService } from '@/services/BoardService';
 import { useAuthStore } from '@/store/useAuthStore';
 import { API_FAILED } from '@/constants/api';
 import { PostResponse } from '@/types/api/board';
+import { getBoardType } from '@/utils/getBoardType';
+
 import Input from '../common/Input';
 import Button from '../common/Button';
 import CustomReactQuill from '../Editor/CustomReactQuill';
 
 export default function BoardWriteForm({
   title,
-  type,
+  mode,
 }: {
   title: string;
-  type: 'write' | 'modify';
+  mode: 'write' | 'modify';
 }) {
-  const loaderData = useLoaderData() as PostResponse;
+  const { accessToken, user } = useAuthStore();
+  let loaderData = null;
+  // 게시글 수정일 때 예외처리
+  if (mode === 'modify') {
+    loaderData = useLoaderData() as PostResponse;
+    if (!loaderData) {
+      alert('게시물을 찾을 수 없습니다.');
+      return <Navigate to=".." replace />;
+    }
+    const isMyPost = (user?.memberId as number) === loaderData.memberId;
+    if (!isMyPost) {
+      alert('권한이 없습니다.');
+      return <Navigate to=".." replace />;
+    }
+  }
   const { setValue, register, handleSubmit } = useForm({
     defaultValues: {
       title: loaderData?.title || '',
@@ -26,9 +49,10 @@ export default function BoardWriteForm({
     },
     reValidateMode: 'onSubmit',
   });
-  const { accessToken } = useAuthStore();
   const navigate = useNavigate();
   const { postId } = useParams();
+  const { pathname } = useLocation();
+  const boardType = getBoardType(pathname);
 
   useEffect(() => {
     register('content', {
@@ -63,21 +87,20 @@ export default function BoardWriteForm({
         Authorization: `Bearer ${accessToken}`,
       },
     };
-    if (type === 'write')
+    if (mode === 'write')
       response = await boardService.writePost(
-        'FREE',
+        boardType,
         { title, content },
         axiosConfig
       );
-    if (type === 'modify' && postId)
+    if (mode === 'modify' && postId)
       response = await boardService.updatePost(
-        'FREE',
-        postId,
+        boardType,
+        Number(postId),
         { title, content },
         axiosConfig
       );
-    if (response?.status === API_FAILED)
-      return alert('통신 중 오류가 발생하였습니다. 잠시후 다시 시도해주세요.');
+    if (response?.status === API_FAILED) return alert(response.data.message);
     return navigate('..', { replace: true });
   };
 
@@ -133,7 +156,7 @@ export default function BoardWriteForm({
           취소
         </Link>
         <Button type="submit" className="h-8 px-4 py-1">
-          {type === 'write' ? '완료' : '수정'}
+          {mode === 'write' ? '완료' : '수정'}
         </Button>
       </div>
     </form>

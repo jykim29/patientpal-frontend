@@ -1,11 +1,10 @@
-import { UserRole } from './user';
+import { Role } from './user';
 
 export interface SignUpFormData {
-  role: UserRole;
+  role: Role;
   username: string;
   password: string;
   passwordConfirm: string;
-  // contact: string;
   termOfUse: boolean;
   personalInformation: boolean;
 }
@@ -41,7 +40,7 @@ export interface ContractFormData {
     totalAmount: number;
     significant: string;
     realCarePlace: string;
-    nok: 'true' | 'false';
+    isNok: 'true' | 'false';
   };
   CAREGIVER: {
     careStartDateTime: string;

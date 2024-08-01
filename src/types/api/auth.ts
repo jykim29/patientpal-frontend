@@ -1,4 +1,4 @@
-import { UserRole } from '../user';
+import { Role } from '../user';
 
 // Request Body Type
 export interface RequestBody {
@@ -6,7 +6,7 @@ export interface RequestBody {
     username: string;
     password: string;
     passwordConfirm: string;
-    role: UserRole;
+    role: Role;
   };
   login: {
     username: string;
