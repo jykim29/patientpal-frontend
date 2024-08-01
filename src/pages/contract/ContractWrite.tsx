@@ -23,15 +23,15 @@ export default function ContractWrite() {
     /*
       TODO : 상대방 매칭리스트 등록 여부 & 이미 전송을 했는지 검증 필요
     */
-    const getMatchUserInfo = async (memberId: string) => {
-      const response = await matchService.getMatchUserInfo(memberId, {
+    const getMatchUserInfo = async (memberId: number) => {
+      const response = await matchService.getMatchUserInfo(Number(memberId), {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
       return response;
     };
-    getMatchUserInfo(memberId as string).then((res) => {
+    getMatchUserInfo(Number(memberId)).then((res) => {
       if (res.status === API_FAILED) {
         alert(res.data.message);
         return navigate('/', { replace: true });
