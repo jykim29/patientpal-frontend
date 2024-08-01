@@ -4,43 +4,47 @@ import { FaStar } from 'react-icons/fa';
 import { BsGenderAmbiguous } from 'react-icons/bs';
 import Button from '../common/Button';
 import { FaRegFileLines } from 'react-icons/fa6';
-function ResultItem({ user }) {
-  const { name, rating, address, gender, age, career } = user;
+import { UserList } from '@/types/searchResult.model';
 
+interface Props {
+  user: UserList;
+}
+
+function ResultItem({ user }: Props) {
   //신청버튼
   const handleApply = () => {};
-
+  console.log(user);
   return (
     <div className="flex items-center justify-between gap-2 rounded-[10px] bg-white px-5 py-3 shadow-sm">
       <div className="flex items-center gap-2">
         <FaCircleUser className="h-10 w-10" color="gray" />
-        <p className="text-text-large">{name}</p>
+        <p className="text-text-large">{user.name}</p>
         <ul className="flex items-center gap-4 text-gray-medium">
           <li className="flex items-center gap-1">
             <FaStar className="h-[17px] w-[17px]" color="F6C002" />
-            <p>{rating}</p>
+            <p>{user.address.addr}</p>
           </li>
-          <li>{address}</li>
+          <li>{user.address.addrDetail}</li>
           <li className="flex items-center gap-3 text-gray-dark">
             <div className="flex items-center gap-1">
               <BsGenderAmbiguous color="gray-dark" />
               <p>성별</p>
             </div>
-            <p>{gender}</p>
+            <p>{user.gender}</p>
           </li>
           <li className="flex items-center gap-3 text-gray-dark">
             <div className="flex items-center gap-1">
               <FaCakeCandles color="gray-dark" />
               <p>나이</p>
             </div>
-            <p>{age}</p>
+            <p>{user.age}</p>
           </li>
           <li className="flex items-center gap-3 text-gray-dark">
             <div className="flex items-center gap-1">
               <FaRegFileLines color="gray-dark" />
               <p>경력</p>
             </div>
-            <p>{career}</p>
+            <p>{user.viewCounts}</p>
           </li>
         </ul>
       </div>

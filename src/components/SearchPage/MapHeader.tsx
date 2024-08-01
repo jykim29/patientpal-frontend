@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Button from '../common/Button';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { SearchMapFormData } from '@/types/formData.interface';
+import SearchResult from './SearchResult';
 type MapFormField = {
   index: string;
   key: keyof SearchMapFormData;
@@ -29,8 +30,11 @@ const mapIndex: MapFormField[] = [
 ];
 function MapHeader() {
   const { register, handleSubmit } = useForm<SearchMapFormData>();
-  const onSubmit: SubmitHandler<SearchMapFormData> = (data) =>
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const onSubmit: SubmitHandler<SearchMapFormData> = (data) => {
     console.log(data);
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="flex h-[60px] rounded-tl-md rounded-tr-md bg-chathams-blue px-5 py-2">
@@ -59,6 +63,12 @@ function MapHeader() {
           검색
         </Button>
       </form>
+      {isModalOpen && (
+        <SearchResult
+          setIsModalOpen={setIsModalOpen}
+          isModalOpen={isModalOpen}
+        />
+      )}
     </div>
   );
 }
