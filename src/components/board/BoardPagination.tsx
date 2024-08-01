@@ -34,7 +34,7 @@ export default function BoardPagination({
       <div className="flex items-center gap-1">
         {currentPageArray ? (
           currentPageArray.map((number) => {
-            const isActive = Number(currentPageNumber) === number;
+            const isActive = currentPageNumber === number;
             const className = twMerge(
               'block h-7 w-7 text-center text-text-large',
               isActive

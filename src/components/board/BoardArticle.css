@@ -1,12 +1,14 @@
 @layer components {
   .article-container {
-    @apply mt-3 flex w-full flex-col overflow-hidden rounded-md border border-gray-medium bg-white;
+    @apply mt-3 flex w-full flex-col overflow-hidden border-y-2 border-primary bg-white;
   }
   .article-header {
-    @apply border-b border-gray-medium bg-gray-light px-5 py-3;
+    @apply flex flex-col justify-center gap-1 border-b border-gray-light-medium bg-gray-50 px-5 py-3;
 
+    & .article-title-label {
+    }
     & .article-title {
-      @apply mb-2 text-text-large font-semibold;
+      @apply text-text-large font-semibold;
     }
     & .divider {
       @apply relative after:absolute after:-right-[2px] after:top-1/2 after:-translate-y-1/2 after:text-text-small after:text-gray-medium after:content-['|'];

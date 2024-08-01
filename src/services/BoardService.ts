@@ -21,7 +21,9 @@ class BoardService {
     pageNumber: number,
     config: AxiosRequestConfig = {}
   ): Promise<FetchResult<GetListResponse>> {
-    const endPoint = API_ENDPOINT[boardType.toUpperCase()];
+    const endPointKey =
+      boardType.toUpperCase() as keyof (typeof API_ENDPOINT)['COMMUNITY'];
+    const endPoint = API_ENDPOINT.COMMUNITY[endPointKey];
     const response = await this.httpClient.GET<GetListResponse>(
       `${endPoint}?page=${pageNumber}`,
       config
@@ -36,12 +38,14 @@ class BoardService {
     postId: number,
     config: AxiosRequestConfig = {}
   ): Promise<FetchResult<PostResponse>> {
-    const endPoint = API_ENDPOINT[boardType.toUpperCase()];
+    const endPointKey =
+      boardType.toUpperCase() as keyof (typeof API_ENDPOINT)['COMMUNITY'];
+    const endPoint = API_ENDPOINT.COMMUNITY[endPointKey];
     const response = await this.httpClient.GET<PostResponse>(
       `${endPoint}/${postId}`,
       config
     );
-    if (response.status === 'FAILED') {
+    if (response.status === API_FAILED) {
       return { data: response.data, status: API_FAILED };
     }
     return { data: response.data, status: API_SUCCESS };
@@ -51,12 +55,14 @@ class BoardService {
     postId: number,
     config: AxiosRequestConfig = {}
   ): Promise<FetchResult<null>> {
-    const endPoint = API_ENDPOINT[boardType.toUpperCase()];
+    const endPointKey =
+      boardType.toUpperCase() as keyof (typeof API_ENDPOINT)['COMMUNITY'];
+    const endPoint = API_ENDPOINT.COMMUNITY[endPointKey];
     const response = await this.httpClient.DELETE<null>(
       `${endPoint}/${postId}`,
       config
     );
-    if (response.status === 'FAILED') {
+    if (response.status === API_FAILED) {
       return { data: response.data, status: API_FAILED };
     }
     return { data: response.data, status: API_SUCCESS };
@@ -66,13 +72,15 @@ class BoardService {
     formData: BoardFormData,
     config: AxiosRequestConfig = {}
   ): Promise<FetchResult<PostResponse>> {
-    const endPoint = API_ENDPOINT[boardType.toUpperCase()];
+    const endPointKey =
+      boardType.toUpperCase() as keyof (typeof API_ENDPOINT)['COMMUNITY'];
+    const endPoint = API_ENDPOINT.COMMUNITY[endPointKey];
     const response = await this.httpClient.POST<BoardFormData, PostResponse>(
       endPoint,
       formData,
       config
     );
-    if (response.status === 'FAILED') {
+    if (response.status === API_FAILED) {
       return { data: response.data, status: API_FAILED };
     }
     return { data: response.data, status: API_SUCCESS };
@@ -83,12 +91,14 @@ class BoardService {
     formData: BoardFormData,
     config: AxiosRequestConfig = {}
   ): Promise<FetchResult<PostResponse>> {
-    const endPoint = API_ENDPOINT[boardType.toUpperCase()];
+    const endPointKey =
+      boardType.toUpperCase() as keyof (typeof API_ENDPOINT)['COMMUNITY'];
+    const endPoint = API_ENDPOINT.COMMUNITY[endPointKey];
     const response = await this.httpClient.PATCH<
       RequestBody['post'],
       PostResponse
     >(`${endPoint}/${postId}`, formData, config);
-    if (response.status === 'FAILED') {
+    if (response.status === API_FAILED) {
       return { data: response.data, status: API_FAILED };
     }
     return { data: response.data, status: API_SUCCESS };

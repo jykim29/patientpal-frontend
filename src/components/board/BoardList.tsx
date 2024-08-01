@@ -16,9 +16,13 @@ export default function BoardList({
         <span className="board-date">날짜</span>
         <span className="board-views">조회수</span>
       </li>
-      {listData.map((data) => (
-        <BoardListItem key={data.id} data={data} />
-      ))}
+      {listData.length > 0 ? (
+        listData.map((data) => <BoardListItem key={data.id} data={data} />)
+      ) : (
+        <li className="select-none py-2 text-center text-text-large">
+          검색된 게시물이 없습니다.
+        </li>
+      )}
     </ul>
   );
 }

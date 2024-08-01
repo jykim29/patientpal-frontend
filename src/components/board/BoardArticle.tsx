@@ -15,8 +15,11 @@ export default function BoardArticle() {
   const { accessToken, user } = useAuthStore();
   const navigate = useNavigate();
   const boardType = postType === 'FREE' ? 'board' : 'notice';
+  const boardName = postType === 'FREE' ? '자유게시판' : '공지사항';
   const myId = user && user.memberId;
   const isMyPost = myId === memberId;
+  const [createDate, createTime] = convertDatetime(createdAt);
+  const [updateDate, updateTime] = convertDatetime(updatedAt);
 
   const handleDeletePost = async () => {
     if (!confirm('정말 삭제하시겠습니까?')) return;
@@ -27,24 +30,35 @@ export default function BoardArticle() {
     if (response?.status === API_FAILED) return alert('통신 실패');
     return navigate('../', { replace: true });
   };
+
   return (
     <>
+      <div className="flex w-full items-center justify-between">
+        <h3 className="mb-1 text-title-small">{boardName}</h3>
+      </div>
       <div className="article-container">
         <div className="article-header">
-          <h3 className="article-title">{title}</h3>
-          <span className="divider pr-3">{name}</span>
-          <span className="divider px-3">
-            <span className="mr-2">작성일</span>
-            <time className="text-gray-medium-dark" dateTime={createdAt}>
-              {`${convertDatetime(createdAt)[0]} ${convertDatetime(createdAt)[1]}`}
-            </time>
-          </span>
-          <span className="relative px-3">
-            <span className="mr-2">수정일</span>
-            <time className="text-gray-medium-dark" dateTime={updatedAt}>
-              {`${convertDatetime(updatedAt)[0]} ${convertDatetime(updatedAt)[1]}`}
-            </time>
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="article-title-label">제목</span>
+            <h3 className="article-title">{title}</h3>
+          </div>
+
+          <div className="flex gap-2">
+            <span className="">작성자</span>
+            <span className="divider pr-3 text-gray-dark">{name}</span>
+            <span className="divider px-3">
+              <span className="mr-2">작성일</span>
+              <time className="text-gray-dark" dateTime={createdAt}>
+                {`${createDate} ${createTime}`}
+              </time>
+            </span>
+            <span className="relative px-3">
+              <span className="mr-2">수정일</span>
+              <time className="text-gray-dark" dateTime={updatedAt}>
+                {`${updateDate} ${updateTime}`}
+              </time>
+            </span>
+          </div>
         </div>
 
         <div

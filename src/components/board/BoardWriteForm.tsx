@@ -34,12 +34,12 @@ export default function BoardWriteForm({
     loaderData = useLoaderData() as PostResponse;
     if (!loaderData) {
       alert('게시물을 찾을 수 없습니다.');
-      return <Navigate to={'..'} replace />;
+      return <Navigate to=".." replace />;
     }
     const isMyPost = (user?.memberId as number) === loaderData.memberId;
     if (!isMyPost) {
       alert('권한이 없습니다.');
-      return <Navigate to={'..'} replace />;
+      return <Navigate to=".." replace />;
     }
   }
   const { setValue, register, handleSubmit } = useForm({
@@ -52,6 +52,7 @@ export default function BoardWriteForm({
   const navigate = useNavigate();
   const { postId } = useParams();
   const { pathname } = useLocation();
+  const boardType = getBoardType(pathname);
 
   useEffect(() => {
     register('content', {
@@ -88,13 +89,13 @@ export default function BoardWriteForm({
     };
     if (mode === 'write')
       response = await boardService.writePost(
-        getBoardType(pathname),
+        boardType,
         { title, content },
         axiosConfig
       );
     if (mode === 'modify' && postId)
       response = await boardService.updatePost(
-        getBoardType(pathname),
+        boardType,
         Number(postId),
         { title, content },
         axiosConfig
