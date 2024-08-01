@@ -1,3 +1,4 @@
+export { default as Board } from './Board';
 export { default as BoardList } from './BoardList';
 export { default as BoardListItem } from './BoardListItem';
 export { default as BoardSearchForm } from './BoardSearchForm';
