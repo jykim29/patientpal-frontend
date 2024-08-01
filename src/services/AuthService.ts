@@ -76,7 +76,7 @@ class AuthService {
   ): Promise<FetchResult<GetUserDataResponse>> {
     const { data, status } = await this.httpClient.GET<GetUserDataResponse>(
       API_ENDPOINT.MEMBER.INFORMATION,
-      { baseURL: '/api', ...config }
+      config
     );
     if (status === API_FAILED) return { data, status: API_FAILED };
     this.updateData({
