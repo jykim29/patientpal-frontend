@@ -350,6 +350,26 @@ export default function ContractPDFForm({
           <p>{`간병인 : ${caregiverData.name}`}</p>
           <p>{`구인자 : ${patientData.name}`}</p>
         </div>
+        <span
+          className={`absolute left-1/2 top-[10%] -translate-x-1/2 select-none text-9xl text-[rgba(0,0,0,0.2)]`}
+        >
+          견 본
+        </span>
+        <span
+          className={`absolute left-1/2 top-[30%] -translate-x-1/2 select-none text-9xl text-[rgba(0,0,0,0.2)]`}
+        >
+          견 본
+        </span>
+        <span
+          className={`absolute left-1/2 top-[60%] -translate-x-1/2 select-none text-9xl text-[rgba(0,0,0,0.2)]`}
+        >
+          견 본
+        </span>
+        <span
+          className={`absolute left-1/2 top-[90%] -translate-x-1/2 select-none text-9xl text-[rgba(0,0,0,0.2)]`}
+        >
+          견 본
+        </span>
       </div>
     </div>
   );
