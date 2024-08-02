@@ -19,6 +19,12 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           secure: false,
         },
+        '/ws': {
+          target: env.VITE_BACKEND_BASE_URL,
+          changeOrigin: true,
+          secure: false,
+          ws: true,
+        },
       },
     },
     resolve: {

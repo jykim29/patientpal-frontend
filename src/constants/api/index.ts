@@ -1,8 +1,17 @@
-// Base URL
+// API Base URL
 export const API_BASE_URL = import.meta.env.VITE_BACKEND_API_BASE_URL;
 export const PROXY_BASE_URL = '/api/v1';
-export const BASE_URL =
-  import.meta.env.MODE === 'development' ? PROXY_BASE_URL : API_BASE_URL;
+// Websocket URL
+export const WEBSOCKET_URL = `${import.meta.env.VITE_BACKEND_BASE_URL}/ws`;
+export const PROXY_WEBSOCKET_URL = '/ws';
+
+export const BASE_URL = Object.freeze({
+  API: import.meta.env.MODE === 'development' ? PROXY_BASE_URL : API_BASE_URL,
+  WEBSOCKET:
+    import.meta.env.MODE === 'development'
+      ? PROXY_WEBSOCKET_URL
+      : WEBSOCKET_URL,
+});
 
 // 통신 상태
 export const API_SUCCESS = 'SUCCESS';

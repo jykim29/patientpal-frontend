@@ -1,7 +1,7 @@
 import { Client } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
+import { BASE_URL } from '@/constants/api';
 
-const socketUrl = 'https://patientpal.site/ws';
+const socketUrl = BASE_URL.WEBSOCKET;
 
 export const stompClient = new Client({
   webSocketFactory() {
@@ -25,5 +25,5 @@ export const stompClient = new Client({
   onWebSocketError() {
     console.log('웹소켓 에러');
   },
-  reconnectDelay: 10000,
+  reconnectDelay: 5000,
 });
