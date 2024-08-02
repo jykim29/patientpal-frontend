@@ -1,0 +1,24 @@
+@layer components {
+  .match-record-list-item {
+    @apply flex w-full items-center text-center;
+    & > *:nth-child(1) {
+      @apply w-[10%];
+    }
+    & > *:nth-child(2) {
+      @apply w-[15%];
+    }
+    & > *:nth-child(3) {
+      @apply w-[30%];
+    }
+    & > *:nth-child(4) {
+      @apply w-[15%];
+    }
+    & > *:nth-child(5) {
+      @apply w-[13%];
+    }
+
+    & .list-item-container {
+      @apply flex h-full items-center justify-center gap-1;
+    }
+  }
+}
