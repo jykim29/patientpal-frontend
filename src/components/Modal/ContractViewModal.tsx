@@ -7,10 +7,9 @@ import { matchService } from '@/services/MatchService';
 import { useAuthStore } from '@/store/useAuthStore';
 import { GetContractDataResponse } from '@/types/api/match';
 import Button from '../common/Button';
-import Modal from '../common/Modal';
 import { ContractPDFForm } from '../Contract';
 
-export function ContractViewModal({ matchId }: { matchId: number }) {
+export default function ContractViewModal({ matchId }: { matchId: number }) {
   const [contractData, setContractData] =
     useState<GetContractDataResponse | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string>('');
@@ -78,8 +77,16 @@ export function ContractViewModal({ matchId }: { matchId: number }) {
   }, []);
 
   return (
-    <div className="h-[80vh] min-h-[600px] w-[50vw] min-w-[800px] p-10">
-      <p className="mb-2 text-center text-title-small">계약서 미리보기</p>
+    <div className="h-[80vh] min-h-[600px] w-[50vw] min-w-[800px] p-5">
+      <p className="mb-2 inline-block text-text-large font-semibold">
+        계약서 조회
+      </p>
+      <p className="mb-2 ml-2 inline-block text-text-small text-gray-dark">
+        ※ 하단에 보여지는 계약서 미리보기 기능으로,
+        <strong className="ml-1 text-negative">
+          실제 계약서가 아니며 아무런 법적 효력이 없는 문서입니다.
+        </strong>
+      </p>
       {isLoading ? (
         <p className="text-center text-title-medium">계약서 불러오는중...</p>
       ) : (
