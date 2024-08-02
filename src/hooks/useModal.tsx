@@ -1,11 +1,13 @@
 import { useModalStore } from '@/store/useModalStore';
+import Modal from '@/components/common/Modal';
 
 export const useModal = () => {
   const { setName, clearName } = useModalStore();
 
   const createModal = (modalName: string, Component: React.ReactNode) => {
     const storeModalName = useModalStore((state) => state.modalName);
-    return storeModalName === modalName ? Component : null;
+    const ModalComponent = <Modal>{Component}</Modal>;
+    return storeModalName === modalName ? ModalComponent : null;
   };
 
   const openModal = (modalName: string) => {
