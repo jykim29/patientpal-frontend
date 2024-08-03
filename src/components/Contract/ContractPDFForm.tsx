@@ -32,26 +32,33 @@ export default function ContractPDFForm({
   } = contractData;
   const progressBarRef = useRef<ScrollHandle>(null);
   const myRole = user?.role as Role;
-  const isRequest = firstRequest.includes(myRole);
-  const myInfo = {
-    name: isRequest ? requestMemberName : receivedMemberName,
-    address: isRequest ? requestMemberAddress : receivedMemberAddress,
-    contact: isRequest ? requestMemberContact : receivedMemberContact,
-  };
-  const partnerInfo = {
-    name: !isRequest ? requestMemberName : receivedMemberName,
-    address: !isRequest ? requestMemberAddress : receivedMemberAddress,
-    contact: !isRequest ? requestMemberContact : receivedMemberContact,
-  };
   const patientData = {
-    name: myRole === 'USER' ? myInfo.name : partnerInfo.name,
-    address: myRole === 'USER' ? myInfo.address : partnerInfo.address,
-    contact: myRole === 'USER' ? myInfo.contact : partnerInfo.contact,
+    name:
+      myRole === 'USER' && firstRequest === 'PATIENT_FIRST'
+        ? requestMemberName
+        : receivedMemberName,
+    address:
+      myRole === 'USER' && firstRequest === 'PATIENT_FIRST'
+        ? requestMemberAddress
+        : receivedMemberAddress,
+    contact:
+      myRole === 'USER' && firstRequest === 'PATIENT_FIRST'
+        ? requestMemberContact
+        : receivedMemberContact,
   };
   const caregiverData = {
-    name: myRole === 'CAREGIVER' ? myInfo.name : partnerInfo.name,
-    address: myRole === 'CAREGIVER' ? myInfo.address : partnerInfo.address,
-    contact: myRole === 'CAREGIVER' ? myInfo.contact : partnerInfo.contact,
+    name:
+      patientData.name === requestMemberName
+        ? receivedMemberName
+        : requestMemberName,
+    address:
+      patientData.address === requestMemberAddress
+        ? receivedMemberAddress
+        : requestMemberAddress,
+    contact:
+      patientData.contact === requestMemberContact
+        ? receivedMemberContact
+        : requestMemberContact,
   };
   if (isNok) {
     patientData.name = nokName;
@@ -350,6 +357,26 @@ export default function ContractPDFForm({
           <p>{`간병인 : ${caregiverData.name}`}</p>
           <p>{`구인자 : ${patientData.name}`}</p>
         </div>
+        <span
+          className={`absolute left-1/2 top-[10%] -translate-x-1/2 select-none text-9xl text-[rgba(0,0,0,0.2)]`}
+        >
+          견 본
+        </span>
+        <span
+          className={`absolute left-1/2 top-[30%] -translate-x-1/2 select-none text-9xl text-[rgba(0,0,0,0.2)]`}
+        >
+          견 본
+        </span>
+        <span
+          className={`absolute left-1/2 top-[60%] -translate-x-1/2 select-none text-9xl text-[rgba(0,0,0,0.2)]`}
+        >
+          견 본
+        </span>
+        <span
+          className={`absolute left-1/2 top-[90%] -translate-x-1/2 select-none text-9xl text-[rgba(0,0,0,0.2)]`}
+        >
+          견 본
+        </span>
       </div>
     </div>
   );
