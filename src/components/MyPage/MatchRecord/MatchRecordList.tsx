@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format, differenceInCalendarDays } from 'date-fns';
 
@@ -8,7 +8,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { useModal } from '@/hooks/useModal';
 import { API_FAILED } from '@/constants/api';
 import { matchService } from '@/services/MatchService';
-import { ContractViewModal } from '@/components/Modal/ContractViewModal';
+import { ContractViewModal } from '@/components/Modal';
 
 type MatchList = {
   all?: MatchItem[];
