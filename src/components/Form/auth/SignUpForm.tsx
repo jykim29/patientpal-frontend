@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 
 import { SignUpFormData } from '@/types/formData.interface';
 import { Validate, useForm } from '@/hooks/useForm';
+import { useModal } from '@/hooks/useModal';
 import {
   FormInput,
   FormTooltipMessageBox,
@@ -60,6 +61,14 @@ const validate: Validate<SignUpFormData> = (values) => {
     errors.set('personalInformation', '개인정보 수집이용에 동의해주세요.');
   return errors;
 };
+type InitialFetchResultState = {
+  status: 'SUCCESS' | 'FAILED' | null;
+  message: string;
+};
+const initialFetchResultState: InitialFetchResultState = {
+  status: null,
+  message: '',
+};
 
 export default function SignUpForm() {
   const {
@@ -67,10 +76,14 @@ export default function SignUpForm() {
     handler: { onChange: handleChange, onSubmit: handleSubmit },
     error,
   } = useForm<SignUpFormData>(initialFormData, validate);
+  const { createModal, openModal, closeAllModal } = useModal();
   const [step, setStep] = useState<number>(0);
-  const [roleErrorMessage, setRoleErrorMessage] = useState<null | string>(null);
+  const [roleErrorMessage, setRoleErrorMessage] = useState<string | null>(null);
+  const [fetchResult, setFetchResult] = useState<InitialFetchResultState>(
+    initialFetchResultState
+  );
   const navigate = useNavigate();
-  const validateErrorArray = [...error.values()];
+  const validateErrorArray = useMemo(() => [...error.values()], [error]);
 
   // 툴팁 메세지 설정
   const tooltipBoxArray = useMemo(
@@ -80,6 +93,30 @@ export default function SignUpForm() {
       '비밀번호를 다시 입력해주세요.',
     ],
     []
+  );
+
+  const handleModalClick = () => {
+    if (fetchResult.status === 'FAILED') closeAllModal();
+    else {
+      closeAllModal();
+      navigate('/');
+    }
+  };
+
+  const signUpResultModal = createModal(
+    'signUp',
+    <div>
+      <p>{fetchResult.message}</p>
+      <Button
+        className={
+          fetchResult.status === 'FAILED' ? 'bg-negative' : 'bg-primary'
+        }
+        type="button"
+        onClick={handleModalClick}
+      >
+        {fetchResult.status === 'FAILED' ? '닫기' : '확인'}
+      </Button>
+    </div>
   );
 
   const handleClickStepChange = useCallback(() => {
@@ -97,6 +134,7 @@ export default function SignUpForm() {
   }, [step, formData.role]);
 
   const submitCallback = async () => {
+    setFetchResult({ status: null, message: '' });
     // 회원가입 api 호출
     const { role, username, password, passwordConfirm } = formData;
     const { data, status } = await authService.signUp({
@@ -105,9 +143,10 @@ export default function SignUpForm() {
       password,
       passwordConfirm,
     });
-    if (status === 'FAILED') return alert(data.message);
-    alert(data.message);
-    navigate('/auth/signin');
+    if (status === 'FAILED') {
+      setFetchResult({ status, message: data.message as string });
+    } else setFetchResult({ status, message: data.message });
+    return openModal('signUp');
   };
 
   return (
@@ -282,6 +321,7 @@ export default function SignUpForm() {
           )}
         </div>
       </form>
+      {signUpResultModal}
     </>
   );
 }
