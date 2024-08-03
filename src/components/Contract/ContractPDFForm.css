@@ -4,7 +4,7 @@
   }
 
   .contract-container {
-    @apply mx-auto flex w-full flex-col gap-8 px-20 py-16 text-text-large;
+    @apply relative mx-auto flex w-full flex-col gap-8 px-20 py-16 text-text-large;
   }
 
   .contract-title {
