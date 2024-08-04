@@ -10,14 +10,19 @@ interface ModalProps {
     overlay?: string;
     box?: string;
   };
+  closeOnOverlayClick?: boolean;
 }
 
 export default function Modal({
   className = {},
+  closeOnOverlayClick = false,
   children,
 }: PropsWithChildren<ModalProps>) {
   return createPortal(
-    <ModalOverlay className={className.overlay}>
+    <ModalOverlay
+      className={className.overlay}
+      closeOnOverlayClick={closeOnOverlayClick}
+    >
       <ModalBox className={className.box}>{children}</ModalBox>
     </ModalOverlay>,
     document.querySelector('#modal') as HTMLElement
@@ -26,9 +31,11 @@ export default function Modal({
 
 function ModalOverlay({
   className = '',
+  closeOnOverlayClick,
   children,
 }: PropsWithChildren<{
   className?: string;
+  closeOnOverlayClick: ModalProps['closeOnOverlayClick'];
   onClose?: () => any;
 }>) {
   const { closeAllModal } = useModal();
@@ -38,7 +45,7 @@ function ModalOverlay({
   );
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.currentTarget !== e.target) return;
-    closeAllModal();
+    if (closeOnOverlayClick) closeAllModal();
   };
   return (
     <motion.div

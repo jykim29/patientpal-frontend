@@ -162,7 +162,7 @@ export default function MatchRecordList({ listData }: { listData: MatchList }) {
     );
 
   const contractViewModal = createModal(
-    'contract',
+    { modalName: 'contract' },
     <ContractViewModal matchId={matchId} />
   );
 

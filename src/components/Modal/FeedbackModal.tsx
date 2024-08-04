@@ -1,41 +1,45 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 import { useModal } from '@/hooks/useModal';
 import Button from '../common/Button';
 
 interface FeedbackModalProps {
-  modalType: 'confirm' | 'alert' | 'success';
+  iconType: 'check' | 'question' | 'warning';
+  buttonType: 'confirm' | 'confirm-cancel' | 'cancel';
   onConfirm?: () => any;
   onClose?: () => any;
 }
 
 export default function FeedbackModal({
-  modalType,
+  iconType,
+  buttonType,
   onConfirm,
   onClose,
   children,
 }: PropsWithChildren<FeedbackModalProps>) {
   const { closeAllModal } = useModal();
+
   return (
     <div className="flex flex-col items-center gap-4 p-7">
       <div className="flex h-24 w-24 items-center justify-center overflow-hidden">
-        <Icon modalType={modalType} />
+        <Icon iconType={iconType} />
       </div>
-      <span className="break-words font-semibold">{children}</span>
+      {children}
       <div className="flex items-center gap-2">
-        {modalType !== 'alert' && (
+        {buttonType !== 'cancel' && (
           <Button
             type="button"
             onClick={() => {
               closeAllModal();
-              onConfirm && onConfirm();
+              if (onConfirm) onConfirm();
             }}
+            autoFocus
           >
             확인
           </Button>
         )}
-        {modalType !== 'success' && (
+        {buttonType !== 'confirm' && (
           <Button
             className="bg-negative"
             type="button"
@@ -44,7 +48,7 @@ export default function FeedbackModal({
               onClose && onClose();
             }}
           >
-            {modalType === 'confirm' ? '취소' : '닫기'}
+            닫기
           </Button>
         )}
       </div>
@@ -52,19 +56,18 @@ export default function FeedbackModal({
   );
 }
 
-function Icon({ modalType }: { modalType: FeedbackModalProps['modalType'] }) {
-  const mark =
-    modalType === 'alert' ? '!' : modalType === 'success' ? '✔' : '?';
+function Icon({ iconType }: { iconType: FeedbackModalProps['iconType'] }) {
+  const mark = iconType === 'warning' ? '!' : iconType === 'check' ? '✔' : '?';
   const borderColor =
-    modalType === 'alert'
+    iconType === 'warning'
       ? 'border-negative'
-      : modalType === 'success'
+      : iconType === 'check'
         ? 'border-naver'
         : 'border-primary';
   const textColor =
-    modalType === 'alert'
+    iconType === 'warning'
       ? 'text-negative'
-      : modalType === 'success'
+      : iconType === 'check'
         ? 'text-naver'
         : 'text-primary';
   return (

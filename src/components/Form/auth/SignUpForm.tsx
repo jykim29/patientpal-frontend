@@ -77,7 +77,7 @@ export default function SignUpForm() {
     handler: { onChange: handleChange, onSubmit: handleSubmit },
     error,
   } = useForm<SignUpFormData>(initialFormData, validate);
-  const { createModal, openModal, closeAllModal } = useModal();
+  const { createModal, openModal } = useModal();
   const [step, setStep] = useState<number>(0);
   const [roleErrorMessage, setRoleErrorMessage] = useState<string | null>(null);
   const [fetchResult, setFetchResult] = useState<InitialFetchResultState>(
@@ -96,16 +96,6 @@ export default function SignUpForm() {
     []
   );
 
-  const signUpResultModal = createModal(
-    'signUp',
-    <FeedbackModal
-      modalType={fetchResult.status === 'SUCCESS' ? 'success' : 'alert'}
-      onConfirm={() => navigate('/auth/signin')}
-    >
-      <span className="break-words font-semibold">{fetchResult.message}</span>
-    </FeedbackModal>
-  );
-
   const handleClickStepChange = useCallback(() => {
     if (step === 0) {
       if (formData.role !== 'USER' && formData.role !== 'CAREGIVER')
@@ -121,7 +111,7 @@ export default function SignUpForm() {
   }, [step, formData.role]);
 
   const submitCallback = async () => {
-    setFetchResult({ status: null, message: '' });
+    console.log('submitCallback called');
     // 회원가입 api 호출
     const { role, username, password, passwordConfirm } = formData;
     const { data, status } = await authService.signUp({
@@ -308,7 +298,20 @@ export default function SignUpForm() {
           )}
         </div>
       </form>
-      {signUpResultModal}
+      {createModal(
+        { modalName: 'signUp', isImportant: fetchResult.status === 'SUCCESS' },
+        <FeedbackModal
+          iconType={fetchResult.status === 'SUCCESS' ? 'check' : 'warning'}
+          buttonType={fetchResult.status === 'SUCCESS' ? 'confirm' : 'cancel'}
+          onConfirm={() => {
+            navigate('/auth/signin');
+          }}
+        >
+          <span className="break-words font-semibold">
+            {fetchResult.message}
+          </span>
+        </FeedbackModal>
+      )}
     </>
   );
 }

@@ -198,7 +198,7 @@ function ShortcutMenu({
   const { accessToken } = useAuthStore();
   const navigate = useNavigate();
   const combinedClassName = twMerge(
-    'absolute px-3 py-2 text-text-small text-gray-dark [&>li:hover]:bg-gray-100 [&>*]:p-1 border border-gray-medium bg-white',
+    'absolute px-3 py-2 text-text-small text-gray-dark [&>li:hover]:bg-gray-100 [&>*]:p-1 border border-gray-medium bg-white z-10',
     className
   );
   const handleClickSignOut = async () => {
