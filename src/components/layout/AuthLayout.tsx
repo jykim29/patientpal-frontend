@@ -1,7 +1,13 @@
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
+
+import { useAuthStore } from '@/store/useAuthStore';
 import Header from '../common/Header';
 
 function AuthLayout() {
+  const { isLoggedIn, user } = useAuthStore();
+  if (isLoggedIn && user) {
+    return <Navigate to={'/'} replace />;
+  }
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center">
       <div className="w-full">
