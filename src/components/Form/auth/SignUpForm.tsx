@@ -12,6 +12,7 @@ import {
 } from '@/components/Form';
 import Button from '@/components/common/Button';
 import { authService } from '@/services/AuthService';
+import { FeedbackModal } from '@/components/Modal';
 
 import FormAlertErrorBox from './FormAlertErrorBox';
 
@@ -95,28 +96,14 @@ export default function SignUpForm() {
     []
   );
 
-  const handleModalClick = () => {
-    if (fetchResult.status === 'FAILED') closeAllModal();
-    else {
-      closeAllModal();
-      navigate('/');
-    }
-  };
-
   const signUpResultModal = createModal(
     'signUp',
-    <div>
-      <p>{fetchResult.message}</p>
-      <Button
-        className={
-          fetchResult.status === 'FAILED' ? 'bg-negative' : 'bg-primary'
-        }
-        type="button"
-        onClick={handleModalClick}
-      >
-        {fetchResult.status === 'FAILED' ? '닫기' : '확인'}
-      </Button>
-    </div>
+    <FeedbackModal
+      modalType={fetchResult.status === 'SUCCESS' ? 'success' : 'alert'}
+      onConfirm={() => navigate('/auth/signin')}
+    >
+      <span className="break-words font-semibold">{fetchResult.message}</span>
+    </FeedbackModal>
   );
 
   const handleClickStepChange = useCallback(() => {
