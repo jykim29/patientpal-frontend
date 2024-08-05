@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect } from 'react';
+import { PropsWithChildren } from 'react';
 import { motion } from 'framer-motion';
 
 import { useModal } from '@/hooks/useModal';
