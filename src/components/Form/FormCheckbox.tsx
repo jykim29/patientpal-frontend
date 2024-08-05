@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { forwardRef, memo } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 interface FormCheckboxProps extends React.ComponentPropsWithoutRef<'input'> {
@@ -8,16 +8,15 @@ interface FormCheckboxProps extends React.ComponentPropsWithoutRef<'input'> {
   [key: string]: any;
 }
 
-function FormCheckbox({
-  className = '',
-  name,
-  label,
-  ...restProps
-}: FormCheckboxProps) {
+const FormCheckbox = forwardRef(function FormCheckbox(
+  { className = '', name, label, ...restProps }: FormCheckboxProps,
+  ref: any
+) {
   const combinedContainerClassName = twMerge('relative ', className);
   return (
     <div className={combinedContainerClassName}>
       <input
+        ref={ref}
         className="peer sr-only"
         type="checkbox"
         name={name}
@@ -31,6 +30,6 @@ function FormCheckbox({
       </label>
     </div>
   );
-}
+});
 
 export default memo(FormCheckbox);

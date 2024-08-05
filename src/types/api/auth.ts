@@ -17,6 +17,7 @@ export interface RequestBody {
 // Response Type
 export type ErrorResponse = { code?: string; errors?: []; message?: string };
 export type SignUpResponse = any;
+export type SignOutResponse = any;
 export type SignInResponse = {
   access_token: string;
 };

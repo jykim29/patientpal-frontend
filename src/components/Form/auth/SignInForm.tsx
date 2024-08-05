@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { useCookies } from 'react-cookie';
 
 import { SignInFormData } from '@/types/formData.interface';
-import { userIdFromLocalStorage } from '@/utils/getUserIdFromLocalStorage';
 import Button from '@/components/common/Button';
-import { Validate, useForm } from '@/hooks/useForm';
 import { authService } from '@/services/AuthService';
 import { API_FAILED } from '@/constants/api';
 
@@ -12,37 +12,28 @@ import FormInput from './FormInput';
 import FormAlertErrorBox from './FormAlertErrorBox';
 import FormCheckbox from '../FormCheckbox';
 
-const initialFormData: SignInFormData = {
-  username: userIdFromLocalStorage.get() || '',
-  password: '',
-  isRememberId: !!userIdFromLocalStorage.get(),
-};
-const validate: Validate<SignInFormData> = (values) => {
-  const { username, password } = values;
-  const errors = new Map();
-  if (username === '') errors.set('username', '아이디를 입력해주세요.');
-  if (password === '') errors.set('password', '비밀번호를 입력해주세요.');
-  return errors;
-};
-
 export default function SignInForm() {
-  const {
-    formData,
-    handler: { onChange: handleChange, onSubmit: handleSubmit },
-    error,
-  } = useForm<SignInFormData>(initialFormData, validate);
   const [loginErrorMessage, setLoginErrorMessage] = useState<string | null>(
     null
   );
+  const [cookies, setCookie, removeCookie] = useCookies(['rememberId']);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      username: cookies['rememberId'] || '',
+      password: '',
+      isRememberId: cookies['rememberId'],
+    },
+    reValidateMode: 'onSubmit',
+  });
   const navigate = useNavigate();
-  const { username, password, isRememberId } = formData;
-  const validateErrorArray = [...error.values()];
+  const errorMessageArray = Object.values(errors).map(({ message }) => message);
 
-  const submitCallback = async () => {
-    const { username, password } = formData;
-    setLoginErrorMessage(null);
-    if (!isRememberId) userIdFromLocalStorage.remove();
-    else userIdFromLocalStorage.set(username);
+  const submitCallback = async (formData: SignInFormData) => {
+    const { username, password, isRememberId } = formData;
 
     const signInResponse = await authService.signInWithIdPassword({
       username,
@@ -59,7 +50,16 @@ export default function SignInForm() {
       }
     );
     if (getUserDataResponse.status === API_FAILED)
-      return setLoginErrorMessage('서버와 통신 중 오류가 발생했습니다.');
+      return setLoginErrorMessage('통신 중 오류가 발생했습니다.');
+    if (!isRememberId)
+      removeCookie('rememberId', {
+        path: '/',
+      });
+    else
+      setCookie('rememberId', username, {
+        path: '/',
+        expires: new Date('2099-12-31'),
+      });
     return navigate('/');
   };
 
@@ -68,15 +68,18 @@ export default function SignInForm() {
       <p className="text-text-medium text-gray-medium">
         서비스를 이용하시려면 로그인이 필요합니다.
       </p>
-      {validateErrorArray.length > 0 && (
-        <FormAlertErrorBox>{validateErrorArray[0]}</FormAlertErrorBox>
-      )}
+
       {loginErrorMessage && (
         <FormAlertErrorBox>{loginErrorMessage}</FormAlertErrorBox>
       )}
+      {errorMessageArray.length > 0 && (
+        <FormAlertErrorBox>{errorMessageArray[0] as string}</FormAlertErrorBox>
+      )}
       <form
         className="flex w-full flex-col items-start gap-3"
-        onSubmit={(e) => handleSubmit(e, submitCallback)}
+        onSubmit={handleSubmit(submitCallback, () =>
+          setLoginErrorMessage(null)
+        )}
       >
         <div className="w-full">
           <FormInput
@@ -84,26 +87,24 @@ export default function SignInForm() {
             type="text"
             label="아이디"
             id="username"
-            name="username"
-            value={username}
-            onChange={handleChange}
+            {...register('username', {
+              required: '아이디를 입력해주세요.',
+            })}
           />
           <FormInput
             className="my-2.5 w-full"
             type="password"
             label="비밀번호"
             id="password"
-            name="password"
-            value={password}
-            onChange={handleChange}
+            {...register('password', {
+              required: '비밀번호를 입력해주세요.',
+            })}
           />
           <FormCheckbox
             label="아이디 저장"
             id="isRememberId"
-            name="isRememberId"
             value="remember"
-            checked={isRememberId}
-            onChange={handleChange}
+            {...register('isRememberId')}
           />
         </div>
 
