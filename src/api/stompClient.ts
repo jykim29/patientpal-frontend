@@ -5,6 +5,7 @@ const socketUrl = BASE_URL.WEBSOCKET;
 
 export const stompClient = new Client({
   webSocketFactory() {
+    // @ts-expect-error: Unknown error
     return new SockJS(socketUrl);
   },
   onConnect(frame) {
