@@ -1,12 +1,4 @@
-import {
-  createContext,
-  memo,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react';
-import { twMerge } from 'tailwind-merge';
+import { memo } from 'react';
 
 import Input from '../common/Input';
 import Button from '../common/Button';
@@ -71,10 +63,10 @@ const dummyChatData: DummyChatItem[] = [
 const tempMyId = 'chulsoo123';
 
 export default function ChatRoomContainer({
-  chatData = dummyChatData,
+  // chatData = dummyChatData,
   children,
 }: {
-  chatData?: DummyChatItem[];
+  // chatData?: DummyChatItem[];
   children: React.ReactNode;
 }) {
   return <div>{children}</div>;
