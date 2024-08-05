@@ -10,7 +10,7 @@ interface FormCheckboxProps extends React.ComponentPropsWithoutRef<'input'> {
 
 const FormCheckbox = forwardRef(function FormCheckbox(
   { className = '', name, label, ...restProps }: FormCheckboxProps,
-  ref
+  ref: any
 ) {
   const combinedContainerClassName = twMerge('relative ', className);
   return (

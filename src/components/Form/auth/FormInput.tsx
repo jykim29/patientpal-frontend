@@ -19,7 +19,7 @@ const FormInput = forwardRef(function FormInput(
     isValid = true,
     ...restProps
   }: FormInputProps,
-  ref
+  ref: any
 ) {
   const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
 
