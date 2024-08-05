@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { forwardRef, memo, useCallback, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 interface FormInputProps extends React.ComponentPropsWithoutRef<'input'> {
@@ -10,14 +10,17 @@ interface FormInputProps extends React.ComponentPropsWithoutRef<'input'> {
   [key: string]: any;
 }
 
-function FormInput({
-  className = '',
-  type = 'text',
-  name,
-  label,
-  isValid = true,
-  ...restProps
-}: FormInputProps) {
+const FormInput = forwardRef(function FormInput(
+  {
+    className = '',
+    type = 'text',
+    name,
+    label,
+    isValid = true,
+    ...restProps
+  }: FormInputProps,
+  ref
+) {
   const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
 
   let inputType = type;
@@ -36,6 +39,7 @@ function FormInput({
         type={inputType}
         name={name}
         placeholder=""
+        ref={ref}
         {...restProps}
       />
 
@@ -56,6 +60,6 @@ function FormInput({
       )}
     </div>
   );
-}
+});
 
 export default memo(FormInput);

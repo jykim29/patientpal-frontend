@@ -56,7 +56,7 @@ export default function ProtectedRoute() {
 
   return (
     <>
-      {!isNeedProfilePath && <Outlet />}
+      {isLoggedIn && !isNeedProfilePath && <Outlet />}
       {authRequiredModal}
       {profileRequiredModal}
     </>
