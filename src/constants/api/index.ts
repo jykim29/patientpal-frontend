@@ -28,6 +28,7 @@ export const API_ENDPOINT = Object.freeze({
     REGISTER: '/auth/register', // 회원가입
     LOGIN: '/auth/login', // 로그인
     REFRESH: '/auth/refresh', // 토큰 재발급
+    LOGOUT: '/auth/logout', // 로그아웃
   },
   MEMBER: {
     INFORMATION: '/member/information',

@@ -7,6 +7,7 @@ import {
   RefreshTokenResponse,
   RequestBody,
   SignInResponse,
+  SignOutResponse,
   SignUpResponse,
 } from '@/types/api/auth';
 import { FetchResult } from '@/types/api/common';
@@ -45,13 +46,27 @@ class AuthService {
       RequestBody['register'],
       SignUpResponse
     >(API_ENDPOINT.AUTH.REGISTER, formData, config);
-    if (status === API_FAILED) {
-      return { data, status: API_FAILED };
-    }
+    if (status === API_FAILED) return { data, status: API_FAILED };
+
     return {
       data: {
         message: '회원가입이 완료되었습니다. 로그인페이지로 이동합니다.',
       },
+      status: API_SUCCESS,
+    };
+  }
+
+  async signOut(
+    config: AxiosRequestConfig = {}
+  ): Promise<FetchResult<SignOutResponse>> {
+    const { data, status } = await this.httpClient.GET<null>(
+      API_ENDPOINT.AUTH.LOGOUT,
+      config
+    );
+    if (status === API_FAILED) return { data, status: API_FAILED };
+    this.resetData();
+    return {
+      data: { message: '정상적으로 로그아웃되었습니다.' },
       status: API_SUCCESS,
     };
   }

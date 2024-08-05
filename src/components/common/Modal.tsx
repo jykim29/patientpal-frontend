@@ -10,14 +10,19 @@ interface ModalProps {
     overlay?: string;
     box?: string;
   };
+  closeOnOverlayClick?: boolean;
 }
 
 export default function Modal({
   className = {},
+  closeOnOverlayClick = false,
   children,
 }: PropsWithChildren<ModalProps>) {
   return createPortal(
-    <ModalOverlay className={className.overlay}>
+    <ModalOverlay
+      className={className.overlay}
+      closeOnOverlayClick={closeOnOverlayClick}
+    >
       <ModalBox className={className.box}>{children}</ModalBox>
     </ModalOverlay>,
     document.querySelector('#modal') as HTMLElement
@@ -26,9 +31,11 @@ export default function Modal({
 
 function ModalOverlay({
   className = '',
+  closeOnOverlayClick,
   children,
 }: PropsWithChildren<{
   className?: string;
+  closeOnOverlayClick: ModalProps['closeOnOverlayClick'];
   onClose?: () => any;
 }>) {
   const { closeAllModal } = useModal();
@@ -38,7 +45,7 @@ function ModalOverlay({
   );
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.currentTarget !== e.target) return;
-    closeAllModal();
+    if (closeOnOverlayClick) closeAllModal();
   };
   return (
     <motion.div
@@ -57,9 +64,22 @@ function ModalBox({
   className,
   children,
 }: PropsWithChildren<{ className?: string }>) {
+  // const { closeAllModal } = useModal();
   const combinedClassName = twMerge(
-    'px-10 py-10 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white',
+    'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white overflow-hidden',
     className
   );
-  return <div className={combinedClassName}>{children}</div>;
+  return (
+    <div className={combinedClassName}>
+      {/* <button
+        className="absolute right-3 top-3 ml-auto h-4 w-4 bg-[url('/assets/cross_black.svg')] bg-center bg-no-repeat hover:bg-gray-light"
+        type="button"
+        title="창 닫기"
+        onClick={() => closeAllModal()}
+      >
+        <span className="sr-only">창 닫기</span>
+      </button> */}
+      {children}
+    </div>
+  );
 }

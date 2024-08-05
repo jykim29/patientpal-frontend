@@ -86,7 +86,15 @@ class MathService {
     );
     if (response.status === API_FAILED)
       return { data: response.data, status: API_FAILED };
-    return { data: response.data, status: API_SUCCESS };
+    const newMatchList = [...response.data.matchList].map((item) => ({
+      ...item,
+      type: 'send',
+    }));
+    const newData: GetContractListResponse = {
+      ...response.data,
+      matchList: newMatchList,
+    };
+    return { data: newData, status: API_SUCCESS };
   }
 
   async getReceivedContractList(
@@ -101,7 +109,15 @@ class MathService {
     );
     if (response.status === API_FAILED)
       return { data: response.data, status: API_FAILED };
-    return { data: response.data, status: API_SUCCESS };
+    const newMatchList = [...response.data.matchList].map((item) => ({
+      ...item,
+      type: 'receive',
+    }));
+    const newData: GetContractListResponse = {
+      ...response.data,
+      matchList: newMatchList,
+    };
+    return { data: newData, status: API_SUCCESS };
   }
 
   async getContractData(

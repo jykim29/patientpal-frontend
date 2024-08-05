@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
 const FooterMenu = [
@@ -38,8 +37,8 @@ const FooterMenu = [
 
 function Footer() {
   return (
-    <footer className="bg-footer flex flex-col items-center justify-center gap-7 px-[100px] py-[36px]">
-      <div className="w-full max-w-[1440px]">
+    <footer className="min-w-[1440px] bg-footer px-[100px] py-[36px]">
+      <div className="mx-auto w-[1280px]">
         <div className="flex w-full gap-8 text-text-medium text-black">
           {FooterMenu.map((item, index) => (
             <div key={index} className="flex flex-col gap-2">
