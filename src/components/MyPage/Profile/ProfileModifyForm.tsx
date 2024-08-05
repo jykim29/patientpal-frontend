@@ -191,14 +191,14 @@ const caregiverInfoList: IUserInfo[] = [
   },
   {
     label: '등록증',
-    key: 'caregiverSignificant',
+    key: 'specialization',
     value: '',
     placeholder: '등록증 번호를 입력해주세요',
     type: 'text',
   },
   {
     label: '특이사항',
-    key: 'specialization',
+    key: 'caregiverSignificant',
     value: '',
     placeholder: '특이사항을 작성해주세요',
     type: 'text',
@@ -232,7 +232,7 @@ function ProfileModifyForm() {
 
   const [isEditMode, setIsEditMode] = useState(false);
   const [buttonLabel, setButtonLabel] = useState<string>('등록');
-
+  const [isInMatchList, setIsInMatchList] = useState<boolean>(false);
   const { user } = useAuthStore();
   const memberId = user?.memberId;
   const isCompletedProfile = user?.isCompleteProfile;
@@ -245,8 +245,10 @@ function ProfileModifyForm() {
         let profileData;
         if (role === 'CAREGIVER') {
           profileData = await getCaregiverProfile(memberId, accessToken);
+          setIsInMatchList(profileData.data.isInMatchList);
         } else if (role === 'USER') {
           profileData = await getPatientProfile(memberId, accessToken);
+          setIsInMatchList(profileData.data.isProfilePublic);
         }
         if (profileData && profileData.data) {
           const data = profileData.data;
@@ -277,7 +279,7 @@ function ProfileModifyForm() {
       wantCareEndDate: new Date(data.wantCareEndDate).toISOString(),
       ...(role === 'CAREGIVER'
         ? {
-            experienceYears: (data as ICaregiverData).experienceYears,
+            experienceYears: Number((data as ICaregiverData).experienceYears),
             specialization: (data as ICaregiverData).specialization,
             caregiverSignificant: (data as ICaregiverData).caregiverSignificant,
           }
@@ -302,7 +304,9 @@ function ProfileModifyForm() {
       wantCareEndDate: new Date(data.wantCareEndDate).toISOString(),
       ...(role === 'CAREGIVER'
         ? {
-            experienceYears: (data as ICaregiverEditData).experienceYears,
+            experienceYears: Number(
+              (data as ICaregiverEditData).experienceYears
+            ),
             specialization: (data as ICaregiverEditData).specialization,
             caregiverSignificant: (data as ICaregiverEditData)
               .caregiverSignificant,
@@ -404,7 +408,7 @@ function ProfileModifyForm() {
                       className="flex w-[477px] flex-col gap-[19px]"
                     >
                       <dt className="flex w-full text-text-medium">
-                        {item.label}
+                        <label htmlFor={item.key}>{item.label}</label>
                       </dt>
                       <dd className="w-full flex-1 text-text-large">
                         {/* 수정할때 다른 값도 수정되는 문제 */}
@@ -427,7 +431,7 @@ function ProfileModifyForm() {
                       className="flex w-[477px] flex-col gap-[19px]"
                     >
                       <dt className="flex w-full text-text-medium">
-                        {item.label}
+                        <label htmlFor={item.key}>{item.label}</label>
                       </dt>
                       <dd className="w-full flex-1 text-text-large">
                         <ProfileDetailForm
@@ -442,7 +446,12 @@ function ProfileModifyForm() {
                   )
               )}
         </div>
-        {isCompletedProfile && <MatchingListControls />}
+        {isCompletedProfile && (
+          <MatchingListControls
+            isInMatchList={isInMatchList}
+            setIsInMatchList={setIsInMatchList}
+          />
+        )}
       </form>
     </>
   );

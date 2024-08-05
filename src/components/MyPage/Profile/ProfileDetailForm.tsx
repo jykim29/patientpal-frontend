@@ -86,20 +86,10 @@ function ProfileDetailForm({
           {...register(item.key)}
           onChange={handleFormChange}
           type="text"
+          id={item.key}
           disabled={!isEditable}
           maxLength={13}
           className={`relative h-[48px] w-full rounded-[7px] border-2 bg-gray-light outline-none ${
-            isEditable ? '' : 'border-transparent'
-          } pl-2`}
-        />
-      );
-    case 'textarea':
-      return (
-        <textarea
-          placeholder={item.placeholder}
-          {...register(item.key)}
-          disabled={!isEditable}
-          className={`relative h-[144px] w-[980px] rounded-[7px] border-2 bg-gray-light outline-none ${
             isEditable ? '' : 'border-transparent'
           } pl-2`}
         />
@@ -128,6 +118,7 @@ function ProfileDetailForm({
             placeholder={item.placeholder}
             {...register(item.key)}
             type="text"
+            id={item.key}
             disabled
             className={`relative h-[48px] rounded-[7px] border-2 bg-gray-light outline-none ${
               isEditable ? '' : 'border-transparent'
@@ -150,6 +141,7 @@ function ProfileDetailForm({
             placeholder={item.placeholder}
             {...register(item.key)}
             type="text"
+            id={item.key}
             disabled
             className={`relative h-[48px] rounded-[7px] border-2 bg-gray-light outline-none ${
               isEditable ? '' : 'border-transparent'
@@ -163,6 +155,7 @@ function ProfileDetailForm({
           <input
             {...register(item.key, { required: true })}
             type="date"
+            id={item.key}
             disabled={!isEditable}
             className={`h-[48px] rounded-[7px] border-2 bg-gray-light outline-none ${
               isEditable ? '' : 'border-transparent'
