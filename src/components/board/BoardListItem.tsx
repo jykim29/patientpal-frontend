@@ -15,7 +15,7 @@ export default function BoardListItem({
   const [createDate, createTime] = convertDatetime(data.createdAt);
   const [nowDate] = convertDatetime(Date.now());
   const convertedDate = createDate === nowDate ? createTime : createDate;
-  console.log(boardType);
+
   return (
     <li
       className={twMerge(
