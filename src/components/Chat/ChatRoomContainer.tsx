@@ -1,12 +1,8 @@
-import {
-  createContext,
-  memo,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react';
+import { createContext, memo, useContext, useMemo, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
+
+import { stompClient } from '@/api/stompClient';
+import { useChat } from '@/hooks/useChat';
 
 import Input from '../common/Input';
 import Button from '../common/Button';
@@ -20,6 +16,13 @@ interface DummyChatItem {
   messageType: string;
   message: string;
   createdDate: string;
+}
+interface MessageContextValues {
+  isConnected: boolean;
+  joinRoom: (roomId: string) => void;
+  leaveRoom: (roomId: string) => void;
+  sendMessage: (message: string) => void;
+  messages: { [key: string]: any }[];
 }
 
 const dummyChatData: DummyChatItem[] = [
@@ -70,6 +73,27 @@ const dummyChatData: DummyChatItem[] = [
 ];
 const tempMyId = 'chulsoo123';
 
+const MessageContext = createContext<MessageContextValues | null>(null);
+
+function useChatContext() {
+  const values = useContext(MessageContext);
+  if (!values)
+    throw new Error('현재 컴포넌트는 MessageContext 내부에 포함되지 않습니다.');
+  return values;
+}
+
+function MessageProvider({ children }: { children: React.ReactNode }) {
+  const values = useChat(stompClient);
+
+  const memoizeValues = useMemo(() => ({ ...values }), []);
+
+  return (
+    <MessageContext.Provider value={memoizeValues}>
+      {children}
+    </MessageContext.Provider>
+  );
+}
+
 export default function ChatRoomContainer({
   chatData = dummyChatData,
   children,
@@ -77,7 +101,7 @@ export default function ChatRoomContainer({
   chatData?: DummyChatItem[];
   children: React.ReactNode;
 }) {
-  return <div>{children}</div>;
+  return <MessageProvider>{children}</MessageProvider>;
 }
 
 function Title({ children }: { children: React.ReactNode }) {
@@ -173,14 +197,25 @@ function MessengerFooter({ children }: { children: React.ReactNode }) {
 }
 
 function MessageForm() {
-  // const sendButtonClassName = twMerge(
-  //   'px-2.5 py-3',
-  //   message.trim() === ''
-  //     ? 'bg-gray-medium cursor-not-allowed hover:brightness-1 active:brightness-1'
-  //     : 'bg-primary'
-  // );
+  const { sendMessage } = useChatContext();
+  const [message, setMessage] = useState<string>('');
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMessage(e.currentTarget.value);
+  };
+  const sendButtonClassName = twMerge(
+    'px-2.5 py-3',
+    message.trim() === ''
+      ? 'bg-gray-medium cursor-not-allowed hover:brightness-1 active:brightness-1'
+      : 'bg-primary'
+  );
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (message.trim().length === 0) return;
+    sendMessage(message);
+    setMessage('');
+  };
   return (
-    <form className="flex w-full items-center gap-3">
+    <form className="flex w-full items-center gap-3" onSubmit={handleSubmit}>
       <label
         className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-md border border-primary bg-white px-4 py-2.5 text-white transition-all hover:brightness-[0.95] active:brightness-[1.05]"
         htmlFor="attach"
@@ -204,9 +239,11 @@ function MessageForm() {
           type="text"
           name="message"
           placeholder="메세지 입력"
+          value={message}
+          onChange={onChange}
         />
       </div>
-      <Button type="submit" className="bg-primary px-2.5 py-3">
+      <Button type="submit" className={sendButtonClassName}>
         <img src="/assets/send.svg" title="전송" alt="전송" />
       </Button>
       <Button type="button" className="border-2 border-gold bg-orange px-2.5">

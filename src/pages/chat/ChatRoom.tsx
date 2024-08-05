@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+
 import ChatRoomContainer from '@/components/Chat/ChatRoomContainer';
 
 const {
@@ -20,7 +21,7 @@ export default function ChatRoom() {
         <Title>김영희 님과의 채팅</Title>
         <Messenger>
           <Header>
-            <Link to="../lobby">
+            <Link to="/mypage/chat/lobby">
               <img src="/assets/chevron_left.svg" alt="뒤로 가기" />
             </Link>
             <Profile />
