@@ -28,7 +28,6 @@ export default function Board({
   const pageNumber = Number(searchParams.get('page')) || 0;
   const contents = listData?.content || [];
   const totalPages = listData?.totalPages || 0;
-  console.log('Board 렌더링', boardType);
 
   const getListData = async (boardType: BoardType) => {
     const response = await boardService.getList(boardType, pageNumber, {
@@ -51,7 +50,7 @@ export default function Board({
         <BoardSearchForm categoryList={['제목', '작성자']} />
       </div>
 
-      <BoardList listData={contents} />
+      <BoardList boardType={boardType} listData={contents} />
 
       <div className="mt-3 h-8 text-right">
         {isShowWriteButton && (
