@@ -43,10 +43,6 @@ function SideBar() {
           path: '/mypage/chat/lobby',
         },
         {
-          name: '계약',
-          path: '/mypage/contract',
-        },
-        {
           name: '매칭 기록',
           path: '/mypage/match-record',
         },
