@@ -161,7 +161,7 @@ function ProfileDetailForm({
       return (
         <div className="flex items-center">
           <input
-            {...(register(item.key), { required: true })}
+            {...register(item.key, { required: true })}
             type="date"
             disabled={!isEditable}
             className={`h-[48px] rounded-[7px] border-2 bg-gray-light outline-none ${
