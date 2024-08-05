@@ -54,7 +54,7 @@ export type ProfileResponse = {
     experienceYears: number;
     specialization: string;
     caregiverSignificant: string;
-    isInMatchList: true;
+    isInMatchList: boolean;
     image: string;
   };
 
@@ -76,6 +76,7 @@ export type ProfileResponse = {
     careRequirements: string;
     realCarePlace: string;
     isNok: boolean;
+    isProfilePublic: boolean;
     wantCareStartDate: Date;
     wantCareEndDate: Date;
   };
