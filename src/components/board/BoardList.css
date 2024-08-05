@@ -19,7 +19,7 @@
     /* 제목 너비 */
     & .board-subject {
       @apply flex-1;
-      & span:first-child {
+      & .board-subject-text {
         @apply mr-2 text-left;
       }
     }
@@ -43,11 +43,18 @@
   .board-body {
     @apply hover:bg-gray-light;
 
+    &.notice {
+      @apply bg-blue-50 hover:bg-blue-100;
+    }
+
     &:nth-last-child(n + 2) {
       @apply border-b border-b-gray-light-medium;
     }
     & .board-subject {
       @apply flex;
+      & .board-subject-text.notice {
+        @apply relative ml-8 font-semibold before:absolute before:-left-8 before:h-6 before:w-6 before:bg-[url('/assets/speaker_notice.svg')] before:bg-center before:bg-no-repeat;
+      }
       & a {
         @apply ml-3;
         &:hover span:first-child {

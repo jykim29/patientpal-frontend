@@ -51,7 +51,7 @@ export default function Board({
         <BoardSearchForm categoryList={['제목', '작성자']} />
       </div>
 
-      <BoardList listData={contents} />
+      <BoardList boardType={boardType} listData={contents} />
 
       <div className="mt-3 h-8 text-right">
         {isShowWriteButton && (
