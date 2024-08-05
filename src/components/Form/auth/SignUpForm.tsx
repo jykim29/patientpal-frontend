@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 
 import { SignUpFormData } from '@/types/formData.interface';
-import { Validate } from '@/hooks/useForm';
 import { useModal } from '@/hooks/useModal';
 import {
   FormInput,
@@ -26,43 +25,6 @@ const initialFormData: SignUpFormData = {
   personalInformation: false,
 };
 
-// const validate: Validate<SignUpFormData> = (values) => {
-//   const {
-//     username,
-//     password,
-//     passwordConfirm,
-//     personalInformation,
-//     termOfUse,
-//   } = values;
-//   const regex = {
-//     username: new RegExp('^[a-z0-9]{8,20}$'),
-//     password: new RegExp(
-//       '^(?=.*[a-zA-Z])(?=.*[0-9]|.*[!@#$_-])[A-Za-z0-9!@#$_-]{8,20}$'
-//     ),
-//   };
-//   const errors = new Map();
-
-//   if (!regex.username.test(username))
-//     errors.set(
-//       'username',
-//       '아이디는 알파벳 소문자 또는 숫자가 포함된 8~20자여야 합니다.'
-//     );
-
-//   if (!regex.password.test(password))
-//     errors.set(
-//       'password',
-//       '비밀번호는 영문 필수, 숫자 또는 특수문자(!,@,#,$,_,-)가 포함된 8~20자여야 합니다.'
-//     );
-
-//   if (passwordConfirm.trim() === '' || password !== passwordConfirm)
-//     errors.set('passwordConfirm', '두 비밀번호가 일치하지 않습니다.');
-
-//   if (!termOfUse)
-//     errors.set('termOfUse', 'PatientPal 이용약관에 동의해주세요.');
-//   if (!personalInformation)
-//     errors.set('personalInformation', '개인정보 수집이용에 동의해주세요.');
-//   return errors;
-// };
 type InitialFetchResultState = {
   status: 'SUCCESS' | 'FAILED' | null;
   message: string;
