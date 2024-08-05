@@ -1,8 +1,8 @@
 import React from 'react';
 import MenuTitle from '../components/common/MenuTitle';
-import SearchResult from '../components/SearchPage/SearchResult';
 import SearchByCity from '../components/SearchPage/SearchByCity';
 import SearchByMap from '../components/SearchPage/SearchByMap';
+import { useAuthStore } from '@/store/useAuthStore';
 
 type SearchType = 'map' | 'city';
 
@@ -11,11 +11,15 @@ interface Props {
 }
 
 function SearchPage({ searchType }: Props) {
-  //submit을 props로 전달하기 SearchByCity, SearchByMap에다가
+  const { user } = useAuthStore();
 
   return (
     <main className="flex flex-col justify-center gap-[52px] px-[52px] py-8">
-      <MenuTitle title="간병인 찾기" />
+      {user?.role === 'CAREGIVER' ? (
+        <MenuTitle title="환자 찾기" />
+      ) : (
+        <MenuTitle title="간병인 찾기" />
+      )}
       {searchType === 'city' && <SearchByCity />}
       {searchType === 'map' && <SearchByMap />}
     </main>
