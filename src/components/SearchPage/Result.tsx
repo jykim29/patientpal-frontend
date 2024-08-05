@@ -13,7 +13,7 @@ function Result({ searchResult }: Props) {
   return (
     <div className="flex flex-col gap-3">
       {searchResult.map((item, index) => (
-        <ResultItem user={item} key={index} />
+        <ResultItem searchResult={item} key={index} />
       ))}
     </div>
   );
