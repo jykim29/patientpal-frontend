@@ -164,10 +164,12 @@ export const addCaregiverToMatchList = async (
 export const removePatientFromMatchList = async (
   memberId: string,
   token: string,
+  payload = null,
   config = {}
 ) => {
   const { data, status } = await httpClient.POST(
     API_ENDPOINT.PATIENT.PROFILE.UNREGISTER(memberId),
+    payload,
     {
       ...config,
       headers: {
@@ -182,10 +184,12 @@ export const removePatientFromMatchList = async (
 export const removeCaregiverFromMatchList = async (
   memberId: string,
   token: string,
+  payload = null,
   config = {}
 ) => {
   const { data, status } = await httpClient.POST(
     API_ENDPOINT.CAREGIVER.PROFILE.UNREGISTER(memberId),
+    payload,
     {
       ...config,
       headers: {
