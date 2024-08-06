@@ -3,10 +3,11 @@ import Button from '../common/Button';
 
 interface Props {
   onCompleted: (address: string) => void;
+  isEditable: boolean;
 }
 const SCRIPT_URL =
   '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
-function FindAddressButton({ onCompleted }: Props) {
+function FindAddressButton({ onCompleted, isEditable }: Props) {
   //스크립트 로드 (모든 상황에서 script가 쓰이지 않기 때문에 index.html에 넣지 않는다)
 
   //핸들러
@@ -31,7 +32,12 @@ function FindAddressButton({ onCompleted }: Props) {
   }, []);
 
   return (
-    <Button type="button" className="absolute right-14" onClick={handleOpen}>
+    <Button
+      disabled={!isEditable}
+      type="button"
+      className="absolute right-14"
+      onClick={handleOpen}
+    >
       주소 찾기
     </Button>
   );

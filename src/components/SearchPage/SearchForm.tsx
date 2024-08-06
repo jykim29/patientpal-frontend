@@ -11,6 +11,7 @@ import SearchResultModal from './SearchResultModal';
 
 type SearchFormData = {
   addr: string;
+  addrDetail: string;
   gender: 'MALE' | 'FEMALE';
   name: string;
   experienceYearsGoe?: string;
@@ -19,7 +20,45 @@ type SearchFormData = {
 };
 
 const caregiverForm = [
-  { index: '주소', key: 'addr', type: 'input' },
+  {
+    index: '주소',
+    key: 'addr',
+    array: ['서울'],
+    type: 'select',
+  },
+  {
+    index: '세부 주소',
+    key: 'addrDetail',
+    array: [
+      '모두',
+      '강남구',
+      '강동구',
+      '강북구',
+      '강서구',
+      '관악구',
+      '광진구',
+      '구로구',
+      '금천구',
+      '노원구',
+      '도봉구',
+      '동대문구',
+      '동작구',
+      '마포구',
+      '서대문구',
+      '서초구',
+      '성동구',
+      '성북구',
+      '송파구',
+      '양천구',
+      '영등포구',
+      '용산구',
+      '은평구',
+      '종로구',
+      '중구',
+      '중랑구',
+    ],
+    type: 'select',
+  },
   { index: '성별', key: 'gender', array: ['모두', '남', '여'], type: 'select' },
   { index: '이름', key: 'name', type: 'input' },
   // { index: '키워드', key: 'keyword', type: 'input' },
@@ -43,7 +82,45 @@ const caregiverForm = [
 ];
 
 const patientForm = [
-  { index: '주소', key: 'addr', type: 'input' },
+  {
+    index: '주소',
+    key: 'addr',
+    array: ['서울'],
+    type: 'select',
+  },
+  {
+    index: '세부 주소',
+    key: 'addrDetail',
+    array: [
+      '모두',
+      '강남구',
+      '강동구',
+      '강북구',
+      '강서구',
+      '관악구',
+      '광진구',
+      '구로구',
+      '금천구',
+      '노원구',
+      '도봉구',
+      '동대문구',
+      '동작구',
+      '마포구',
+      '서대문구',
+      '서초구',
+      '성동구',
+      '성북구',
+      '송파구',
+      '양천구',
+      '영등포구',
+      '용산구',
+      '은평구',
+      '종로구',
+      '중구',
+      '중랑구',
+    ],
+    type: 'select',
+  },
   { index: '성별', key: 'gender', array: ['모두', '남', '여'], type: 'select' },
   { index: '이름', key: 'name', type: 'input' },
   {
@@ -91,7 +168,7 @@ const ageMapping = {
   '90대이하': 90,
 };
 
-function SearchForm() {
+function SearchForm({ setCurrentLocation }) {
   const { register, handleSubmit } = useForm<SearchFormData>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchResult, setSearchResult] = useState<any[]>([]);
@@ -106,8 +183,14 @@ function SearchForm() {
 
     try {
       const searchParams: any = {};
-
-      if (data.addr) searchParams.addr = data.addr;
+      console.log(data);
+      if (data.addr && data.addrDetail) {
+        searchParams.addr =
+          data.addrDetail === '모두'
+            ? data.addr
+            : data.addr + ' ' + data.addrDetail;
+        setCurrentLocation(searchParams.addr);
+      }
       if (data.gender && data.gender !== '모두')
         searchParams.gender = data.gender === '남' ? 'MALE' : 'FEMALE';
       if (data.name) searchParams.name = data.name;
