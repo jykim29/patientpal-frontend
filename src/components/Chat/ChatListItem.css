@@ -1,6 +1,6 @@
 @layer components {
   .chat-list-item {
-    @apply flex items-start gap-4;
+    @apply flex w-full items-start gap-4;
     & .profile-image {
       @apply h-10 w-10 rounded-full;
     }
