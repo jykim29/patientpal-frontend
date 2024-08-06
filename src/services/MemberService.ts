@@ -36,10 +36,11 @@ export default class MemberService {
   }
 
   async checkUsername(
+    username: string,
     config: AxiosRequestConfig = {}
   ): Promise<FetchResult<boolean>> {
     const { data, status } = await this.httpClient.GET<boolean>(
-      API_ENDPOINT.MEMBER.CHECK_USERNAME,
+      `${API_ENDPOINT.MEMBER.CHECK_USERNAME}?username=${username}`,
       config
     );
     if (status === API_FAILED) return { data, status: API_FAILED };
