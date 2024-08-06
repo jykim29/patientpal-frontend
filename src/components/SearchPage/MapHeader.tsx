@@ -17,18 +17,39 @@ const mapIndex: MapFormField[] = [
   {
     index: '시/도',
     key: 'city',
-    item: [
-      '서울특별시',
-      '대전광역시',
-      '대구광역시',
-      '부산광역시',
-      '광주광역시',
-    ],
+    item: ['서울'],
   },
   {
     index: '시/군/구',
     key: 'district',
-    item: ['관악구', '중구', '강남구', '동작구', '강서구', '마포구'],
+    item: [
+      '모두',
+      '강남구',
+      '강동구',
+      '강북구',
+      '강서구',
+      '관악구',
+      '광진구',
+      '구로구',
+      '금천구',
+      '노원구',
+      '도봉구',
+      '동대문구',
+      '동작구',
+      '마포구',
+      '서대문구',
+      '서초구',
+      '성동구',
+      '성북구',
+      '송파구',
+      '양천구',
+      '영등포구',
+      '용산구',
+      '은평구',
+      '종로구',
+      '중구',
+      '중랑구',
+    ],
   },
 ];
 function MapHeader({ setSearchResult }) {
@@ -45,11 +66,11 @@ function MapHeader({ setSearchResult }) {
     try {
       const searchParams: any = {};
 
-      // if (data.city && data.district)
-      //   searchParams.addr = data.city + ' ' + data.district;
-
-      //현재 구단위의 주소 검색이 불가능해 임의로 설정했습니다.
-      searchParams.addr = '서울 송파구 감이남로 4';
+      if (data.district === '모두') {
+        searchParams.addr = data.city;
+      } else {
+        searchParams.addr = data.city + ' ' + data.district;
+      }
 
       let response;
       if (role === 'CAREGIVER') {
@@ -72,7 +93,7 @@ function MapHeader({ setSearchResult }) {
         {mapIndex.map((i, index) => (
           <fieldset
             key={index}
-            className="flex items-center gap-5 px-5 text-text-large text-white"
+            className="flex items-center gap-5 px-5 text-white text-text-large"
           >
             <label>{i.index}</label>
             <select
