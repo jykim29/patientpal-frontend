@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { SetStateAction } from 'react';
 import {
   addCaregiverToMatchList,
   addPatientToMatchList,
@@ -8,18 +8,16 @@ import {
 import Button from '@/components/common/Button';
 import { useAuthStore } from '@/store/useAuthStore';
 
-function MatchingListControls() {
-  const [isOnMatchList, setIsOnMatchList] = useState(false);
+interface Props {
+  isInMatchList: boolean;
+  setIsInMatchList: React.Dispatch<SetStateAction<boolean>>;
+}
+
+function MatchingListControls({ isInMatchList, setIsInMatchList }: Props) {
   const { accessToken } = useAuthStore();
   const { user } = useAuthStore();
   const role = user?.role;
   const memberId = user?.memberId;
-  const isCompletedProfile = user?.isCompleteProfile;
-  console.log(memberId, '매칭리스트');
-  useEffect(() => {
-    const onMatchList = localStorage.getItem('isOnMatchList');
-    if (onMatchList !== null) setIsOnMatchList(JSON.parse(onMatchList));
-  }, []);
 
   const handleAddClick = async () => {
     if (!memberId || !accessToken) {
@@ -36,8 +34,7 @@ function MatchingListControls() {
 
     if (response && response.status === 'SUCCESS') {
       alert('매칭리스트에 추가되었습니다.');
-      setIsOnMatchList(true);
-      localStorage.setItem('isOnMatchList', 'true');
+      setIsInMatchList(true);
     }
   };
 
@@ -56,8 +53,7 @@ function MatchingListControls() {
 
     if (response && response.status === 'SUCCESS') {
       alert('매칭리스트에서 삭제되었습니다.');
-      setIsOnMatchList(false);
-      localStorage.setItem('isOnMatchList', 'false');
+      setIsInMatchList(false);
     }
   };
 
@@ -65,18 +61,18 @@ function MatchingListControls() {
     <div className="flex justify-end gap-5">
       <Button
         onClick={handleAddClick}
-        disabled={isOnMatchList}
+        disabled={isInMatchList}
         className={
-          isOnMatchList ? 'cursor-not-allowed bg-gray-500' : 'bg-primary'
+          isInMatchList ? 'cursor-not-allowed bg-gray-500' : 'bg-primary'
         }
       >
         매칭리스트에 등록
       </Button>
       <Button
         onClick={handleRemoveClick}
-        disabled={!isOnMatchList}
+        disabled={!isInMatchList}
         className={
-          !isOnMatchList ? 'cursor-not-allowed bg-gray-500' : 'bg-red-500'
+          !isInMatchList ? 'cursor-not-allowed bg-gray-500' : 'bg-red-500'
         }
       >
         매칭리스트에서 삭제
