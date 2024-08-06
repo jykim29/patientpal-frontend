@@ -104,7 +104,6 @@ export default function SignUpForm() {
 
   const submitCallback = async (formData: SignUpFormData) => {
     const { role, username, password, passwordConfirm } = formData;
-    console.log(formData);
     const { data, status } = await authService.signUp({
       role,
       username,
