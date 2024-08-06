@@ -12,7 +12,6 @@ export default function ContractPDFForm({
 }) {
   const user = useAuthStore((state) => state.user);
   const {
-    type,
     careStartDateTime,
     careEndDateTime,
     isNok,

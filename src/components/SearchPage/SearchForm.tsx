@@ -7,7 +7,7 @@ import {
 } from '@/api/search.api';
 import Button from '../common/Button';
 import { useAuthStore } from '@/store/useAuthStore';
-import SearchResult from './SearchResult';
+import SearchResultModal from './SearchResultModal';
 
 type SearchFormData = {
   addr: string;
@@ -20,19 +20,23 @@ type SearchFormData = {
 
 const caregiverForm = [
   { index: '주소', key: 'addr', type: 'input' },
-  { index: '성별', key: 'gender', array: ['MALE', 'FEMALE'], type: 'select' },
+  { index: '성별', key: 'gender', array: ['모두', '남', '여'], type: 'select' },
   { index: '이름', key: 'name', type: 'input' },
-  { index: '키워드', key: 'keyword', type: 'input' },
+  // { index: '키워드', key: 'keyword', type: 'input' },
   {
     index: '나이',
     key: 'ageLoe',
     array: [
+      '모두',
       '10대이하',
       '20대이하',
       '30대이하',
       '40대이하',
       '50대이하',
       '60대이하',
+      '70대이하',
+      '80대이하',
+      '90대이하',
     ],
     type: 'select',
   },
@@ -40,25 +44,29 @@ const caregiverForm = [
 
 const patientForm = [
   { index: '주소', key: 'addr', type: 'input' },
-  { index: '성별', key: 'gender', array: ['MALE', 'FEMALE'], type: 'select' },
+  { index: '성별', key: 'gender', array: ['모두', '남', '여'], type: 'select' },
   { index: '이름', key: 'name', type: 'input' },
   {
     index: '경력',
     key: 'experienceYearsGoe',
-    array: ['1년이상', '3년이상', '5년이상', '10년이상'],
+    array: ['모두', '1년이상', '3년이상', '5년이상', '10년이상'],
     type: 'select',
   },
-  { index: '키워드', key: 'keyword', type: 'input' },
+  // { index: '키워드', key: 'keyword', type: 'input' },
   {
     index: '나이',
     key: 'ageLoe',
     array: [
+      '모두',
       '10대이하',
       '20대이하',
       '30대이하',
       '40대이하',
       '50대이하',
       '60대이하',
+      '70대이하',
+      '80대이하',
+      '90대이하',
     ],
     type: 'select',
   },
@@ -78,31 +86,17 @@ const ageMapping = {
   '40대이하': 40,
   '50대이하': 50,
   '60대이하': 60,
+  '70대이하': 70,
+  '80대이하': 80,
+  '90대이하': 90,
 };
 
 function SearchForm() {
-  const { register, handleSubmit, getValues } = useForm<SearchFormData>();
-  const [role, setRole] = useState<string | null>('caregiver');
-  const [formFields, setFormFields] = useState<
-    typeof caregiverForm | typeof patientForm
-  >(caregiverForm);
+  const { register, handleSubmit } = useForm<SearchFormData>();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchResult, setSearchResult] = useState<any>([]);
-  const { accessToken } = useAuthStore();
-  console.log(accessToken);
-
-  // useEffect(() => {
-  //   token에서 role 추출
-  //   const decodedToken: any = jwt_decode(token);
-  //   const userRole = decodedToken?.claim?.role;
-  //   setRole(userRole);
-  //   role에 따라 폼 필드 설정
-  //   if (userRole === 'patient') {
-  //     setFormFields(patientForm);
-  //   } else {
-  //     setFormFields(caregiverForm);
-  //   }
-  // }, [token]);
+  const [searchResult, setSearchResult] = useState<any[]>([]);
+  const { accessToken, user } = useAuthStore();
+  const role = user?.role;
 
   const onSubmit: SubmitHandler<SearchFormData> = async (data) => {
     if (!accessToken) {
@@ -114,33 +108,41 @@ function SearchForm() {
       const searchParams: any = {};
 
       if (data.addr) searchParams.addr = data.addr;
-      if (data.gender) searchParams.gender = data.gender;
+      if (data.gender && data.gender !== '모두')
+        searchParams.gender = data.gender === '남' ? 'MALE' : 'FEMALE';
       if (data.name) searchParams.name = data.name;
-      if (data.keyword) searchParams.keyword = data.keyword;
+      // if (data.keyword) searchParams.keyword = data.keyword;
 
-      if (data.experienceYearsGoe) {
+      if (data.experienceYearsGoe && data.experienceYearsGoe !== '모두') {
         searchParams.experienceYearsGoe =
           experienceYearsMapping[
             data.experienceYearsGoe as keyof typeof experienceYearsMapping
           ];
       }
 
-      if (data.ageLoe) {
+      if (data.ageLoe && data.ageLoe !== '모두') {
         searchParams.ageLoe =
           ageMapping[data.ageLoe as keyof typeof ageMapping];
       }
 
-      const response = await getCaregiverSearchResult(
-        accessToken,
-        searchParams
-      );
-
-      setIsModalOpen(true);
-      setSearchResult(response.data.patientProfileList);
+      let response;
+      if (role === 'CAREGIVER') {
+        response = await getCaregiverSearchResult(accessToken, searchParams);
+        setSearchResult(response.data.patientProfileList);
+      } else if (role === 'USER') {
+        response = await getPatientSearchResult(accessToken, searchParams);
+        setSearchResult(response.data.caregiverProfileList);
+      }
     } catch (error) {
       console.error(error);
     }
+    setIsModalOpen(true);
   };
+
+  let formFields;
+  role === 'CAREGIVER'
+    ? (formFields = caregiverForm)
+    : (formFields = patientForm);
 
   return (
     <>
@@ -153,16 +155,14 @@ function SearchForm() {
             key={index}
             className="flex w-full items-center justify-between gap-5 px-5"
           >
-            <label className="w-full text-text-large text-white">
-              {item.index}
-            </label>
+            <label className="text-text-large text-white">{item.index}</label>
             {item.type === 'select' ? (
               <select
                 {...register(item.key, {})}
-                className="w-full rounded-lg px-4 py-[10px]"
+                className="w-[150px] rounded-lg px-4 py-[10px]"
               >
                 {item.array!.map((option, idx) => (
-                  <option key={idx} value={option}>
+                  <option className="w-[150px]" key={idx} value={option}>
                     {option}
                   </option>
                 ))}
@@ -171,7 +171,7 @@ function SearchForm() {
               <input
                 {...register(item.key, {})}
                 type="text"
-                className="w-full rounded-lg px-4 py-[10px]"
+                className="w-[150px] rounded-lg px-4 py-[10px]"
               />
             )}
           </fieldset>
@@ -181,8 +181,7 @@ function SearchForm() {
         </Button>
       </form>
       {isModalOpen && (
-        <SearchResult
-          isModalOpen={isModalOpen}
+        <SearchResultModal
           setIsModalOpen={setIsModalOpen}
           searchResult={searchResult}
         />

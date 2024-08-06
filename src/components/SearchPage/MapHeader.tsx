@@ -2,14 +2,17 @@ import React, { useState } from 'react';
 import Button from '../common/Button';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { SearchMapFormData } from '@/types/formData.interface';
-import SearchResult from './SearchResult';
+import { useAuthStore } from '@/store/useAuthStore';
+import {
+  getCaregiverSearchResult,
+  getPatientSearchResult,
+} from '@/api/search.api';
 type MapFormField = {
   index: string;
   key: keyof SearchMapFormData;
   item: string[];
 };
 
-//받아온 데이터를 zustand로 넘겨주고 searchResult에서 렌더링
 const mapIndex: MapFormField[] = [
   {
     index: '시/도',
@@ -28,12 +31,39 @@ const mapIndex: MapFormField[] = [
     item: ['관악구', '중구', '강남구', '동작구', '강서구', '마포구'],
   },
 ];
-function MapHeader() {
+function MapHeader({ setSearchResult }) {
   const { register, handleSubmit } = useForm<SearchMapFormData>();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const onSubmit: SubmitHandler<SearchMapFormData> = (data) => {
+
+  const { accessToken, user } = useAuthStore();
+  const role = user?.role;
+  const onSubmit: SubmitHandler<SearchMapFormData> = async (data) => {
+    if (!accessToken) {
+      console.log('토큰이 없습니다');
+      return;
+    }
+
+    try {
+      const searchParams: any = {};
+
+      // if (data.city && data.district)
+      //   searchParams.addr = data.city + ' ' + data.district;
+
+      //현재 구단위의 주소 검색이 불가능해 임의로 설정했습니다.
+      searchParams.addr = '서울 송파구 감이남로 4';
+
+      let response;
+      if (role === 'CAREGIVER') {
+        response = await getCaregiverSearchResult(accessToken, searchParams);
+        setSearchResult(response.data.patientProfileList);
+      } else if (role === 'USER') {
+        response = await getPatientSearchResult(accessToken, searchParams);
+        setSearchResult(response.data.caregiverProfileList);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
     console.log(data);
-    setIsModalOpen(true);
   };
 
   return (
@@ -63,12 +93,6 @@ function MapHeader() {
           검색
         </Button>
       </form>
-      {isModalOpen && (
-        <SearchResult
-          setIsModalOpen={setIsModalOpen}
-          isModalOpen={isModalOpen}
-        />
-      )}
     </div>
   );
 }
