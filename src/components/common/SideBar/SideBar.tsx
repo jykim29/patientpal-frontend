@@ -25,8 +25,16 @@ function SideBar() {
       path: '/community/notice',
       icon: <FaUsers className="h-5 w-5" />,
       subMenu: [
-        { name: '공지사항', path: '/community/notice' },
-        { name: '자유게시판', path: '/community/forum' },
+        {
+          name: '공지사항',
+          path: '/community/notice',
+          path2: '/community/notice/view',
+        },
+        {
+          name: '자유게시판',
+          path: '/community/forum',
+          path2: '/community/forum/view',
+        },
       ],
     },
     {
@@ -41,6 +49,7 @@ function SideBar() {
         {
           name: '채팅',
           path: '/mypage/chat/lobby',
+          path2: '/mypage/chat/room',
         },
         {
           name: '매칭 기록',
