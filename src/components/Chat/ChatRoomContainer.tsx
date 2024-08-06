@@ -9,16 +9,6 @@ import { SocketMessage, useChat } from '@/hooks/useChat';
 import Input from '../common/Input';
 import Button from '../common/Button';
 
-interface DummyChatItem {
-  id: number;
-  userId: string;
-  userType: string;
-  username: string;
-  profileImageUrl: string;
-  messageType: string;
-  message: string;
-  createdDate: string;
-}
 interface MessageContextValues {
   isConnected: boolean;
   joinRoom: (roomId: string) => void;
@@ -137,7 +127,6 @@ function ChatListItem({
     </li>
   );
 }
-// const MemoChatListItem = memo(ChatListItem);
 
 function MessengerFooter({ children }: { children: React.ReactNode }) {
   return (
