@@ -6,7 +6,7 @@ function Map({ searchResult }) {
     const container = document.getElementById('map');
     const options = {
       center: new kakao.maps.LatLng(37.5665, 126.978), // 기본 중심 위치를 내 프로필의 주소로 넣으면 어떨까?
-      level: 6,
+      level: 7,
     };
     const map = new kakao.maps.Map(container, options);
     searchResult.forEach((item) => {
