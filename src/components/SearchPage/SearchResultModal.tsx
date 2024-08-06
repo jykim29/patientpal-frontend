@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import SearchResultList from './SearchResultList';
 import Button from '../common/Button';
 import { UserList } from '@/types/searchResult.model';
@@ -12,11 +12,19 @@ function SearchResultModal({ setIsModalOpen, searchResult }: Props) {
   const handleModalClick = () => {
     setIsModalOpen(false);
   };
+
+  useEffect(() => {
+    document.body.classList.add('overflow-hidden');
+    return () => {
+      document.body.classList.remove('overflow-hidden');
+    };
+  }, []);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-10">
-      <div className="relative min-h-8 rounded-lg bg-white p-10 shadow-lg">
+      <div className="fixed p-10 bg-white rounded-lg shadow-lg min-h-8">
         <Button
-          className="absolute right-10 top-10 z-10 h-8 w-8 text-white hover:text-white"
+          className="absolute z-10 w-8 h-8 text-white right-10 top-10 hover:text-white"
           onClick={handleModalClick}
         >
           X
