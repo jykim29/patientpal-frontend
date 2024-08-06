@@ -7,6 +7,7 @@ import { FaRegFileLines } from 'react-icons/fa6';
 import { UserList } from '@/types/searchResult.model';
 import { formatGenderToKR } from '@/utils/format';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useNavigate } from 'react-router-dom';
 interface Props {
   searchResult: UserList;
 }
@@ -23,9 +24,15 @@ const Star = (props: Pick<UserList, 'rating'>) => {
 
 function ResultItem({ searchResult }: Props) {
   //신청버튼
-  const handleApply = () => {};
   const { name, address, gender, age, experienceYears, rating } = searchResult;
   const { user } = useAuthStore();
+  const navigate = useNavigate();
+  const handleContractBtn = () => {
+    navigate(`/mypage/contract/write/${user?.memberId}`);
+  };
+  const handleChatBtn = () => {
+    navigate(`/mypage/chat/room/${user?.memberId}`);
+  };
   return (
     <div className="flex items-center justify-between gap-2 rounded-[10px] bg-white px-5 py-3 shadow-sm">
       <div className="flex items-center gap-4">
@@ -63,9 +70,24 @@ function ResultItem({ searchResult }: Props) {
           <Star rating={rating} />
         </ul>
       </div>
-      <Button type="submit" className="w-[80px]" onClick={handleApply}>
-        신청
-      </Button>
+      <div className="flex items-center gap-3">
+        <Button
+          onClick={handleContractBtn}
+          type="button"
+          className="border-2 border-gold bg-orange px-2.5"
+        >
+          <img src="/assets/paper_pencil.svg" title="계약서" alt="계약서" />
+          신청하기
+        </Button>
+        <Button
+          onClick={handleChatBtn}
+          type="submit"
+          className="bg-primary px-2.5 py-3"
+        >
+          <img src="/assets/send.svg" title="전송" alt="전송" />
+          채팅하기
+        </Button>
+      </div>
     </div>
   );
 }
