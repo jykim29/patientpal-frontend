@@ -4,14 +4,26 @@ interface Props {
   itemName: string;
   icon: React.ReactNode;
   path: string;
-  subMenu?: { name: string; path: string }[];
+  subMenu?: { name: string; path: string; path2?: string }[];
 }
 
 function SideBarItems({ itemName, path, icon, subMenu }: Props) {
   const { pathname } = useLocation();
+
+  const getBasePath = (path: string) => {
+    const parts = path.split('/');
+    return parts.slice(0, -1).join('/');
+  };
+
   const isActive =
     pathname === path ||
-    (subMenu && subMenu.some((sub) => pathname === sub.path));
+    (subMenu &&
+      subMenu.some((sub) => {
+        if (!sub.path2) return pathname === sub.path;
+        const basePath = getBasePath(sub.path2);
+        console.log(basePath);
+        return pathname === sub.path || pathname.startsWith(basePath);
+      }));
 
   return (
     <nav className="relative flex w-full flex-col">
@@ -32,15 +44,28 @@ function SideBarItems({ itemName, path, icon, subMenu }: Props) {
       </Link>
       <nav className="flex flex-col gap-3 pl-[52px]">
         {isActive
-          ? subMenu?.map((item, index) => (
-              <Link
-                to={item.path}
-                key={index}
-                className={`${pathname === item.path ? 'text-text-medium text-primary' : 'text-text-medium text-gray-medium'}`}
-              >
-                {item.name}
-              </Link>
-            ))
+          ? subMenu?.map((item, index) => {
+              if (item.path2)
+                return (
+                  <Link
+                    to={item.path}
+                    key={index}
+                    className={`${pathname.startsWith(getBasePath(item.path2)) ? 'text-text-medium text-primary' : 'text-text-medium text-gray-medium'}`}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              else
+                return (
+                  <Link
+                    to={item.path}
+                    key={index}
+                    className={`${pathname === item.path ? 'text-text-medium text-primary' : 'text-text-medium text-gray-medium'}`}
+                  >
+                    {item.name}
+                  </Link>
+                );
+            })
           : ''}
       </nav>
     </nav>
