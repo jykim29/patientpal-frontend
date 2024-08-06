@@ -10,7 +10,7 @@ function SearchByMap() {
   return (
     <div className="w-full">
       <MainTitleIndex size="small" text="지도로 찾기">
-        <section className="flex h-[762px] flex-col rounded-[15px] shadow-sm">
+        <section className="flex h-[662px] flex-col rounded-[15px] shadow-sm">
           <MapHeader setSearchResult={setSearchResult} />
           <Map searchResult={searchResult} />
         </section>
