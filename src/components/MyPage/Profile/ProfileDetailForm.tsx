@@ -126,6 +126,7 @@ function ProfileDetailForm({
           />
           {isEditable && (
             <FindAddressButton
+              isEditable={isEditable}
               onCompleted={(data) => {
                 setValue('address.addr', data.address);
                 setValue('address.zipCode', data.zonecode);
