@@ -6,11 +6,11 @@ import {
   RequestBody,
 } from '@/types/api/board';
 import { API_ENDPOINT, API_FAILED, API_SUCCESS } from '@/constants/api';
-import { HTTPClient, httpClient } from '@/api/httpClient';
+import { HTTPClient } from '@/api/httpClient';
 import { BoardFormData } from '@/types/formData.interface';
 import { FetchResult } from '@/types/api/common';
 
-class BoardService {
+export default class BoardService {
   private httpClient;
   constructor(httpClient: HTTPClient) {
     this.httpClient = httpClient;
@@ -104,5 +104,3 @@ class BoardService {
     return { data: response.data, status: API_SUCCESS };
   }
 }
-
-export const boardService = new BoardService(httpClient);

@@ -8,7 +8,7 @@ import {
 } from '@/components/board';
 import { useAuthStore } from '@/store/useAuthStore';
 import { BoardType, GetListResponse } from '@/types/api/board';
-import { boardService } from '@/services/BoardService';
+import { boardService } from '@/services';
 import { API_FAILED } from '@/constants/api';
 
 export default function Board({

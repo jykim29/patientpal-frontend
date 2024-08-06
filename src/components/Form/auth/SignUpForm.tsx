@@ -11,7 +11,7 @@ import {
   FormCheckbox,
 } from '@/components/Form';
 import Button from '@/components/common/Button';
-import { authService } from '@/services/AuthService';
+import { authService } from '@/services';
 import { FeedbackModal } from '@/components/Modal';
 
 import FormAlertErrorBox from './FormAlertErrorBox';

@@ -22,8 +22,3 @@ export type SignInResponse = {
   access_token: string;
 };
 export type RefreshTokenResponse = { access_token: string };
-export type GetUserDataResponse = {
-  memberId: number;
-  memberName: string;
-  isCompleteProfile: boolean;
-};

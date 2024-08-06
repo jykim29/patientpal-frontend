@@ -3,7 +3,7 @@ import DOMPurify from 'dompurify';
 
 import { PostResponse } from '@/types/api/board';
 import { convertDatetime } from '@/utils/convertDatetime';
-import { boardService } from '@/services/BoardService';
+import { boardService } from '@/services';
 import { useAuthStore } from '@/store/useAuthStore';
 import { API_FAILED } from '@/constants/api';
 

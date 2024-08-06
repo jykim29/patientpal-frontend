@@ -10,7 +10,7 @@ import {
 import { ReactQuillProps } from 'react-quill';
 import { useForm } from 'react-hook-form';
 
-import { boardService } from '@/services/BoardService';
+import { boardService } from '@/services';
 import { useAuthStore } from '@/store/useAuthStore';
 import { API_FAILED } from '@/constants/api';
 import { PostResponse } from '@/types/api/board';
