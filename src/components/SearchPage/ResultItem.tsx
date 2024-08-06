@@ -24,14 +24,15 @@ const Star = (props: Pick<UserList, 'rating'>) => {
 
 function ResultItem({ searchResult }: Props) {
   //신청버튼
-  const { name, address, gender, age, experienceYears, rating } = searchResult;
+  const { name, address, gender, age, experienceYears, rating, id } =
+    searchResult;
   const { user } = useAuthStore();
   const navigate = useNavigate();
   const handleContractBtn = () => {
-    navigate(`/mypage/contract/write/${user?.memberId}`);
+    navigate(`/mypage/contract/write/${id}`);
   };
   const handleChatBtn = () => {
-    navigate(`/mypage/chat/room/${user?.memberId}`);
+    navigate(`/mypage/chat/room/${id}`);
   };
   return (
     <div className="flex items-center justify-between gap-2 rounded-[10px] bg-white px-5 py-3 shadow-sm">
