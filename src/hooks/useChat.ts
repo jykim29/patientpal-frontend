@@ -1,10 +1,16 @@
-import { Client } from '@stomp/stompjs';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { Client } from '@stomp/stompjs';
+
+export interface SocketMessage {
+  content: string;
+  createdAt: number;
+  messageType: string;
+}
 
 export function useChat(stompClient: Client) {
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [messages, setMessages] = useState<{ [key: string]: any }[]>([]);
+  const [messages, setMessages] = useState<SocketMessage[]>([]);
   const { roomId } = useParams();
   const chatRoomId = roomId as string;
 
@@ -14,7 +20,15 @@ export function useChat(stompClient: Client) {
       `/topic/directChat/${roomId}`,
       (message) => {
         console.log('메세지', message);
-        setMessages((prev) => [...prev, JSON.parse(message.body)]);
+        const body = JSON.parse(message.body);
+        setMessages((prev) => [
+          ...prev,
+          {
+            ...body,
+            createdAt: Date.now(), // 임시 속성
+            messageType: message.command, // 임시 속성
+          },
+        ]);
       },
       { id: roomId }
     );

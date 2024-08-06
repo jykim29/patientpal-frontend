@@ -1,8 +1,10 @@
-import { createContext, memo, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { format } from 'date-fns';
 import { twMerge } from 'tailwind-merge';
 
 import { stompClient } from '@/api/stompClient';
-import { useChat } from '@/hooks/useChat';
+import { SocketMessage, useChat } from '@/hooks/useChat';
 
 import Input from '../common/Input';
 import Button from '../common/Button';
@@ -22,56 +24,8 @@ interface MessageContextValues {
   joinRoom: (roomId: string) => void;
   leaveRoom: (roomId: string) => void;
   sendMessage: (message: string) => void;
-  messages: { [key: string]: any }[];
+  messages: SocketMessage[];
 }
-
-const dummyChatData: DummyChatItem[] = [
-  {
-    id: 0,
-    userId: 'chulsoo123',
-    userType: 'USER',
-    username: '이철수',
-    profileImageUrl: '/assets/default_profile_man.png',
-    messageType: 'text',
-    message:
-      '채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다.',
-    createdDate: new Date().toISOString(),
-  },
-  {
-    id: 1,
-    userId: 'chulsoo123',
-    userType: 'USER',
-    username: '이철수',
-    profileImageUrl: '/assets/default_profile_man.png',
-    messageType: 'text',
-    message:
-      '채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다.',
-    createdDate: new Date().toISOString(),
-  },
-  {
-    id: 2,
-    userId: 'younghee456',
-    userType: 'CAREGIVER',
-    username: '김영희',
-    profileImageUrl: '/assets/default_profile_woman.png',
-    messageType: 'text',
-    message:
-      '채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다.',
-    createdDate: new Date().toISOString(),
-  },
-  {
-    id: 3,
-    userId: 'younghee456',
-    userType: 'CAREGIVER',
-    username: '김영희',
-    profileImageUrl: '/assets/default_profile_woman.png',
-    messageType: 'text',
-    message:
-      '채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다. 채팅 메세지입니다.',
-    createdDate: new Date().toISOString(),
-  },
-];
-const tempMyId = 'chulsoo123';
 
 const MessageContext = createContext<MessageContextValues | null>(null);
 
@@ -85,7 +39,7 @@ function useChatContext() {
 function MessageProvider({ children }: { children: React.ReactNode }) {
   const values = useChat(stompClient);
 
-  const memoizeValues = useMemo(() => ({ ...values }), []);
+  const memoizeValues = useMemo(() => ({ ...values }), [values]);
 
   return (
     <MessageContext.Provider value={memoizeValues}>
@@ -95,10 +49,8 @@ function MessageProvider({ children }: { children: React.ReactNode }) {
 }
 
 export default function ChatRoomContainer({
-  chatData = dummyChatData,
   children,
 }: {
-  chatData?: DummyChatItem[];
   children: React.ReactNode;
 }) {
   return <MessageProvider>{children}</MessageProvider>;
@@ -146,47 +98,46 @@ function MessengerBody({ children }: { children: React.ReactNode }) {
 }
 
 function ChatList() {
+  const { messages } = useChatContext();
+  console.log('ChatList rendering', messages);
   return (
     <ul className="flex max-h-[500px] flex-col items-center gap-7 overflow-y-auto px-6 py-8">
-      {dummyChatData.map(
-        ({ id, username, userId, profileImageUrl, message, createdDate }) => (
-          <MemoChatListItem
-            key={id}
-            isMe={userId === tempMyId}
-            data={{ username, message, profileImageUrl, createdDate }}
-          />
-        )
-      )}
+      {messages.map(({ content, createdAt, messageType }) => (
+        <ChatListItem
+          key={crypto.randomUUID()}
+          isMe={true}
+          data={{ content, messageType, createdAt }}
+        />
+      ))}
     </ul>
   );
 }
 
 function ChatListItem({
   isMe,
-  data: { username, profileImageUrl, message, createdDate },
+  data: { content, createdAt },
 }: {
   isMe: boolean;
-  data: {
-    username: string;
-    profileImageUrl: string;
-    message: string;
-    createdDate: string;
-  };
+  data: SocketMessage;
 }) {
   return (
     <li className={`chat-list-item ${isMe ? 'me' : 'other-person'}`}>
-      <img className="profile-image" src={profileImageUrl} alt={username} />
-      <p className="chat-text">{message}</p>
+      <img
+        className="profile-image"
+        src="/assets/default_profile.jpg"
+        alt="unknown"
+      />
+      <p className="chat-text">{content}</p>
       <time
         className="self-end text-text-small text-gray-medium-dark"
-        dateTime={new Date(createdDate).toISOString()}
+        dateTime={new Date(createdAt).toISOString()}
       >
-        18:56
+        {format(createdAt, 'yyyy-MM-dd HH:mm')}
       </time>
     </li>
   );
 }
-const MemoChatListItem = memo(ChatListItem);
+// const MemoChatListItem = memo(ChatListItem);
 
 function MessengerFooter({ children }: { children: React.ReactNode }) {
   return (
@@ -198,6 +149,7 @@ function MessengerFooter({ children }: { children: React.ReactNode }) {
 
 function MessageForm() {
   const { sendMessage } = useChatContext();
+  const { roomId } = useParams();
   const [message, setMessage] = useState<string>('');
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(e.currentTarget.value);
@@ -246,19 +198,21 @@ function MessageForm() {
       <Button type="submit" className={sendButtonClassName}>
         <img src="/assets/send.svg" title="전송" alt="전송" />
       </Button>
-      <Button type="button" className="border-2 border-gold bg-orange px-2.5">
+      <Link
+        to={`/mypage/contract/write/${roomId}`}
+        className="inline-flex items-center justify-center gap-2 rounded-md border-2 border-gold bg-orange px-2.5 py-2.5 text-white transition-all hover:brightness-[0.95] active:brightness-[1.05]"
+      >
         <img src="/assets/paper_pencil.svg" title="계약서 작성" alt="계약서" />
-      </Button>
+      </Link>
     </form>
   );
 }
 
-// 일단 전부 다 memo
-ChatRoomContainer.Title = memo(Title);
-ChatRoomContainer.Messenger = memo(MessengerContainer);
-ChatRoomContainer.Header = memo(MessengerHeader);
-ChatRoomContainer.Body = memo(MessengerBody);
-ChatRoomContainer.Footer = memo(MessengerFooter);
-ChatRoomContainer.Profile = memo(MessengerProfile);
-ChatRoomContainer.ChatList = memo(ChatList);
-ChatRoomContainer.MessageForm = memo(MessageForm);
+ChatRoomContainer.Title = Title;
+ChatRoomContainer.Messenger = MessengerContainer;
+ChatRoomContainer.Header = MessengerHeader;
+ChatRoomContainer.Body = MessengerBody;
+ChatRoomContainer.Footer = MessengerFooter;
+ChatRoomContainer.Profile = MessengerProfile;
+ChatRoomContainer.ChatList = ChatList;
+ChatRoomContainer.MessageForm = MessageForm;
