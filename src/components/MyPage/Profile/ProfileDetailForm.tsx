@@ -1,15 +1,13 @@
-import { IUserInfo } from '@/pages/mypage/ProfilePage';
 import FindAddressButton from '../FindAddressButton';
-import { useForm } from 'react-hook-form';
 import './ProfileDetailForm.css';
 import { useAuthStore } from '@/store/useAuthStore';
-interface Props {
-  item: IUserInfo;
-  register: ReturnType<typeof useForm>['register'];
-  setValue: ReturnType<typeof useForm>['setValue'];
-  isEditMode: boolean;
-  isCompletedProfile: boolean;
-}
+// interface Props<T extends FieldValues> {
+//   item: IUserInfo;
+//   register: UseFormRegister<T>;
+//   setValue: UseFormSetValue<T>;
+//   isEditMode: boolean;
+//   isCompletedProfile: boolean;
+// }
 
 const caregiverEditableKeys = [
   'address.addr',
@@ -41,9 +39,8 @@ function ProfileDetailForm({
   item,
   register,
   setValue,
-  isEditMode,
   isCompletedProfile,
-}: Props) {
+}: any) {
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (item.key === 'residentRegistrationNumber') {
       let value = e.target.value.replace(/[^0-9]/g, '');
@@ -104,7 +101,7 @@ function ProfileDetailForm({
           } w-full pl-2`}
         >
           {item.options &&
-            item.options.map((option) => (
+            item.options.map((option: string) => (
               <option key={option} value={option}>
                 {option}
               </option>

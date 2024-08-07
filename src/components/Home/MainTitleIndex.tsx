@@ -1,6 +1,10 @@
-import React from 'react';
+interface MainTitleIndexProps {
+  text: string;
+  size: 'small' | 'medium' | 'large';
+  children?: React.ReactNode;
+}
 
-function MainTitleIndex({ text, size, children }) {
+function MainTitleIndex({ text, size, children }: MainTitleIndexProps) {
   const sizeVarient = {
     small: 'text-title-small',
     medium: 'text-title-medium',

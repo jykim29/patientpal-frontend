@@ -1,4 +1,3 @@
-import MenuTitle from '@/components/common/MenuTitle';
 import CardMenu from '@/components/MyPage/CardMenu';
 
 function MyPage() {

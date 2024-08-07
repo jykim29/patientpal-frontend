@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import MainTitleIndex from '../Home/MainTitleIndex';
 import MapHeader from './MapHeader';
 import Map from './Map';
 import SearchResultList from './SearchResultList';
+import { UserList } from '@/types/searchResult.model';
 
 function SearchByMap() {
-  const [searchResult, setSearchResult] = useState([]);
+  const [searchResult, setSearchResult] = useState<Partial<UserList>[]>([]);
 
   return (
     <div className="w-full">

@@ -1,4 +1,3 @@
-import React from 'react';
 import { FaCakeCandles, FaCircleUser } from 'react-icons/fa6';
 import { FaStar } from 'react-icons/fa';
 import { BsGenderAmbiguous } from 'react-icons/bs';
@@ -9,13 +8,13 @@ import { formatGenderToKR } from '@/utils/format';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 interface Props {
-  searchResult: UserList;
+  searchResult: Partial<UserList>;
 }
 
 const Star = (props: Pick<UserList, 'rating'>) => {
   return (
     <span className="flex items-center pr-[8px]">
-      {Array.from({ length: props.rating + 1 }).map((item, index) => (
+      {Array.from({ length: props.rating + 1 }).map(() => (
         <FaStar className="h-[17px] w-[17px]" color="F6C002" />
       ))}
     </span>
@@ -24,8 +23,16 @@ const Star = (props: Pick<UserList, 'rating'>) => {
 
 function ResultItem({ searchResult }: Props) {
   //신청버튼
-  const { name, address, gender, age, experienceYears, rating, id } =
-    searchResult;
+  const {
+    name = '이름 없음',
+    address = { addr: '주소 없음' },
+    gender = '성별 없음',
+    age = '나이 정보 없음',
+    experienceYears = '경력 정보 없음',
+    rating = 0,
+    id,
+  } = searchResult;
+
   const { user } = useAuthStore();
   const navigate = useNavigate();
   const handleContractBtn = () => {
@@ -34,6 +41,7 @@ function ResultItem({ searchResult }: Props) {
   const handleChatBtn = () => {
     navigate(`/mypage/chat/room/${id}`);
   };
+
   return (
     <div className="flex items-center justify-between gap-2 rounded-[10px] bg-white px-5 py-3 shadow-sm">
       <div className="flex items-center gap-4">

@@ -1,21 +1,38 @@
-import { CiCircleChevRight } from 'react-icons/ci';
 import { useNavigate } from 'react-router-dom';
 import { FaCircleUser } from 'react-icons/fa6';
 import { FaCakeCandles } from 'react-icons/fa6';
-export const Card = {
+
+interface SmallCardProps {
+  text: string;
+  img: string;
+  index: number;
+}
+
+interface LargeCardProps {
+  index: number;
+  name: string;
+  color: 'gold' | 'silver' | 'bronze';
+}
+
+type CardType = {
+  Small: React.FC<SmallCardProps>;
+  Large: React.FC<LargeCardProps>;
+};
+
+export const Card: CardType = {
   Small: ({ text, img, index }) => {
     const navigate = useNavigate();
-    const moveTo = (index) => {
+    const moveTo = (index: number) => {
       switch (index) {
         case 0:
           navigate('/search');
-          console.log('/search');
+          break;
         case 1:
           navigate('/contract');
-          console.log('contract');
+          break;
         case 2:
           navigate('/community/forum');
-          console.log('forum');
+          break;
       }
     };
 
@@ -30,9 +47,8 @@ export const Card = {
       </div>
     );
   },
-  Medium: () => {},
   Large: ({ index, name, color }) => {
-    const colorVarient = {
+    const colorVarient: Record<'gold' | 'silver' | 'bronze', string> = {
       gold: 'bg-gold',
       silver: 'bg-gray-light-medium',
       bronze: 'bg-light-bronze',

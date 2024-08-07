@@ -1,6 +1,11 @@
 import Button from '@/components/common/Button';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import {
+  SubmitHandler,
+  UseFormRegister,
+  UseFormSetValue,
+  useForm,
+} from 'react-hook-form';
 import { FaUserCircle } from 'react-icons/fa';
 import ProfileDetailForm from './ProfileDetailForm';
 import { useProfile } from '@/hooks/useProfile';
@@ -9,15 +14,12 @@ import {
   ICaregiverEditData,
   IPatientData,
   IPatientEditData,
+  ProfileResponse,
 } from '@/types/api/profile';
-import {
-  addCaregiverToMatchList,
-  addPatientToMatchList,
-  getCaregiverProfile,
-  getPatientProfile,
-} from '@/api/profile.api';
+import { getCaregiverProfile, getPatientProfile } from '@/api/profile.api';
 import MatchingListControls from './MatchingListControls';
 import { useAuthStore } from '@/store/useAuthStore';
+import { ErrorResponse } from '@/types/api/common';
 
 export interface IUserInfo {
   label: string;
@@ -219,8 +221,20 @@ const caregiverInfoList: IUserInfo[] = [
   },
 ];
 
+type DataType =
+  | ProfileResponse['caregiver']
+  | ProfileResponse['patient']
+  | ErrorResponse;
+
+interface ProfileData {
+  data: DataType;
+  status: string;
+}
+
 function ProfileModifyForm() {
-  const { register, handleSubmit, reset, setValue } = useForm();
+  const { register, handleSubmit, reset, setValue } = useForm<
+    ICaregiverData | IPatientData
+  >();
   const {
     registerCaregiver,
     registerPatient,
@@ -235,33 +249,48 @@ function ProfileModifyForm() {
   const [isInMatchList, setIsInMatchList] = useState<boolean>(false);
   const { user } = useAuthStore();
   const memberId = user?.memberId;
-  const isCompletedProfile = user?.isCompleteProfile;
-  console.log(user);
+  const isCompletedProfile: boolean = user?.isCompleteProfile ?? false;
   useEffect(() => {
+    if (memberId === undefined) {
+      throw new Error('memberId가 필요하다');
+    }
+
     if (isCompletedProfile) {
       setButtonLabel('수정');
       // 역할에 따라 프로필 가져오기
       const fetchData = async () => {
-        let profileData;
+        let profileData: ProfileData = { data: {}, status: '' };
         if (role === 'CAREGIVER') {
           profileData = await getCaregiverProfile(memberId, accessToken);
-          setIsInMatchList(profileData.data.isInMatchList);
+          if ('isInMatchList' in profileData.data) {
+            setIsInMatchList(
+              (profileData.data as ProfileResponse['caregiver']).isInMatchList
+            );
+          }
         } else if (role === 'USER') {
           profileData = await getPatientProfile(memberId, accessToken);
-          setIsInMatchList(profileData.data.isProfilePublic);
+          if ('isProfilePublic' in profileData.data) {
+            setIsInMatchList(
+              (profileData.data as ProfileResponse['patient']).isProfilePublic
+            );
+          }
         }
+
         if (profileData && profileData.data) {
-          const data = profileData.data;
-          data.gender = data.gender === 'MALE' ? '남' : '여';
-          reset(data);
+          const data: DataType = profileData.data;
+          if ('gender' in data) {
+            data.gender = data.gender === 'MALE' ? '남' : '여';
+            reset(data);
+          }
         }
       };
       fetchData();
     }
   }, [role, reset, getCaregiverProfile, getPatientProfile]);
 
-  const onSubmit = async (data: ICaregiverData | IPatientData) => {
-    console.log('입력한 데이터 형식', data);
+  const onSubmit: SubmitHandler<ICaregiverData | IPatientData> = async (
+    data: ICaregiverData | IPatientData
+  ) => {
     const isNok = !!(
       (data as IPatientData).nokName && (data as IPatientData).nokContact
     );
@@ -414,8 +443,16 @@ function ProfileModifyForm() {
                         {/* 수정할때 다른 값도 수정되는 문제 */}
                         <ProfileDetailForm
                           item={item}
-                          register={register}
-                          setValue={setValue}
+                          register={
+                            register as UseFormRegister<
+                              ICaregiverData | IPatientData
+                            >
+                          }
+                          setValue={
+                            setValue as UseFormSetValue<
+                              ICaregiverData | IPatientData
+                            >
+                          }
                           isEditMode={isEditMode}
                           isCompletedProfile={isCompletedProfile}
                         />

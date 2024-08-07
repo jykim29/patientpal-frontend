@@ -1,5 +1,4 @@
 import ProfileModifyForm from '@/components/MyPage/Profile/ProfileModifyForm';
-import Button from '@/components/common/Button';
 
 function ProfilePage() {
   return (
