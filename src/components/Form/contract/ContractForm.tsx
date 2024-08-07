@@ -29,15 +29,6 @@ const initialContractFormData: ContractFormData = {
   },
 };
 
-/*
-  TODO : 넣어야 할 기능
-  1. user role에 따라 폼 내용 조건부 렌더링 ✅
-  2. user role에 따라 전송 API 분기 ✅
-  3. 유효성 검증 후 submit 성공✅
-  4. 모달을 통해 계약서 디자인에 데이터 바인딩 후 최종 의사 결정⏩
-  5. 최종적으로 전송
-*/
-
 export default function ContractForm({ memberId = '' }: { memberId?: string }) {
   const { accessToken, user } = useAuthStore();
   const myRole = user?.role as UserRole;
