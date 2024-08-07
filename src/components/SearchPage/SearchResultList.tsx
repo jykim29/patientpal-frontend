@@ -1,10 +1,9 @@
-import React from 'react';
 import MainTitleIndex from '../Home/MainTitleIndex';
 import Result from './Result';
 import { UserList } from '@/types/searchResult.model';
 
 interface Props {
-  searchResult: UserList[];
+  searchResult: Partial<UserList>[];
 }
 
 function SearchResultList({ searchResult }: Props) {

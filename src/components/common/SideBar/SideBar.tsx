@@ -1,12 +1,4 @@
-import {
-  FaHouse,
-  FaMagnifyingGlass,
-  FaUsers,
-  FaCommentDots,
-  FaFileSignature,
-  FaGear,
-  FaUser,
-} from 'react-icons/fa6';
+import { FaMagnifyingGlass, FaUsers, FaUser } from 'react-icons/fa6';
 import SideBarItems from './SideBarItems';
 
 function SideBar() {

@@ -1,18 +1,27 @@
 import { API_ENDPOINT } from '@/constants/api';
 import { httpClient } from './httpClient';
+import { UserList } from '@/types/searchResult.model';
 
-interface FetchSearchParams {
-  sort?: string | null;
+interface PatientSearchResponse {
+  data: {
+    patientProfileList: Partial<UserList>[];
+  };
+  status: 'SUCCESS' | 'FAILED';
 }
 
-interface FetchSearchResultResponse {}
+interface CaregiverSearchResponse {
+  data: {
+    caregiverProfileList: Partial<UserList>[];
+  };
+  status: 'SUCCESS' | 'FAILED';
+}
 
 const getPatientSearchResult = async (
   token: string,
   searchParams = {},
   config = {}
-) => {
-  const { data, status } = await httpClient.GET(
+): Promise<CaregiverSearchResponse> => {
+  const { data, status } = (await httpClient.GET<CaregiverSearchResponse>(
     API_ENDPOINT.PATIENT.PROFILE.SEARCH,
     {
       ...config,
@@ -21,7 +30,7 @@ const getPatientSearchResult = async (
         Authorization: `Bearer ${token}`,
       },
     }
-  );
+  )) as CaregiverSearchResponse;
 
   return { data, status };
 };
@@ -30,8 +39,8 @@ const getCaregiverSearchResult = async (
   token: string,
   searchParams = {},
   config = {}
-) => {
-  const { data, status } = await httpClient.GET(
+): Promise<PatientSearchResponse> => {
+  const { data, status } = (await httpClient.GET(
     API_ENDPOINT.CAREGIVER.PROFILE.SEARCH,
     {
       ...config,
@@ -40,7 +49,7 @@ const getCaregiverSearchResult = async (
         Authorization: `Bearer ${token}`,
       },
     }
-  );
+  )) as PatientSearchResponse;
 
   return { data, status };
 };

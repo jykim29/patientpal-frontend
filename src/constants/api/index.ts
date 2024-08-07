@@ -39,11 +39,11 @@ export const API_ENDPOINT = Object.freeze({
   CAREGIVER: {
     PROFILE: {
       CREATE: '/caregiver/profile', // 간병인 프로필 생성
-      INFO: (memberId: string) => `/caregiver/profile/${memberId}`, // 간병인 프로필 조회/수정
+      INFO: (memberId: number) => `/caregiver/profile/${memberId}`, // 간병인 프로필 조회/수정
       SEARCH: '/caregiver/search', // 간병인 프로필 검색
-      UNREGISTER: (memberId: string) =>
+      UNREGISTER: (memberId: number) =>
         `/caregiver/profile/${memberId}/unregister/toMatchList`, // 간병인 프로필 매칭리스트에서 제거
-      REGISTER: (memberId: string) =>
+      REGISTER: (memberId: number) =>
         `/caregiver/profile/${memberId}/register/toMatchList`, // 간병인 프로필 매칭리스트에 추가
     },
     GENERATE_S3_PRESIGNED_URL: '/caregiver/presigned',
@@ -51,11 +51,11 @@ export const API_ENDPOINT = Object.freeze({
   PATIENT: {
     PROFILE: {
       CREATE: '/patient/profile', // 환자 프로필 생성
-      INFO: (memberId: string) => `/patient/profile/${memberId}`, // 환자 프로필 조회/수정
+      INFO: (memberId: number) => `/patient/profile/${memberId}`, // 환자 프로필 조회/수정
       SEARCH: '/patient/search', // 환자 프로필 검색
-      UNREGISTER: (memberId: string) =>
+      UNREGISTER: (memberId: number) =>
         `/patient/profile/${memberId}/unregister/toMatchList`, // 환자 프로필 매칭리스트에서 제거
-      REGISTER: (memberId: string) =>
+      REGISTER: (memberId: number) =>
         `/patient/profile/${memberId}/register/toMatchList`, // 환자 프로필 매칭리스트에 추가
     },
     GENERATE_S3_PRESIGNED_URL: '/patient/presigned',

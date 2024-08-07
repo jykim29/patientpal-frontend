@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { SetStateAction, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 import {
@@ -12,14 +12,21 @@ import SearchResultModal from './SearchResultModal';
 type SearchFormData = {
   addr: string;
   addrDetail: string;
-  gender: 'MALE' | 'FEMALE';
+  gender: '모두' | 'MALE' | 'FEMALE' | '남' | '여';
   name: string;
   experienceYearsGoe?: string;
   keyword: string;
   ageLoe: string;
 };
 
-const caregiverForm = [
+type FormFieldType = {
+  index: string;
+  key: keyof SearchFormData;
+  type: 'select' | 'input';
+  array?: string[];
+};
+
+const caregiverForm: FormFieldType[] = [
   {
     index: '주소',
     key: 'addr',
@@ -81,7 +88,7 @@ const caregiverForm = [
   },
 ];
 
-const patientForm = [
+const patientForm: FormFieldType[] = [
   {
     index: '주소',
     key: 'addr',
@@ -168,7 +175,11 @@ const ageMapping = {
   '90대이하': 90,
 };
 
-function SearchForm({ setCurrentLocation }) {
+interface SearchFormProps {
+  setCurrentLocation: React.Dispatch<SetStateAction<string>>;
+}
+
+function SearchForm({ setCurrentLocation }: SearchFormProps) {
   const { register, handleSubmit } = useForm<SearchFormData>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchResult, setSearchResult] = useState<any[]>([]);

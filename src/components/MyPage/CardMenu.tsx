@@ -1,9 +1,7 @@
 import { FaRegAddressCard } from 'react-icons/fa';
 import { MdOutlineRateReview } from 'react-icons/md';
 import { IoChatboxEllipsesOutline } from 'react-icons/io5';
-import { LuFileSignature } from 'react-icons/lu';
 import { FaRegFile } from 'react-icons/fa6';
-import { LuFileEdit } from 'react-icons/lu';
 import { Link } from 'react-router-dom';
 
 const Category = [
@@ -18,12 +16,6 @@ const Category = [
     icon: <IoChatboxEllipsesOutline className="h-full w-full" />,
     description: 'Provide personal details and how we can reach you',
     link: '/mypage/chat',
-  },
-  {
-    title: '계약',
-    icon: <LuFileSignature className="h-full w-full" />,
-    description: 'Provide personal details and how we can reach you',
-    link: '/community/notice',
   },
   {
     title: '매칭 기록',
@@ -45,6 +37,7 @@ function CardMenu() {
     <>
       {Category.map((item, index) => (
         <Link
+          key={index}
           to={item.link}
           className="flex h-[156px] max-h-[156px] w-[328px] max-w-[328px] cursor-pointer flex-col items-start gap-7 rounded-lg p-4 shadow-lg"
         >
