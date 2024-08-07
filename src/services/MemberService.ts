@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
 
-import { HTTPClient, httpClient } from '@/api/httpClient';
+import { HTTPClient } from '@/api/httpClient';
 import { API_ENDPOINT, API_FAILED, API_SUCCESS } from '@/constants/api';
 import { GetUserDataResponse } from '@/types/api/member';
 import { FetchResult } from '@/types/api/common';
