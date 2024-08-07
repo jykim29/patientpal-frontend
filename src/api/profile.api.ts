@@ -1,16 +1,15 @@
 import {
   ICaregiverData,
+  ICaregiverEditData,
   IPatientData,
-  ModifiedCaregiverData,
-  ModifiedPatientData,
-  ProfileRequestBody,
+  IPatientEditData,
   ProfileResponse,
 } from '@/types/api/profile';
 import { httpClient } from './httpClient';
 import { API_ENDPOINT } from '@/constants/api';
 
 export const getCaregiverProfile = async (
-  memberId: string,
+  memberId: number,
   token: string,
   config = {}
 ) => {
@@ -46,12 +45,12 @@ export const createCaregiverProfile = async (
 };
 
 export const modifyCaregiverProfile = async (
-  memberId: string,
+  memberId: number,
   token: string,
-  modifiedData: ModifiedCaregiverData,
+  modifiedData: ICaregiverEditData,
   config = {}
 ) => {
-  const { data, status } = await httpClient.PATCH(
+  const { data, status } = await httpClient.PATCH<ICaregiverEditData, any>(
     API_ENDPOINT.CAREGIVER.PROFILE.INFO(memberId),
     modifiedData,
     {
@@ -65,7 +64,7 @@ export const modifyCaregiverProfile = async (
 };
 
 export const getPatientProfile = async (
-  memberId: string,
+  memberId: number,
   token: string,
   config = {}
 ) => {
@@ -83,12 +82,12 @@ export const getPatientProfile = async (
 };
 
 export const modifyPatientProfile = async (
-  memberId: string,
+  memberId: number,
   token: string,
-  modifiedData: ModifiedPatientData,
+  modifiedData: IPatientEditData,
   config = {}
 ) => {
-  const { data, status } = await httpClient.PATCH<ModifiedPatientData, any>(
+  const { data, status } = await httpClient.PATCH<IPatientEditData, any>(
     API_ENDPOINT.PATIENT.PROFILE.INFO(memberId),
     modifiedData,
     {
@@ -103,7 +102,7 @@ export const modifyPatientProfile = async (
 };
 
 export const addPatientToMatchList = async (
-  memberId: string,
+  memberId: number,
   token: string,
   payload = null,
   config = {}
@@ -142,7 +141,7 @@ export const createPatientProfile = async (
 };
 
 export const addCaregiverToMatchList = async (
-  memberId: string,
+  memberId: number,
   token: string,
   payload = null,
   config = {}
@@ -162,7 +161,7 @@ export const addCaregiverToMatchList = async (
 };
 
 export const removePatientFromMatchList = async (
-  memberId: string,
+  memberId: number,
   token: string,
   payload = null,
   config = {}
@@ -182,7 +181,7 @@ export const removePatientFromMatchList = async (
 };
 
 export const removeCaregiverFromMatchList = async (
-  memberId: string,
+  memberId: number,
   token: string,
   payload = null,
   config = {}

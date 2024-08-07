@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import Button from '../common/Button';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { SearchMapFormData } from '@/types/formData.interface';
@@ -7,6 +6,8 @@ import {
   getCaregiverSearchResult,
   getPatientSearchResult,
 } from '@/api/search.api';
+import { SetStateAction } from 'react';
+import { UserList } from '@/types/searchResult.model';
 type MapFormField = {
   index: string;
   key: keyof SearchMapFormData;
@@ -52,7 +53,12 @@ const mapIndex: MapFormField[] = [
     ],
   },
 ];
-function MapHeader({ setSearchResult }) {
+
+interface MapHeaderProps {
+  setSearchResult: React.Dispatch<SetStateAction<Partial<UserList>[]>>;
+}
+
+function MapHeader({ setSearchResult }: MapHeaderProps) {
   const { register, handleSubmit } = useForm<SearchMapFormData>();
 
   const { accessToken, user } = useAuthStore();
@@ -93,7 +99,7 @@ function MapHeader({ setSearchResult }) {
         {mapIndex.map((i, index) => (
           <fieldset
             key={index}
-            className="flex items-center gap-5 px-5 text-white text-text-large"
+            className="flex items-center gap-5 px-5 text-text-large text-white"
           >
             <label>{i.index}</label>
             <select

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import Button from '../common/Button';
+import { useState } from 'react';
+
 import { useSearchParams } from 'react-router-dom';
 
 function ResultFilter() {

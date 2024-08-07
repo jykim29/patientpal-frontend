@@ -1,4 +1,4 @@
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 interface Props {
   itemName: string;
@@ -21,7 +21,7 @@ function SideBarItems({ itemName, path, icon, subMenu }: Props) {
       subMenu.some((sub) => {
         if (!sub.path2) return pathname === sub.path;
         const basePath = getBasePath(sub.path2);
-        console.log(basePath);
+
         return pathname === sub.path || pathname.startsWith(basePath);
       }));
 
