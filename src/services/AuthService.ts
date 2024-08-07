@@ -1,9 +1,8 @@
 import { AxiosRequestConfig } from 'axios';
 
-import { HTTPClient, httpClient } from '@/api/httpClient';
+import { HTTPClient } from '@/api/httpClient';
 import { API_ENDPOINT, API_FAILED, API_SUCCESS } from '@/constants/api';
 import {
-  GetUserDataResponse,
   RefreshTokenResponse,
   RequestBody,
   SignInResponse,
@@ -11,16 +10,13 @@ import {
   SignUpResponse,
 } from '@/types/api/auth';
 import { FetchResult } from '@/types/api/common';
-import { decodeTokenPayload } from '@/utils/decodeTokenPayload';
 import { useAuthStore } from './../store/useAuthStore';
 
-class AuthService {
+export default class AuthService {
   private httpClient;
-  private updateData;
   private resetData;
   constructor(httpClient: HTTPClient) {
     this.httpClient = httpClient;
-    this.updateData = useAuthStore.getState().update;
     this.resetData = useAuthStore.getState().reset;
   }
   async signInWithIdPassword(
@@ -84,27 +80,4 @@ class AuthService {
     }
     return { data, status: API_SUCCESS };
   }
-
-  async getUserData(
-    token: string,
-    config: AxiosRequestConfig = {}
-  ): Promise<FetchResult<GetUserDataResponse>> {
-    const { data, status } = await this.httpClient.GET<GetUserDataResponse>(
-      API_ENDPOINT.MEMBER.INFORMATION,
-      config
-    );
-    if (status === API_FAILED) return { data, status: API_FAILED };
-    this.updateData({
-      isLoggedIn: true,
-      accessToken: token,
-      lastLogin: new Date().toISOString(),
-      user: {
-        ...data,
-        role: decodeTokenPayload(token).auth,
-      },
-    });
-    return { data, status: API_SUCCESS };
-  }
 }
-
-export const authService = new AuthService(httpClient);

@@ -7,6 +7,7 @@ export interface SignUpFormData {
   passwordConfirm: string;
   termOfUse: boolean;
   personalInformation: boolean;
+  idDuplicationState: 'require' | 'pass' | 'fail';
 }
 
 export interface SignInFormData {

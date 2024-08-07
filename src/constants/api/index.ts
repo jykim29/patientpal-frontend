@@ -23,6 +23,8 @@ export const API_ENDPOINT = Object.freeze({
   },
   MEMBER: {
     INFORMATION: '/member/information',
+    ISPROFILEPUBLIC: '/member/isProfilePublic',
+    CHECK_USERNAME: '/member/check-username',
   },
   MATCH: {
     USER_INFO: '/matches', // 계약서 생성 위한 요청 정보 조회
