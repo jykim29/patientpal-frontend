@@ -124,10 +124,8 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
           {/* 기간 */}
           <div className="field-group row mt-3">
             <span className="label">기 간</span>
-            <label htmlFor="startDate" className="sr-only">
-              시작 날짜
-            </label>
             <input
+              aria-label="시작 날짜"
               className="input"
               type="date"
               id="startDate"
@@ -151,10 +149,8 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
               })}
             />
             <span>~</span>
-            <label htmlFor="endDate" className="sr-only">
-              종료 날짜
-            </label>
             <input
+              aria-label="종료 날짜"
               className="input"
               type="date"
               id="endDate"
@@ -176,6 +172,7 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
             <div className="field-group row mt-3">
               <span className="label">장 소</span>
               <input
+                aria-label="장소"
                 className="input w-36"
                 type="text"
                 id="realCarePlace"
@@ -183,19 +180,14 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
                   required: '장소를 입력해주세요.',
                 })}
               />
-              <label htmlFor="realCarePlace" className="sr-only">
-                자택
-              </label>
             </div>
           )}
 
           {/* 금액 */}
           <div className="field-group row mt-3">
             <span className="label">금 액</span>
-            <label className="sr-only" htmlFor="totalAmount">
-              금액
-            </label>
             <input
+              aria-label="금액"
               className="input w-28 text-right"
               type="number"
               id="totalAmount"
@@ -203,11 +195,8 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
               {...register('totalAmount', {
                 required: '금액을 입력해주세요.',
                 validate: {
-                  minValue: (value) => {
-                    if (Number(value) <= 0)
-                      return '금액은 0원보다 높아야 합니다.';
-                    return true;
-                  },
+                  minValue: (value) =>
+                    Number(value) > 0 || '금액은 0원보다 높아야 합니다.',
                 },
               })}
             />
@@ -217,10 +206,8 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
           {/* 특이사항 */}
           <div className="field-group col mt-3">
             <span className="label">특이사항</span>
-            <label htmlFor="significant" className="sr-only">
-              특이사항
-            </label>
             <textarea
+              aria-label="특이사항"
               className="mt-2 block w-full resize-none rounded-lg border border-gray-medium p-2 outline-none focus-within:border-primary"
               id="significant"
               rows={5}
