@@ -40,7 +40,6 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
     register,
     handleSubmit,
     getValues,
-    setError,
     formState: { errors },
   } = useForm({
     defaultValues: {

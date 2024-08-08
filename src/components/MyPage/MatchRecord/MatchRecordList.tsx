@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { format, differenceInCalendarDays } from 'date-fns';
 
 import { MatchItem } from '@/types/api/match';
@@ -8,7 +7,8 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { useModal } from '@/hooks/useModal';
 import { API_FAILED } from '@/constants/api';
 import { matchService } from '@/services/MatchService';
-import { ContractViewModal } from '@/components/Modal';
+import { ContractViewModal, FeedbackModal } from '@/components/Modal';
+import ReviewWriteModal from '@/components/Modal/ReviewWriteModal';
 
 type MatchList = {
   all?: MatchItem[];
@@ -102,7 +102,7 @@ const matchStatusContents: MatchStatusContents = {
       label: '완료',
       textColor: 'text-naver',
       actionButton: {
-        bgColor: 'bg-oragne',
+        bgColor: 'bg-orange',
         label: '후기 작성',
         imgSrc: '/assets/contract_search.svg',
         eventType: 'review',
@@ -139,7 +139,7 @@ const matchStatusContents: MatchStatusContents = {
       label: '완료',
       textColor: 'text-naver',
       actionButton: {
-        bgColor: 'bg-oragne',
+        bgColor: 'bg-orange',
         label: '후기 작성',
         imgSrc: '/assets/contract_search.svg',
         eventType: 'review',
@@ -147,12 +147,17 @@ const matchStatusContents: MatchStatusContents = {
     },
   },
 };
-export default function MatchRecordList({ listData }: { listData: MatchList }) {
+export default function MatchRecordList({
+  listData,
+  revalidate,
+}: {
+  listData: MatchList;
+  revalidate: () => Promise<void>;
+}) {
   const { openModal, createModal } = useModal();
-  const { accessToken } = useAuthStore();
+  const { accessToken, user } = useAuthStore();
   const [filter, setFilter] = useState<DivisionKey>('all');
   const [matchId, setMatchId] = useState<number>(0);
-  const navigate = useNavigate();
 
   let filteredItems: MatchItem[] = listData[filter] || [];
   if (filter === 'all')
@@ -161,36 +166,69 @@ export default function MatchRecordList({ listData }: { listData: MatchList }) {
         new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
     );
 
-  const contractViewModal = createModal(
-    { modalName: 'contract' },
-    <ContractViewModal matchId={matchId} />
-  );
-
-  const handleClick =
+  const handleClickOpenModal =
     (eventType: 'contract' | 'cancel' | 'review', matchId: number) =>
     async () => {
-      const axiosConfig = {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      };
+      setMatchId(matchId);
       // 계약서 조회
-      if (eventType === 'contract') {
-        setMatchId(matchId);
-        openModal('contract');
-      }
+      if (eventType === 'contract') openModal('contract-view');
+
       // 매칭 취소
-      if (eventType === 'cancel') {
-        if (!confirm('매칭을 취소하시겠습니까?')) return;
-        const cancelResponse = await matchService.cancelContract(
-          matchId,
-          axiosConfig
-        );
-        if (cancelResponse.status === API_FAILED)
-          return alert(cancelResponse.data.message);
-        return navigate('/mypage/match-record', { replace: true });
-      }
+      if (eventType === 'cancel') openModal('contract-cancel');
+
+      // 리뷰 작성
+      if (eventType === 'review') openModal('contract-review');
     };
+
+  const handleClickAccept = async (matchId: number) => {
+    const { data, status } = await matchService.acceptContract(matchId, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    if (status === API_FAILED) return alert(data.message);
+    return revalidate();
+  };
+  const handleClickCancel = async () => {
+    const cancelResponse = await matchService.cancelContract(matchId, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    if (cancelResponse.status === API_FAILED)
+      return alert(cancelResponse.data.message);
+    return revalidate();
+  };
+  const contractViewModal = createModal(
+    { modalName: 'contract-view' },
+    <ContractViewModal matchId={matchId} />
+  );
+  const contractCancelModal = createModal(
+    { modalName: 'contract-cancel' },
+    <FeedbackModal
+      iconType="question"
+      buttonType="confirm-cancel"
+      onConfirm={handleClickCancel}
+    >
+      매칭 신청을 취소하시겠습니까?
+    </FeedbackModal>
+  );
+  const contractAcceptModal = createModal(
+    { modalName: 'contract-accept' },
+    <FeedbackModal
+      iconType="question"
+      buttonType="confirm-cancel"
+      onConfirm={() => {
+        handleClickAccept(matchId);
+      }}
+    >
+      정말 수락하시겠습니까?
+    </FeedbackModal>
+  );
+  const contractReviewModal = createModal(
+    { modalName: 'contract-review' },
+    <ReviewWriteModal />
+  );
   return (
     <>
       <MatchRecordFilter
@@ -238,9 +276,9 @@ export default function MatchRecordList({ listData }: { listData: MatchList }) {
                     differenceInCalendarDays(Date.now(), careStartDateTime)
                   );
                   const dDay =
-                    leftDayCount > 0
+                    leftDayCount < 0
                       ? ''
-                      : leftDayCount < 0
+                      : leftDayCount > 0
                         ? `(D - ${leftDayCount})`
                         : leftDayCount === 0
                           ? '(당일)'
@@ -250,7 +288,10 @@ export default function MatchRecordList({ listData }: { listData: MatchList }) {
                     <Button
                       className={`flex h-full items-center px-2 py-0 ${buttonProps?.bgColor || ''}`}
                       type="button"
-                      onClick={handleClick(buttonProps.eventType, matchId)}
+                      onClick={handleClickOpenModal(
+                        buttonProps.eventType,
+                        matchId
+                      )}
                     >
                       <img
                         src={buttonProps?.imgSrc || ''}
@@ -264,7 +305,7 @@ export default function MatchRecordList({ listData }: { listData: MatchList }) {
                   let isShowButton = false;
                   if (matchStatus === 'PENDING') isShowButton = true;
                   if (matchStatus === 'ACCEPTED') isShowButton = true;
-                  if (matchStatus === 'COMPLETED' && type === 'receive')
+                  if (matchStatus === 'COMPLETED' && user?.role === 'USER')
                     isShowButton = true;
                   const isShowReadStatus =
                     readStatus && matchStatus === 'PENDING';
@@ -330,6 +371,9 @@ export default function MatchRecordList({ listData }: { listData: MatchList }) {
         </div>
       </div>
       {contractViewModal}
+      {contractAcceptModal}
+      {contractCancelModal}
+      {contractReviewModal}
     </>
   );
 }
