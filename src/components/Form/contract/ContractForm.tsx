@@ -1,7 +1,9 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
 
 import Button from '@/components/common/Button';
+import { FeedbackModal } from '@/components/Modal';
 import { ContractFormData } from '@/types/formData.interface';
 import { UserRole } from '@/types/user';
 import { SendRequestBody } from '@/types/api/match';
@@ -9,16 +11,17 @@ import { convertDatetime } from '@/utils/convertDatetime';
 import { matchService } from '@/services/MatchService';
 import { useAuthStore } from '@/store/useAuthStore';
 import { API_FAILED } from '@/constants/api';
+import { useModal } from '@/hooks/useModal';
 
 import FormAlertErrorBox from '../auth/FormAlertErrorBox';
 
 const initialContractFormData: ContractFormData = {
   USER: {
-    careStartDateTime: convertDatetime(new Date().getTime())[0],
+    careStartDateTime: format(new Date(), 'yyyy-MM-dd'),
     careEndDateTime: '',
     totalAmount: 0,
     significant: '',
-    realCarePlace: 'home',
+    realCarePlace: '',
     isNok: 'false',
   },
   CAREGIVER: {
@@ -31,10 +34,12 @@ const initialContractFormData: ContractFormData = {
 
 export default function ContractForm({ memberId = '' }: { memberId?: string }) {
   const { accessToken, user } = useAuthStore();
+  const { createModal, openModal } = useModal();
   const myRole = user?.role as UserRole;
   const {
     register,
     handleSubmit,
+    getValues,
     setError,
     formState: { errors },
   } = useForm({
@@ -50,15 +55,7 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
     data: ContractFormData['USER'] | ContractFormData['CAREGIVER']
   ) => {
     if (memberId === '') return;
-    if (!confirm('정말 전송하시겠습니까?')) return;
-    if (
-      new Date(data.careEndDateTime).getTime() -
-        new Date(data.careStartDateTime).getTime() <
-      0
-    )
-      return setError('root', {
-        message: '시작 날짜와 종료 날짜가 올바르지 않습니다.',
-      });
+
     const requestBody: SendRequestBody['USER'] | SendRequestBody['CAREGIVER'] =
       {
         ...data,
@@ -81,9 +78,8 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
         },
       }
     );
-    if (response?.status === API_FAILED) alert(response.data.message);
-    else alert('계약서 전송이 완료되었습니다.');
-    return navigate('/mypage/match-record', { replace: true });
+    if (response?.status === API_FAILED) return alert(response.data.message);
+    return openModal('contract-success');
   };
 
   return (
@@ -93,7 +89,7 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
         ※ 모든 입력 항목을 빠짐없이 작성해주세요.
       </p>
 
-      <form onSubmit={handleSubmit(submitCallback)}>
+      <form onSubmit={handleSubmit(() => openModal('contract-confirm'))}>
         {errorMessageArray.length > 0 && (
           <FormAlertErrorBox>{errorMessageArray[0]}</FormAlertErrorBox>
         )}
@@ -137,12 +133,20 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
               type="date"
               id="startDate"
               placeholder="시작 날짜"
+              min={format(new Date(), 'yyyy-MM-dd')}
               {...register('careStartDateTime', {
                 required: '시작날짜를 지정해주세요.',
                 validate: {
-                  isValidFormat: (value) => {
+                  validateFormat: (value) => {
                     const date = new Date(value).getTime();
                     return !Number.isNaN(date) || '정상적인 값이 아닙니다.';
+                  },
+                  validateValue: (value) => {
+                    const todayDate = format(new Date(), 'yyyyMMdd');
+                    const inputDate = format(new Date(value), 'yyyyMMdd');
+                    return Number(inputDate) - Number(todayDate) < 0
+                      ? '시작 날짜는 오늘보다 과거일 수 없습니다.'
+                      : true;
                   },
                 },
               })}
@@ -159,7 +163,7 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
               {...register('careEndDateTime', {
                 required: '종료날짜를 지정해주세요.',
                 validate: {
-                  isValidFormat: (value) => {
+                  validateFormat: (value) => {
                     const date = new Date(value).getTime();
                     return !Number.isNaN(date) || '정상적인 값이 아닙니다.';
                   },
@@ -173,26 +177,16 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
             <div className="field-group row mt-3">
               <span className="label">장 소</span>
               <input
-                type="radio"
-                id="home"
-                value="home"
+                className="input w-36"
+                type="text"
+                id="realCarePlace"
                 {...register('realCarePlace', {
-                  validate: {
-                    isValidValue: (value) => {
-                      if (value === 'home' || value === 'hospital') return true;
-                      return '정상적인 값이 아닙니다.';
-                    },
-                  },
+                  required: '장소를 입력해주세요.',
                 })}
               />
-              <label htmlFor="home">자택</label>
-              <input
-                type="radio"
-                id="hospital"
-                value="hospital"
-                {...register('realCarePlace')}
-              />
-              <label htmlFor="hospital">병원</label>
+              <label htmlFor="realCarePlace" className="sr-only">
+                자택
+              </label>
             </div>
           )}
 
@@ -212,7 +206,7 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
                 validate: {
                   minValue: (value) => {
                     if (Number(value) <= 0)
-                      return '금액 설정은 0원 이상부터 가능합니다.';
+                      return '금액은 0원보다 높아야 합니다.';
                     return true;
                   },
                 },
@@ -239,14 +233,31 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
         </div>
 
         <div className="mt-3 flex items-center justify-end gap-2">
-          <Button type="button" className="bg-gray-medium px-3 py-1">
-            임시저장
-          </Button>
           <Button type="submit" className="px-3 py-1">
             전송
           </Button>
         </div>
       </form>
+      {createModal(
+        { modalName: 'contract-confirm' },
+        <FeedbackModal
+          iconType="question"
+          buttonType="confirm-cancel"
+          onConfirm={() => submitCallback(getValues())}
+        >
+          <span className="font-semibold">정말 전송하시겠습니까?</span>
+        </FeedbackModal>
+      )}
+      {createModal(
+        { modalName: 'contract-success', closeOnOverlayClick: false },
+        <FeedbackModal
+          iconType="check"
+          buttonType="confirm"
+          onConfirm={() => navigate('/mypage/match-record', { replace: true })}
+        >
+          <span className="font-semibold">계약서 전송이 완료되었습니다.</span>
+        </FeedbackModal>
+      )}
     </>
   );
 }

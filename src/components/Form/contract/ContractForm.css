@@ -14,7 +14,7 @@
     }
 
     & .input {
-      @apply rounded-lg bg-gray-light p-1 text-gray-medium-dark;
+      @apply rounded-lg bg-gray-light py-1 pl-2 pr-1 text-gray-medium-dark;
     }
   }
 }

@@ -17,6 +17,7 @@ export interface SendRequestBody {
 
 export interface GetMatchUserInfoResponse {
   patientName: string;
+  patientAge: number;
   patientContact: string;
   patientAddress: {
     addr: string;
@@ -29,6 +30,7 @@ export interface GetMatchUserInfoResponse {
   nokName: string;
   nokContact: string;
   caregiverName: string;
+  caregiverAge: number;
   caregiverContact: string;
   caregiverAddress: {
     addr: string;
