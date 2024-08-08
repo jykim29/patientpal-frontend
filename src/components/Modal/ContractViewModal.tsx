@@ -42,8 +42,8 @@ export default function ContractViewModal({ matchId }: { matchId: number }) {
       return data;
     };
 
-    setIsLoading(true);
     (async function () {
+      setIsLoading(true);
       const data = await getData(matchId);
       if (!data) return;
       else setContractData(data);
@@ -53,8 +53,8 @@ export default function ContractViewModal({ matchId }: { matchId: number }) {
       const pdfBlob = new Blob([pdfData], { type: 'application/pdf' });
       const url = URL.createObjectURL(pdfBlob);
       setPdfUrl(url);
+      setIsLoading(false);
     })();
-    setIsLoading(false);
     return () => {
       if (pdfUrl) URL.revokeObjectURL(pdfUrl);
     };
