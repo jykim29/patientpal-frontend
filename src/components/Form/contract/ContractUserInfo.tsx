@@ -50,7 +50,7 @@ export default function ContractUserInfo({
             </li>
             <li className="field-group row border-b border-b-gray-light-medium">
               <span className="label">주 소</span>
-              <span>{`${patientAddress.addr} ${patientAddress.addrDetail}`}</span>
+              <span>{`${patientAddress?.addr ?? ''} ${patientAddress?.addrDetail ?? ''}`}</span>
             </li>
             <li className="field-group row border-b border-b-gray-light-medium">
               <span className="label">연락처</span>
@@ -82,7 +82,7 @@ export default function ContractUserInfo({
             </li>
             <li className="field-group row border-b border-b-gray-light-medium">
               <span className="label">주 소</span>
-              <span>{`${caregiverAddress?.addr}, ${caregiverAddress?.addrDetail}`}</span>
+              <span>{`${caregiverAddress?.addr ?? ''}, ${caregiverAddress?.addrDetail ?? ''}`}</span>
             </li>
             <li className="field-group row border-b border-b-gray-light-medium">
               <span className="label">연락처</span>
