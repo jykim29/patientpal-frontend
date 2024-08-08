@@ -275,10 +275,11 @@ export default function MatchRecordList({
                   const leftDayCount = Math.abs(
                     differenceInCalendarDays(Date.now(), careStartDateTime)
                   );
+                  console.log(leftDayCount);
                   const dDay =
-                    leftDayCount < 0
+                    leftDayCount > 0
                       ? ''
-                      : leftDayCount > 0
+                      : leftDayCount < 0
                         ? `(D - ${leftDayCount})`
                         : leftDayCount === 0
                           ? '(당일)'
