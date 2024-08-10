@@ -20,9 +20,6 @@ export default function ContractWrite() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    /*
-      TODO : 상대방 매칭리스트 등록 여부 & 이미 전송을 했는지 검증 필요
-    */
     const getMatchUserInfo = async (memberId: number) => {
       const response = await matchService.getMatchUserInfo(Number(memberId), {
         headers: {

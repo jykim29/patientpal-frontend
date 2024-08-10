@@ -65,6 +65,11 @@ function MatchRecordPage() {
     };
   };
 
+  const revalidate = async () => {
+    const response = await getData();
+    if (!response) return;
+    setMatchList(response);
+  };
   useEffect(() => {
     getData().then((res) => {
       if (res) return setMatchList(res);
@@ -77,7 +82,7 @@ function MatchRecordPage() {
       {isError ? (
         <span>데이터를 불러올 수 없습니다.</span>
       ) : (
-        <MatchRecordList listData={matchList} />
+        <MatchRecordList listData={matchList} revalidate={revalidate} />
       )}
     </section>
   );
