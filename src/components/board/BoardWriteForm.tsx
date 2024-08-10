@@ -15,6 +15,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { API_FAILED } from '@/constants/api';
 import { PostResponse } from '@/types/api/board';
 import { getBoardType } from '@/utils/getBoardType';
+import { useModal } from '@/hooks/useModal';
 
 import Input from '../common/Input';
 import Button from '../common/Button';
@@ -27,18 +28,20 @@ export default function BoardWriteForm({
   title: string;
   mode: 'write' | 'modify';
 }) {
+  const { alert } = useModal();
   const { accessToken, user } = useAuthStore();
+  const navigate = useNavigate();
   let loaderData = null;
   // 게시글 수정일 때 예외처리
   if (mode === 'modify') {
     loaderData = useLoaderData() as PostResponse;
     if (!loaderData) {
-      alert('게시물을 찾을 수 없습니다.');
+      window.alert('게시물을 찾을 수 없습니다.');
       return <Navigate to=".." replace />;
     }
     const isMyPost = (user?.memberId as number) === loaderData.memberId;
     if (!isMyPost) {
-      alert('권한이 없습니다.');
+      window.alert('권한이 없습니다.');
       return <Navigate to=".." replace />;
     }
   }
@@ -49,24 +52,10 @@ export default function BoardWriteForm({
     },
     reValidateMode: 'onSubmit',
   });
-  const navigate = useNavigate();
   const { postId } = useParams();
   const { pathname } = useLocation();
   const boardType = getBoardType(pathname);
 
-  useEffect(() => {
-    register('content', {
-      validate: {
-        required: (value) => {
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(value, 'text/html');
-          if (doc && doc.body.textContent?.trim().length === 0)
-            return '내용을 입력해주세요.';
-          return true;
-        },
-      },
-    });
-  }, []);
   const handleChangeQuill = useCallback<Required<ReactQuillProps>['onChange']>(
     (value) => {
       return setValue('content', value);
@@ -100,15 +89,32 @@ export default function BoardWriteForm({
         { title, content },
         axiosConfig
       );
-    if (response?.status === API_FAILED) return alert(response.data.message);
+    if (response?.status === API_FAILED)
+      return await alert('warning', response.data.message as string);
     return navigate('..', { replace: true });
   };
+
+  useEffect(() => {
+    register('content', {
+      validate: {
+        required: (value) => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(value, 'text/html');
+          if (doc && doc.body.textContent?.trim().length === 0)
+            return '내용을 입력해주세요.';
+          return true;
+        },
+      },
+    });
+  }, []);
 
   return (
     <form
       onSubmit={handleSubmit(submitCallback, (errors) => {
-        if (errors.title) return alert(errors.title.message);
-        if (errors.content) return alert(errors.content.message);
+        if (errors.title)
+          return alert('warning', errors.title.message as string);
+        if (errors.content)
+          return alert('warning', errors.content.message as string);
       })}
     >
       <div className="flex w-full items-center justify-between">

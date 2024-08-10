@@ -8,13 +8,33 @@ import { GetContractDataResponse } from '@/types/api/match';
 import Button from '../common/Button';
 import { ContractPDFForm } from '../Contract';
 
-export default function ContractViewModal({ matchId }: { matchId: number }) {
+export default function ContractViewModal({
+  matchId,
+  revalidate,
+}: {
+  matchId: number;
+  revalidate: () => Promise<void>;
+}) {
   const [contractData, setContractData] =
     useState<GetContractDataResponse | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { closeAllModal, openModal } = useModal();
+  const { closeAllModal, confirm, alert } = useModal();
   const { accessToken, user } = useAuthStore();
+
+  const handleClickAccept = async (matchId: number) => {
+    if (!(await confirm('매칭 신청을 수락하시겠습니까?'))) return;
+    const { data, status } = await matchService.acceptContract(matchId, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    if (status === API_FAILED)
+      return await alert('warning', data.message as string);
+    await alert('success', '매칭을 수락하였습니다.');
+    closeAllModal();
+    return revalidate();
+  };
 
   useEffect(() => {
     const getData = async (matchId: number) => {
@@ -42,19 +62,23 @@ export default function ContractViewModal({ matchId }: { matchId: number }) {
       return data;
     };
 
+    setIsLoading(true);
     (async function () {
-      setIsLoading(true);
       const data = await getData(matchId);
       if (!data) return;
       else setContractData(data);
       if (data.matchStatus === 'PENDING') return;
       const pdfData = await getPdfUrl(matchId);
-      if (!pdfData) return;
+      if (!pdfData)
+        return await alert(
+          'warning',
+          'PDF파일을 불러올 수 없습니다. 잠시후 다시 시도해주세요.'
+        );
       const pdfBlob = new Blob([pdfData], { type: 'application/pdf' });
       const url = URL.createObjectURL(pdfBlob);
       setPdfUrl(url);
-      setIsLoading(false);
     })();
+    setIsLoading(false);
     return () => {
       if (pdfUrl) URL.revokeObjectURL(pdfUrl);
     };
@@ -90,7 +114,7 @@ export default function ContractViewModal({ matchId }: { matchId: number }) {
                 contractData.matchStatus === 'PENDING' && (
                   <Button
                     type="button"
-                    onClick={() => openModal('contract-accept')}
+                    onClick={() => handleClickAccept(matchId)}
                   >
                     수락
                   </Button>

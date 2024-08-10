@@ -14,7 +14,7 @@ export default function BoardArticle() {
   const { title, content, name, id, createdAt, updatedAt, memberId, postType } =
     useLoaderData() as PostResponse;
   const { accessToken, user } = useAuthStore();
-  const { confirm } = useModal();
+  const { confirm, alert } = useModal();
   const navigate = useNavigate();
   const boardType = postType === 'FREE' ? 'board' : 'notice';
   const boardName = postType === 'FREE' ? '자유게시판' : '공지사항';
@@ -29,7 +29,11 @@ export default function BoardArticle() {
     const response = await boardService.deletePost(boardType, id, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    if (response?.status === API_FAILED) return alert('통신 실패');
+    if (response?.status === API_FAILED)
+      return await alert(
+        'warning',
+        '서버와 통신이 실패했습니다. 잠시 후 다시 시도해주세요.'
+      );
     return navigate('../', { replace: true });
   };
 

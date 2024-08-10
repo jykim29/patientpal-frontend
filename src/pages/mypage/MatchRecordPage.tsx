@@ -67,13 +67,10 @@ function MatchRecordPage() {
 
   const revalidate = async () => {
     const response = await getData();
-    if (!response) return;
-    setMatchList(response);
+    if (response) setMatchList(response);
   };
   useEffect(() => {
-    getData().then((res) => {
-      if (res) return setMatchList(res);
-    });
+    revalidate();
   }, []);
   return (
     <section className="flex flex-col justify-center">
