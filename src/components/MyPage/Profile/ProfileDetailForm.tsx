@@ -40,6 +40,7 @@ function ProfileDetailForm({
   register,
   setValue,
   isCompletedProfile,
+  isEditMode,
 }: any) {
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (item.key === 'residentRegistrationNumber') {
@@ -84,7 +85,7 @@ function ProfileDetailForm({
           onChange={handleFormChange}
           type="text"
           id={item.key}
-          disabled={!isEditable}
+          disabled={!isEditable || !isEditMode}
           maxLength={13}
           className={`relative h-[48px] w-full rounded-[7px] border-2 bg-gray-light outline-none ${
             isEditable ? '' : 'border-transparent'
@@ -95,7 +96,7 @@ function ProfileDetailForm({
       return (
         <select
           {...register(item.key)}
-          disabled={!isEditable}
+          disabled={!isEditable || !isEditMode}
           className={`relative h-[48px] rounded-[7px] border-2 bg-gray-light outline-none ${
             isEditable ? '' : 'border-transparent'
           } w-full pl-2`}
@@ -123,7 +124,7 @@ function ProfileDetailForm({
           />
           {isEditable && (
             <FindAddressButton
-              isEditable={isEditable}
+              isEditable={!isEditable || isEditMode}
               onCompleted={(data) => {
                 setValue('address.addr', data.address);
                 setValue('address.zipCode', data.zonecode);
@@ -154,7 +155,7 @@ function ProfileDetailForm({
             {...register(item.key, { required: true })}
             type="date"
             id={item.key}
-            disabled={!isEditable}
+            disabled={!isEditable || !isEditMode}
             className={`h-[48px] rounded-[7px] border-2 bg-gray-light outline-none ${
               isEditable ? '' : 'border-transparent'
             } w-full pl-2`}
