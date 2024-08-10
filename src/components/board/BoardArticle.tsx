@@ -5,6 +5,7 @@ import { PostResponse } from '@/types/api/board';
 import { convertDatetime } from '@/utils/convertDatetime';
 import { boardService } from '@/services';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useModal } from '@/hooks/useModal';
 import { API_FAILED } from '@/constants/api';
 
 import Button from '../common/Button';
@@ -13,6 +14,7 @@ export default function BoardArticle() {
   const { title, content, name, id, createdAt, updatedAt, memberId, postType } =
     useLoaderData() as PostResponse;
   const { accessToken, user } = useAuthStore();
+  const { confirm } = useModal();
   const navigate = useNavigate();
   const boardType = postType === 'FREE' ? 'board' : 'notice';
   const boardName = postType === 'FREE' ? '자유게시판' : '공지사항';
@@ -22,7 +24,7 @@ export default function BoardArticle() {
   const [updateDate, updateTime] = convertDatetime(updatedAt);
 
   const handleDeletePost = async () => {
-    if (!confirm('정말 삭제하시겠습니까?')) return;
+    if (!(await confirm('정말 삭제하시겠습니까?'))) return;
     if (!isMyPost) return;
     const response = await boardService.deletePost(boardType, id, {
       headers: { Authorization: `Bearer ${accessToken}` },

@@ -13,7 +13,6 @@ import {
 } from '@/components/Form';
 import Button from '@/components/common/Button';
 import { authService, memberService } from '@/services';
-import { FeedbackModal } from '@/components/Modal';
 import { API_FAILED } from '@/constants/api';
 
 import FormAlertErrorBox from './FormAlertErrorBox';
@@ -26,15 +25,6 @@ const initialFormData: SignUpFormData = {
   termOfUse: false,
   personalInformation: false,
   idDuplicationState: 'require',
-};
-
-type InitialFetchResultState = {
-  status: 'SUCCESS' | 'FAILED' | null;
-  message: string;
-};
-const initialFetchResultState: InitialFetchResultState = {
-  status: null,
-  message: '',
 };
 
 export default function SignUpForm() {
@@ -52,11 +42,8 @@ export default function SignUpForm() {
     defaultValues: initialFormData,
     reValidateMode: 'onSubmit',
   });
-  const { createModal, openModal } = useModal();
+  const { alert } = useModal();
   const [step, setStep] = useState<number>(0);
-  const [fetchResult, setFetchResult] = useState<InitialFetchResultState>(
-    initialFetchResultState
-  );
   const navigate = useNavigate();
   const errorMessageArray = Object.values(errors).map(({ message }) => message);
 
@@ -111,9 +98,11 @@ export default function SignUpForm() {
       passwordConfirm,
     });
     if (status === 'FAILED') {
-      setFetchResult({ status, message: data.message as string });
-    } else setFetchResult({ status, message: data.message });
-    return openModal('signUp');
+      alert('warning', data.message as string);
+    }
+    alert('success', data.message as string).then((res) => {
+      if (res) navigate('/auth/signin');
+    });
   };
 
   useEffect(() => {
@@ -337,23 +326,6 @@ export default function SignUpForm() {
           )}
         </div>
       </form>
-      {createModal(
-        {
-          modalName: 'signUp',
-          closeOnOverlayClick: fetchResult.status === 'SUCCESS',
-        },
-        <FeedbackModal
-          iconType={fetchResult.status === 'SUCCESS' ? 'check' : 'warning'}
-          buttonType={fetchResult.status === 'SUCCESS' ? 'confirm' : 'cancel'}
-          onConfirm={() => {
-            navigate('/auth/signin');
-          }}
-        >
-          <span className="break-words font-semibold">
-            {fetchResult.message}
-          </span>
-        </FeedbackModal>
-      )}
     </>
   );
 }
