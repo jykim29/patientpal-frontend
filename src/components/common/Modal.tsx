@@ -64,22 +64,9 @@ function ModalBox({
   className,
   children,
 }: PropsWithChildren<{ className?: string }>) {
-  // const { closeAllModal } = useModal();
   const combinedClassName = twMerge(
     'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white overflow-hidden',
     className
   );
-  return (
-    <div className={combinedClassName}>
-      {/* <button
-        className="absolute right-3 top-3 ml-auto h-4 w-4 bg-[url('/assets/cross_black.svg')] bg-center bg-no-repeat hover:bg-gray-light"
-        type="button"
-        title="창 닫기"
-        onClick={() => closeAllModal()}
-      >
-        <span className="sr-only">창 닫기</span>
-      </button> */}
-      {children}
-    </div>
-  );
+  return <div className={combinedClassName}>{children}</div>;
 }

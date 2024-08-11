@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 
 import Button from '@/components/common/Button';
-import { FeedbackModal } from '@/components/Modal';
 import { ContractFormData } from '@/types/formData.interface';
 import { UserRole } from '@/types/user';
 import { SendRequestBody } from '@/types/api/match';
@@ -34,12 +33,11 @@ const initialContractFormData: ContractFormData = {
 
 export default function ContractForm({ memberId = '' }: { memberId?: string }) {
   const { accessToken, user } = useAuthStore();
-  const { createModal, openModal } = useModal();
+  const { confirm, alert } = useModal();
   const myRole = user?.role as UserRole;
   const {
     register,
     handleSubmit,
-    getValues,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -54,19 +52,21 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
     data: ContractFormData['USER'] | ContractFormData['CAREGIVER']
   ) => {
     if (memberId === '') return;
+    if (!(await confirm('정말 전송하시겠습니까?'))) return;
 
     const requestBody: SendRequestBody['USER'] | SendRequestBody['CAREGIVER'] =
       {
         ...data,
         careStartDateTime: new Date(data.careStartDateTime).toISOString(),
-        careEndDateTime: new Date(data.careEndDateTime).toISOString(),
+        careEndDateTime: new Date(
+          `${data.careEndDateTime}T23:59:59Z`
+        ).toISOString(),
         totalAmount: Number(data.totalAmount),
       };
     if (myRole === 'USER')
       (requestBody as SendRequestBody['USER']).isNok = JSON.parse(
         (data as ContractFormData['USER']).isNok
       );
-
     const response = await matchService.sendContract(
       myRole,
       Number(memberId),
@@ -77,8 +77,10 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
         },
       }
     );
-    if (response?.status === API_FAILED) return alert(response.data.message);
-    return openModal('contract-success');
+    if (response?.status === API_FAILED)
+      return await alert('warning', response.data.message as string);
+    await alert('success', '계약서 전송이 완료되었습니다.');
+    return navigate('/mypage/match-record', { replace: true });
   };
 
   return (
@@ -88,7 +90,7 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
         ※ 모든 입력 항목을 빠짐없이 작성해주세요.
       </p>
 
-      <form onSubmit={handleSubmit(() => openModal('contract-confirm'))}>
+      <form onSubmit={handleSubmit(submitCallback)}>
         {errorMessageArray.length > 0 && (
           <FormAlertErrorBox>{errorMessageArray[0]}</FormAlertErrorBox>
         )}
@@ -224,26 +226,6 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
           </Button>
         </div>
       </form>
-      {createModal(
-        { modalName: 'contract-confirm' },
-        <FeedbackModal
-          iconType="question"
-          buttonType="confirm-cancel"
-          onConfirm={() => submitCallback(getValues())}
-        >
-          <span className="font-semibold">정말 전송하시겠습니까?</span>
-        </FeedbackModal>
-      )}
-      {createModal(
-        { modalName: 'contract-success', closeOnOverlayClick: false },
-        <FeedbackModal
-          iconType="check"
-          buttonType="confirm"
-          onConfirm={() => navigate('/mypage/match-record', { replace: true })}
-        >
-          <span className="font-semibold">계약서 전송이 완료되었습니다.</span>
-        </FeedbackModal>
-      )}
     </>
   );
 }

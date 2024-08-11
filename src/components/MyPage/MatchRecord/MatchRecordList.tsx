@@ -7,7 +7,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { useModal } from '@/hooks/useModal';
 import { API_FAILED } from '@/constants/api';
 import { matchService } from '@/services/MatchService';
-import { ContractViewModal, FeedbackModal } from '@/components/Modal';
+import { ContractViewModal } from '@/components/Modal';
 import ReviewWriteModal from '@/components/Modal/ReviewWriteModal';
 
 type MatchList = {
@@ -154,7 +154,7 @@ export default function MatchRecordList({
   listData: MatchList;
   revalidate: () => Promise<void>;
 }) {
-  const { openModal, createModal } = useModal();
+  const { openModal, createModal, confirm, alert } = useModal();
   const { accessToken, user } = useAuthStore();
   const [filter, setFilter] = useState<DivisionKey>('all');
   const [matchId, setMatchId] = useState<number>(0);
@@ -166,64 +166,34 @@ export default function MatchRecordList({
         new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
     );
 
-  const handleClickOpenModal =
-    (eventType: 'contract' | 'cancel' | 'review', matchId: number) =>
-    async () => {
-      setMatchId(matchId);
-      // 계약서 조회
-      if (eventType === 'contract') openModal('contract-view');
-
-      // 매칭 취소
-      if (eventType === 'cancel') openModal('contract-cancel');
-
-      // 리뷰 작성
-      if (eventType === 'review') openModal('contract-review');
-    };
-
-  const handleClickAccept = async (matchId: number) => {
-    const { data, status } = await matchService.acceptContract(matchId, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    if (status === API_FAILED) return alert(data.message);
-    return revalidate();
-  };
-  const handleClickCancel = async () => {
+  const cancelMatchRequest = async () => {
+    if (!(await confirm('매칭 신청을 취소하시겠습니까?'))) return;
     const cancelResponse = await matchService.cancelContract(matchId, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
     if (cancelResponse.status === API_FAILED)
-      return alert(cancelResponse.data.message);
+      return await alert('warning', cancelResponse.data.message);
+    await alert('success', '매칭 신청이 취소되었습니다.');
     return revalidate();
   };
+
+  const handleClickOpenModal =
+    (eventType: 'contract' | 'cancel' | 'review', matchId: number) =>
+    async () => {
+      setMatchId(matchId);
+      // 계약서 조회
+      if (eventType === 'contract') openModal('contract-view');
+      // 매칭 취소
+      if (eventType === 'cancel') cancelMatchRequest();
+      // 리뷰 작성
+      if (eventType === 'review') openModal('contract-review');
+    };
+
   const contractViewModal = createModal(
     { modalName: 'contract-view' },
-    <ContractViewModal matchId={matchId} />
-  );
-  const contractCancelModal = createModal(
-    { modalName: 'contract-cancel' },
-    <FeedbackModal
-      iconType="question"
-      buttonType="confirm-cancel"
-      onConfirm={handleClickCancel}
-    >
-      매칭 신청을 취소하시겠습니까?
-    </FeedbackModal>
-  );
-  const contractAcceptModal = createModal(
-    { modalName: 'contract-accept' },
-    <FeedbackModal
-      iconType="question"
-      buttonType="confirm-cancel"
-      onConfirm={() => {
-        handleClickAccept(matchId);
-      }}
-    >
-      정말 수락하시겠습니까?
-    </FeedbackModal>
+    <ContractViewModal matchId={matchId} revalidate={revalidate} />
   );
   const contractReviewModal = createModal(
     { modalName: 'contract-review' },
@@ -275,7 +245,6 @@ export default function MatchRecordList({
                   const leftDayCount = Math.abs(
                     differenceInCalendarDays(Date.now(), careStartDateTime)
                   );
-                  console.log(leftDayCount);
                   const dDay =
                     leftDayCount > 0
                       ? ''
@@ -372,8 +341,6 @@ export default function MatchRecordList({
         </div>
       </div>
       {contractViewModal}
-      {contractAcceptModal}
-      {contractCancelModal}
       {contractReviewModal}
     </>
   );
