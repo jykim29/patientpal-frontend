@@ -12,7 +12,7 @@ type CreateModalFunction = (
 ) => JSX.Element | null;
 
 export const useModal = () => {
-  const { setName, clearName } = useModalStore();
+  const { setName, clearName, setDialogState } = useModalStore();
 
   const createModal: CreateModalFunction = (config, Component) => {
     const { modalName, closeOnOverlayClick = false } = config;
@@ -29,8 +29,45 @@ export const useModal = () => {
   }, []);
   const closeAllModal = useCallback(() => {
     document.body.removeAttribute('style');
-    return clearName();
+    clearName();
+    setDialogState(null);
+    return;
   }, []);
 
-  return { createModal, openModal, closeAllModal };
+  const confirm = (message: string): Promise<boolean> =>
+    new Promise((resolve) => {
+      setDialogState({
+        type: 'confirm',
+        message,
+        handleOk: () => {
+          resolve(true);
+          setDialogState(null);
+        },
+        handleCancel: () => {
+          resolve(false);
+          setDialogState(null);
+        },
+      });
+    });
+
+  const alert = (
+    type: 'warning' | 'success',
+    message: string
+  ): Promise<boolean> =>
+    new Promise((resolve) => {
+      setDialogState({
+        type,
+        message,
+        handleOk: () => {
+          resolve(true);
+          setDialogState(null);
+        },
+        handleCancel: () => {
+          resolve(false);
+          setDialogState(null);
+        },
+      });
+    });
+
+  return { createModal, openModal, closeAllModal, confirm, alert };
 };

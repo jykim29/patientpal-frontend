@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
 
 import Button from '@/components/common/Button';
 import { ContractFormData } from '@/types/formData.interface';
@@ -9,16 +10,17 @@ import { convertDatetime } from '@/utils/convertDatetime';
 import { matchService } from '@/services/MatchService';
 import { useAuthStore } from '@/store/useAuthStore';
 import { API_FAILED } from '@/constants/api';
+import { useModal } from '@/hooks/useModal';
 
 import FormAlertErrorBox from '../auth/FormAlertErrorBox';
 
 const initialContractFormData: ContractFormData = {
   USER: {
-    careStartDateTime: convertDatetime(new Date().getTime())[0],
+    careStartDateTime: format(new Date(), 'yyyy-MM-dd'),
     careEndDateTime: '',
     totalAmount: 0,
     significant: '',
-    realCarePlace: 'home',
+    realCarePlace: '',
     isNok: 'false',
   },
   CAREGIVER: {
@@ -29,22 +31,13 @@ const initialContractFormData: ContractFormData = {
   },
 };
 
-/*
-  TODO : 넣어야 할 기능
-  1. user role에 따라 폼 내용 조건부 렌더링 ✅
-  2. user role에 따라 전송 API 분기 ✅
-  3. 유효성 검증 후 submit 성공✅
-  4. 모달을 통해 계약서 디자인에 데이터 바인딩 후 최종 의사 결정⏩
-  5. 최종적으로 전송
-*/
-
 export default function ContractForm({ memberId = '' }: { memberId?: string }) {
   const { accessToken, user } = useAuthStore();
+  const { confirm, alert } = useModal();
   const myRole = user?.role as UserRole;
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -59,27 +52,21 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
     data: ContractFormData['USER'] | ContractFormData['CAREGIVER']
   ) => {
     if (memberId === '') return;
-    if (!confirm('정말 전송하시겠습니까?')) return;
-    if (
-      new Date(data.careEndDateTime).getTime() -
-        new Date(data.careStartDateTime).getTime() <
-      0
-    )
-      return setError('root', {
-        message: '시작 날짜와 종료 날짜가 올바르지 않습니다.',
-      });
+    if (!(await confirm('정말 전송하시겠습니까?'))) return;
+
     const requestBody: SendRequestBody['USER'] | SendRequestBody['CAREGIVER'] =
       {
         ...data,
         careStartDateTime: new Date(data.careStartDateTime).toISOString(),
-        careEndDateTime: new Date(data.careEndDateTime).toISOString(),
+        careEndDateTime: new Date(
+          `${data.careEndDateTime}T23:59:59Z`
+        ).toISOString(),
         totalAmount: Number(data.totalAmount),
       };
     if (myRole === 'USER')
       (requestBody as SendRequestBody['USER']).isNok = JSON.parse(
         (data as ContractFormData['USER']).isNok
       );
-
     const response = await matchService.sendContract(
       myRole,
       Number(memberId),
@@ -90,8 +77,9 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
         },
       }
     );
-    if (response?.status === API_FAILED) alert(response.data.message);
-    else alert('계약서 전송이 완료되었습니다.');
+    if (response?.status === API_FAILED)
+      return await alert('warning', response.data.message as string);
+    await alert('success', '계약서 전송이 완료되었습니다.');
     return navigate('/mypage/match-record', { replace: true });
   };
 
@@ -138,29 +126,33 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
           {/* 기간 */}
           <div className="field-group row mt-3">
             <span className="label">기 간</span>
-            <label htmlFor="startDate" className="sr-only">
-              시작 날짜
-            </label>
             <input
+              aria-label="시작 날짜"
               className="input"
               type="date"
               id="startDate"
               placeholder="시작 날짜"
+              min={format(new Date(), 'yyyy-MM-dd')}
               {...register('careStartDateTime', {
                 required: '시작날짜를 지정해주세요.',
                 validate: {
-                  isValidFormat: (value) => {
+                  validateFormat: (value) => {
                     const date = new Date(value).getTime();
                     return !Number.isNaN(date) || '정상적인 값이 아닙니다.';
+                  },
+                  validateValue: (value) => {
+                    const todayDate = format(new Date(), 'yyyyMMdd');
+                    const inputDate = format(new Date(value), 'yyyyMMdd');
+                    return Number(inputDate) - Number(todayDate) < 0
+                      ? '시작 날짜는 오늘보다 과거일 수 없습니다.'
+                      : true;
                   },
                 },
               })}
             />
             <span>~</span>
-            <label htmlFor="endDate" className="sr-only">
-              종료 날짜
-            </label>
             <input
+              aria-label="종료 날짜"
               className="input"
               type="date"
               id="endDate"
@@ -168,7 +160,7 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
               {...register('careEndDateTime', {
                 required: '종료날짜를 지정해주세요.',
                 validate: {
-                  isValidFormat: (value) => {
+                  validateFormat: (value) => {
                     const date = new Date(value).getTime();
                     return !Number.isNaN(date) || '정상적인 값이 아닙니다.';
                   },
@@ -182,36 +174,22 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
             <div className="field-group row mt-3">
               <span className="label">장 소</span>
               <input
-                type="radio"
-                id="home"
-                value="home"
+                aria-label="장소"
+                className="input w-36"
+                type="text"
+                id="realCarePlace"
                 {...register('realCarePlace', {
-                  validate: {
-                    isValidValue: (value) => {
-                      if (value === 'home' || value === 'hospital') return true;
-                      return '정상적인 값이 아닙니다.';
-                    },
-                  },
+                  required: '장소를 입력해주세요.',
                 })}
               />
-              <label htmlFor="home">자택</label>
-              <input
-                type="radio"
-                id="hospital"
-                value="hospital"
-                {...register('realCarePlace')}
-              />
-              <label htmlFor="hospital">병원</label>
             </div>
           )}
 
           {/* 금액 */}
           <div className="field-group row mt-3">
             <span className="label">금 액</span>
-            <label className="sr-only" htmlFor="totalAmount">
-              금액
-            </label>
             <input
+              aria-label="금액"
               className="input w-28 text-right"
               type="number"
               id="totalAmount"
@@ -219,11 +197,8 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
               {...register('totalAmount', {
                 required: '금액을 입력해주세요.',
                 validate: {
-                  minValue: (value) => {
-                    if (Number(value) <= 0)
-                      return '금액 설정은 0원 이상부터 가능합니다.';
-                    return true;
-                  },
+                  minValue: (value) =>
+                    Number(value) > 0 || '금액은 0원보다 높아야 합니다.',
                 },
               })}
             />
@@ -233,10 +208,8 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
           {/* 특이사항 */}
           <div className="field-group col mt-3">
             <span className="label">특이사항</span>
-            <label htmlFor="significant" className="sr-only">
-              특이사항
-            </label>
             <textarea
+              aria-label="특이사항"
               className="mt-2 block w-full resize-none rounded-lg border border-gray-medium p-2 outline-none focus-within:border-primary"
               id="significant"
               rows={5}
@@ -248,9 +221,6 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
         </div>
 
         <div className="mt-3 flex items-center justify-end gap-2">
-          <Button type="button" className="bg-gray-medium px-3 py-1">
-            임시저장
-          </Button>
           <Button type="submit" className="px-3 py-1">
             전송
           </Button>

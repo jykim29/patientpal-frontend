@@ -1,6 +1,11 @@
 import Button from '@/components/common/Button';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import {
+  SubmitHandler,
+  UseFormRegister,
+  UseFormSetValue,
+  useForm,
+} from 'react-hook-form';
 import { FaUserCircle } from 'react-icons/fa';
 import ProfileDetailForm from './ProfileDetailForm';
 import { useProfile } from '@/hooks/useProfile';
@@ -10,14 +15,14 @@ import {
   IPatientData,
   IPatientEditData,
 } from '@/types/api/profile';
-import {
-  addCaregiverToMatchList,
-  addPatientToMatchList,
-  getCaregiverProfile,
-  getPatientProfile,
-} from '@/api/profile.api';
+import { getCaregiverProfile, getPatientProfile } from '@/api/profile.api';
 import MatchingListControls from './MatchingListControls';
 import { useAuthStore } from '@/store/useAuthStore';
+import {
+  CaregiverInformation,
+  GetUserDataResponse,
+  PatientInformation,
+} from '@/types/api/member';
 
 export interface IUserInfo {
   label: string;
@@ -220,48 +225,56 @@ const caregiverInfoList: IUserInfo[] = [
 ];
 
 function ProfileModifyForm() {
-  const { register, handleSubmit, reset, setValue } = useForm();
+  const { register, handleSubmit, reset, setValue } =
+    useForm<GetUserDataResponse>();
   const {
     registerCaregiver,
     registerPatient,
     modifyCaregiverData,
     modifyPatientData,
-    accessToken,
     role,
   } = useProfile();
-
+  const [currentProfileInfo, setCurrentProfileInfo] = useState<
+    GetUserDataResponse | {}
+  >({});
   const [isEditMode, setIsEditMode] = useState(false);
   const [buttonLabel, setButtonLabel] = useState<string>('등록');
   const [isInMatchList, setIsInMatchList] = useState<boolean>(false);
   const { user } = useAuthStore();
+  console.log(user, user?.role);
   const memberId = user?.memberId;
-  const isCompletedProfile = user?.isCompleteProfile;
-  console.log(user);
+  const isCompletedProfile: boolean = user?.isCompleteProfile ?? false;
   useEffect(() => {
-    if (isCompletedProfile) {
+    if (memberId === undefined) {
+      throw new Error('memberId가 필요하다');
+    }
+    if (user && user.isCompleteProfile) {
+      setCurrentProfileInfo({
+        ...user,
+        gender: user.gender === 'MALE' ? '남' : '여',
+        wantCareEndDate: user.wantCareEndDate?.split('T')[0] || '',
+        wantCareStartDate: user.wantCareStartDate?.split('T')[0] || '',
+      });
+    } else if (user && !user.isCompleteProfile) {
+      setCurrentProfileInfo({
+        ...user,
+        gender: user.gender === null ? '남' : '여',
+      });
+    } else {
+      throw new Error('프로필 정보 에러');
+    }
+    reset(currentProfileInfo);
+
+    if (role === 'CAREGIVER' && isCompletedProfile) {
       setButtonLabel('수정');
-      // 역할에 따라 프로필 가져오기
-      const fetchData = async () => {
-        let profileData;
-        if (role === 'CAREGIVER') {
-          profileData = await getCaregiverProfile(memberId, accessToken);
-          setIsInMatchList(profileData.data.isInMatchList);
-        } else if (role === 'USER') {
-          profileData = await getPatientProfile(memberId, accessToken);
-          setIsInMatchList(profileData.data.isProfilePublic);
-        }
-        if (profileData && profileData.data) {
-          const data = profileData.data;
-          data.gender = data.gender === 'MALE' ? '남' : '여';
-          reset(data);
-        }
-      };
-      fetchData();
+      setIsInMatchList((user as CaregiverInformation).isProfilePublic);
+    } else if (role === 'USER' && isCompletedProfile) {
+      setButtonLabel('수정');
+      setIsInMatchList((user as PatientInformation).isProfilePublic);
     }
   }, [role, reset, getCaregiverProfile, getPatientProfile]);
 
-  const onSubmit = async (data: ICaregiverData | IPatientData) => {
-    console.log('입력한 데이터 형식', data);
+  const onSubmit: SubmitHandler<GetUserDataResponse> = async (data: any) => {
     const isNok = !!(
       (data as IPatientData).nokName && (data as IPatientData).nokContact
     );
@@ -358,6 +371,7 @@ function ProfileModifyForm() {
     reset();
     setIsEditMode(false);
   };
+  console.log(isEditMode);
 
   return (
     <>
@@ -369,14 +383,14 @@ function ProfileModifyForm() {
           <div className="flex items-center gap-[10px]">
             <FaUserCircle className="h-[90px] w-[90px] text-gray-medium" />
             <input
-              className={`w-[70px] bg-transparent text-text-large outline-none ${
-                isEditMode ? 'border-b-2' : 'border-transparent'
-              } text-center`}
+              className={`bg-transparent text-start text-text-large outline-none`}
               {...register('name', { required: true })}
               type="text"
-              disabled={isCompletedProfile}
+              disabled={!isEditMode}
+              placeholder="이름을 입력해주세요"
             />
           </div>
+
           <span className="flex justify-end gap-4">
             {isEditMode ? (
               <>
@@ -414,8 +428,12 @@ function ProfileModifyForm() {
                         {/* 수정할때 다른 값도 수정되는 문제 */}
                         <ProfileDetailForm
                           item={item}
-                          register={register}
-                          setValue={setValue}
+                          register={
+                            register as UseFormRegister<GetUserDataResponse>
+                          }
+                          setValue={
+                            setValue as UseFormSetValue<GetUserDataResponse>
+                          }
                           isEditMode={isEditMode}
                           isCompletedProfile={isCompletedProfile}
                         />
@@ -439,6 +457,7 @@ function ProfileModifyForm() {
                           register={register}
                           setValue={setValue}
                           isEditMode={isEditMode}
+                          buttonLabel={buttonLabel}
                           isCompletedProfile={isCompletedProfile}
                         />
                       </dd>

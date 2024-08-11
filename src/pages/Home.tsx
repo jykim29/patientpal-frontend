@@ -27,7 +27,7 @@ function Home() {
       </div>
       <MainTitleIndex text="서비스 바로가기" size="medium">
         <div className="flex gap-4">
-          {cardSmallItem.img.map((item, index) => {
+          {cardSmallItem.img.map((_, index) => {
             return (
               <Card.Small
                 key={index}
@@ -51,10 +51,12 @@ function Home() {
             return (
               <Card.Large
                 index={index}
-                color={cardLargeItem.color[index]}
+                color={
+                  cardLargeItem.color[index] as 'gold' | 'silver' | 'bronze'
+                }
                 key={index}
                 name={item}
-              ></Card.Large>
+              />
             );
           })}
         </div>

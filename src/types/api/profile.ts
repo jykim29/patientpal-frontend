@@ -13,8 +13,8 @@ export interface ProfileRequestBody {
     experienceYears: number;
     specialization: string;
     caregiverSignificant: string;
-    wantCareStartDate: Date;
-    wantCareEndDate: Date;
+    wantCareStartDate: string;
+    wantCareEndDate: string;
   };
 
   patient: {
@@ -33,8 +33,8 @@ export interface ProfileRequestBody {
     isNok: true;
     nokName: string;
     nokContact: string;
-    wantCareStartDate: Date;
-    wantCareEndDate: Date;
+    wantCareStartDate: string;
+    wantCareEndDate: string;
   };
 }
 
@@ -77,8 +77,8 @@ export type ProfileResponse = {
     realCarePlace: string;
     isNok: boolean;
     isProfilePublic: boolean;
-    wantCareStartDate: Date;
-    wantCareEndDate: Date;
+    wantCareStartDate: string;
+    wantCareEndDate: string;
   };
 };
 
@@ -97,7 +97,7 @@ export interface ICommonData {
   name: string;
   age: number;
   contact: string;
-  gender: 'MALE' | 'FEMALE';
+  gender: string;
   address: IAddress;
   wantCareStartDate: string;
   wantCareEndDate: string;

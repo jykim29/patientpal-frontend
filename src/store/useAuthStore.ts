@@ -1,15 +1,10 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { Role } from '@/types/user';
+import { GetUserDataResponse } from '@/types/api/member';
 
 type InitialState = {
   isLoggedIn: boolean;
-  user: {
-    memberId: number;
-    memberName: string;
-    isCompleteProfile: boolean;
-    role: Role;
-  } | null;
+  user: GetUserDataResponse | null;
   accessToken: string | null;
   lastLogin: string | null;
 };

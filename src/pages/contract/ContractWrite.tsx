@@ -7,6 +7,7 @@ import { API_FAILED } from '@/constants/api';
 import { matchService } from '@/services/MatchService';
 import { GetMatchUserInfoResponse } from '@/types/api/match';
 import { useAuthStore } from '@/store/useAuthStore';
+import { validateObject } from '@/utils/validateObject';
 
 export default function ContractWrite() {
   const { memberId } = useParams();
@@ -20,9 +21,6 @@ export default function ContractWrite() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    /*
-      TODO : 상대방 매칭리스트 등록 여부 & 이미 전송을 했는지 검증 필요
-    */
     const getMatchUserInfo = async (memberId: number) => {
       const response = await matchService.getMatchUserInfo(Number(memberId), {
         headers: {
@@ -35,6 +33,11 @@ export default function ContractWrite() {
       if (res.status === API_FAILED) {
         alert(res.data.message);
         return navigate('/', { replace: true });
+      }
+      const isValidInfo = validateObject(res.data);
+      if (!isValidInfo) {
+        alert('프로필을 등록하지 않은 사용자입니다.');
+        return navigate(-1);
       }
       return setMatchUserInfo(res.data);
     });

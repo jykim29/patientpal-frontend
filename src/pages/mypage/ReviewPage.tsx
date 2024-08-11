@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { AiFillStar } from 'react-icons/ai';
 
 const reviews = [
@@ -33,7 +33,7 @@ function ReviewPage() {
   const [filteredReviews, setFilteredReviews] = useState(reviews);
 
   // 필터링 함수
-  const handleFilterChange = (option) => {
+  const handleFilterChange = (option: string) => {
     setFilter(option);
     switch (option) {
       case 'all':
@@ -44,7 +44,9 @@ function ReviewPage() {
         break;
       case 'latest':
         setFilteredReviews(
-          [...reviews].sort((a, b) => new Date(b.date) - new Date(a.date))
+          [...reviews].sort(
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+          )
         );
         break;
       default:
@@ -53,7 +55,7 @@ function ReviewPage() {
     }
   };
 
-  const renderStars = (rating) => {
+  const renderStars = (rating: number) => {
     const stars = [];
     for (let i = 0; i < 5; i++) {
       if (i < rating) {

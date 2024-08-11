@@ -3,8 +3,9 @@ import DOMPurify from 'dompurify';
 
 import { PostResponse } from '@/types/api/board';
 import { convertDatetime } from '@/utils/convertDatetime';
-import { boardService } from '@/services/BoardService';
+import { boardService } from '@/services';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useModal } from '@/hooks/useModal';
 import { API_FAILED } from '@/constants/api';
 
 import Button from '../common/Button';
@@ -22,6 +23,7 @@ export default function BoardArticle() {
     views,
   } = useLoaderData() as PostResponse;
   const { accessToken, user } = useAuthStore();
+  const { confirm, alert } = useModal();
   const navigate = useNavigate();
   const boardType = postType === 'FREE' ? 'board' : 'notice';
   const boardName = postType === 'FREE' ? '자유게시판' : '공지사항';
@@ -31,12 +33,16 @@ export default function BoardArticle() {
   const [updateDate, updateTime] = convertDatetime(updatedAt);
 
   const handleDeletePost = async () => {
-    if (!confirm('정말 삭제하시겠습니까?')) return;
+    if (!(await confirm('정말 삭제하시겠습니까?'))) return;
     if (!isMyPost) return;
     const response = await boardService.deletePost(boardType, id, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    if (response?.status === API_FAILED) return alert('통신 실패');
+    if (response?.status === API_FAILED)
+      return await alert(
+        'warning',
+        '서버와 통신이 실패했습니다. 잠시 후 다시 시도해주세요.'
+      );
     return navigate('../', { replace: true });
   };
 

@@ -2,9 +2,15 @@ import { useEffect } from 'react';
 import Button from '../common/Button';
 
 interface Props {
-  onCompleted: (address: string) => void;
+  onCompleted: (data: DaumData) => void;
   isEditable: boolean;
 }
+
+interface DaumData {
+  address: string;
+  zonecode: string;
+}
+
 const SCRIPT_URL =
   '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
 function FindAddressButton({ onCompleted, isEditable }: Props) {
@@ -13,8 +19,11 @@ function FindAddressButton({ onCompleted, isEditable }: Props) {
   //핸들러
   const handleOpen = () => {
     new window.daum.Postcode({
-      oncomplete: (data: any) => {
-        onCompleted(data);
+      oncomplete: (data: DaumData) => {
+        onCompleted({
+          address: data.address,
+          zonecode: data.zonecode,
+        });
       },
     }).open();
   };

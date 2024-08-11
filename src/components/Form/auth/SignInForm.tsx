@@ -5,7 +5,7 @@ import { useCookies } from 'react-cookie';
 
 import { SignInFormData } from '@/types/formData.interface';
 import Button from '@/components/common/Button';
-import { authService } from '@/services/AuthService';
+import { authService, memberService } from '@/services';
 import { API_FAILED } from '@/constants/api';
 
 import FormInput from './FormInput';
@@ -41,7 +41,7 @@ export default function SignInForm() {
     });
     if (signInResponse.status === API_FAILED)
       return setLoginErrorMessage(signInResponse.data.message as string);
-    const getUserDataResponse = await authService.getUserData(
+    const getUserDataResponse = await memberService.getUserData(
       signInResponse.data.access_token,
       {
         headers: {

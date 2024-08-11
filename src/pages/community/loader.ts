@@ -1,6 +1,6 @@
 import { LoaderFunction } from 'react-router-dom';
 import { API_FAILED } from '@/constants/api';
-import { boardService } from '@/services/BoardService';
+import { boardService } from '@/services';
 import { useAuthStore } from '@/store/useAuthStore';
 import { getBoardType } from '@/utils/getBoardType';
 

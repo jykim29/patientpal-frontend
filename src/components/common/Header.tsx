@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { FaBell, FaCircle } from 'react-icons/fa6';
 import { twMerge } from 'tailwind-merge';
 import { motion } from 'framer-motion';
-import { FaBell, FaCircle } from 'react-icons/fa6';
+
 import { useAuthStore } from '@/store/useAuthStore';
-import { authService } from '@/services/AuthService';
 import { API_FAILED } from '@/constants/api';
+import { authService } from '@/services';
 import Button from './Button';
 
 type InitialIsShowState = {
@@ -106,11 +107,11 @@ function UserProfile({
       <div className="flex select-none items-center gap-3">
         <img
           className="h-10 w-10 overflow-hidden rounded-full"
-          src="/assets/default_profile.jpg"
+          src={user?.image || '/assets/default_profile.jpg'}
           alt="프로필 사진"
         />
         <p>
-          <strong>{user?.memberName || ''}</strong>님 안녕하세요.
+          <strong>{user?.name || ''}</strong>님 안녕하세요.
         </p>
       </div>
       <div className="relative flex items-center">

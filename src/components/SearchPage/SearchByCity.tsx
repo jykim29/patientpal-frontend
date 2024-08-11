@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import MainTitleIndex from '../Home/MainTitleIndex';
 import SearchForm from './SearchForm';
 
@@ -41,7 +41,7 @@ function SearchByCity() {
   const currentImg = locationList.find(
     (location) => location.title === currentLocation
   );
-  console.log(currentImg, currentLocation, locationList);
+
   return (
     <MainTitleIndex size="small" text="지역별 찾기">
       <div className="flex h-[565px] w-full rounded-[15px] border-[1.5px] shadow-lg">

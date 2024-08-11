@@ -1,10 +1,8 @@
-import React from 'react';
-import Button from '../common/Button';
 import ResultItem from './ResultItem';
 import { UserList } from '@/types/searchResult.model';
 
 interface Props {
-  searchResult: UserList[];
+  searchResult: Partial<UserList>[];
 }
 
 function Result({ searchResult }: Props) {

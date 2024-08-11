@@ -1,15 +1,13 @@
-import { IUserInfo } from '@/pages/mypage/ProfilePage';
 import FindAddressButton from '../FindAddressButton';
-import { useForm } from 'react-hook-form';
 import './ProfileDetailForm.css';
 import { useAuthStore } from '@/store/useAuthStore';
-interface Props {
-  item: IUserInfo;
-  register: ReturnType<typeof useForm>['register'];
-  setValue: ReturnType<typeof useForm>['setValue'];
-  isEditMode: boolean;
-  isCompletedProfile: boolean;
-}
+// interface Props<T extends FieldValues> {
+//   item: IUserInfo;
+//   register: UseFormRegister<T>;
+//   setValue: UseFormSetValue<T>;
+//   isEditMode: boolean;
+//   isCompletedProfile: boolean;
+// }
 
 const caregiverEditableKeys = [
   'address.addr',
@@ -41,9 +39,9 @@ function ProfileDetailForm({
   item,
   register,
   setValue,
-  isEditMode,
   isCompletedProfile,
-}: Props) {
+  isEditMode,
+}: any) {
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (item.key === 'residentRegistrationNumber') {
       let value = e.target.value.replace(/[^0-9]/g, '');
@@ -87,7 +85,7 @@ function ProfileDetailForm({
           onChange={handleFormChange}
           type="text"
           id={item.key}
-          disabled={!isEditable}
+          disabled={!isEditable || !isEditMode}
           maxLength={13}
           className={`relative h-[48px] w-full rounded-[7px] border-2 bg-gray-light outline-none ${
             isEditable ? '' : 'border-transparent'
@@ -98,13 +96,13 @@ function ProfileDetailForm({
       return (
         <select
           {...register(item.key)}
-          disabled={!isEditable}
+          disabled={!isEditable || !isEditMode}
           className={`relative h-[48px] rounded-[7px] border-2 bg-gray-light outline-none ${
             isEditable ? '' : 'border-transparent'
           } w-full pl-2`}
         >
           {item.options &&
-            item.options.map((option) => (
+            item.options.map((option: string) => (
               <option key={option} value={option}>
                 {option}
               </option>
@@ -126,7 +124,7 @@ function ProfileDetailForm({
           />
           {isEditable && (
             <FindAddressButton
-              isEditable={isEditable}
+              isEditable={!isEditable || isEditMode}
               onCompleted={(data) => {
                 setValue('address.addr', data.address);
                 setValue('address.zipCode', data.zonecode);
@@ -157,7 +155,7 @@ function ProfileDetailForm({
             {...register(item.key, { required: true })}
             type="date"
             id={item.key}
-            disabled={!isEditable}
+            disabled={!isEditable || !isEditMode}
             className={`h-[48px] rounded-[7px] border-2 bg-gray-light outline-none ${
               isEditable ? '' : 'border-transparent'
             } w-full pl-2`}

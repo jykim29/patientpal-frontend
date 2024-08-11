@@ -1,7 +1,8 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
+import { twMerge } from 'tailwind-merge';
 
 import { SignUpFormData } from '@/types/formData.interface';
 import { useModal } from '@/hooks/useModal';
@@ -11,8 +12,8 @@ import {
   FormCheckbox,
 } from '@/components/Form';
 import Button from '@/components/common/Button';
-import { authService } from '@/services/AuthService';
-import { FeedbackModal } from '@/components/Modal';
+import { authService, memberService } from '@/services';
+import { API_FAILED } from '@/constants/api';
 
 import FormAlertErrorBox from './FormAlertErrorBox';
 
@@ -23,44 +24,26 @@ const initialFormData: SignUpFormData = {
   passwordConfirm: '',
   termOfUse: false,
   personalInformation: false,
+  idDuplicationState: 'require',
 };
-
-type InitialFetchResultState = {
-  status: 'SUCCESS' | 'FAILED' | null;
-  message: string;
-};
-const initialFetchResultState: InitialFetchResultState = {
-  status: null,
-  message: '',
-};
-
-function regexTest(fieldName: string, value: string) {
-  const regex: { [key: string]: RegExp } = {
-    username: new RegExp('^[a-z0-9]{8,20}$'),
-    password: new RegExp(
-      '^(?=.*[a-zA-Z])(?=.*[0-9]|.*[!@#$_-])[A-Za-z0-9!@#$_-]{8,20}$'
-    ),
-  };
-  return regex[fieldName].test(value);
-}
 
 export default function SignUpForm() {
   const {
     getValues,
     handleSubmit,
     register,
+    setValue,
+    trigger,
     setError,
     clearErrors,
+    watch,
     formState: { errors },
   } = useForm({
     defaultValues: initialFormData,
     reValidateMode: 'onSubmit',
   });
-  const { createModal, openModal } = useModal();
+  const { alert } = useModal();
   const [step, setStep] = useState<number>(0);
-  const [fetchResult, setFetchResult] = useState<InitialFetchResultState>(
-    initialFetchResultState
-  );
   const navigate = useNavigate();
   const errorMessageArray = Object.values(errors).map(({ message }) => message);
 
@@ -73,6 +56,7 @@ export default function SignUpForm() {
     ],
     []
   );
+  const isIdCheckPass = getValues('idDuplicationState') === 'pass';
 
   const handleClickStepChange = useCallback(() => {
     if (step === 0) {
@@ -88,9 +72,22 @@ export default function SignUpForm() {
       }
     }
     if (step === 1) {
+      clearErrors();
       setStep((prev) => prev - 1);
     }
   }, [step]);
+
+  const handleClickDuplicationCheck = useCallback(async () => {
+    const username = getValues('username');
+    if (username.trim().length === 0) return trigger('idDuplicationState');
+    const { data, status } = await memberService.checkUsername(
+      getValues('username')
+    );
+    if (status === API_FAILED) return;
+    if (data === false) setValue('idDuplicationState', 'pass');
+    else setValue('idDuplicationState', 'fail');
+    trigger('idDuplicationState');
+  }, []);
 
   const submitCallback = async (formData: SignUpFormData) => {
     const { role, username, password, passwordConfirm } = formData;
@@ -101,11 +98,27 @@ export default function SignUpForm() {
       passwordConfirm,
     });
     if (status === 'FAILED') {
-      setFetchResult({ status, message: data.message as string });
-    } else setFetchResult({ status, message: data.message });
-    return openModal('signUp');
+      alert('warning', data.message as string);
+    }
+    alert('success', data.message as string).then((res) => {
+      if (res) navigate('/auth/signin');
+    });
   };
-  console.log(errors);
+
+  useEffect(() => {
+    register('idDuplicationState', {
+      validate: {
+        isPassed: (value) => {
+          const username = getValues('username');
+          if (username.trim().length === 0) return '아이디를 입력해주세요.';
+          if (value === 'require') return '아이디 중복확인이 필요합니다.';
+          if (value === 'fail') return '이미 사용중인 아이디입니다.';
+          return true;
+        },
+      },
+    });
+    watch('idDuplicationState');
+  }, []);
   return (
     <>
       <h3 className="text-text-large font-semibold">
@@ -180,23 +193,48 @@ export default function SignUpForm() {
             className="flex w-full flex-col items-center"
           >
             <div className="flex w-full gap-1">
-              <div className="peer flex w-[350px] items-center gap-1">
+              <div className="peer relative flex w-[350px] items-center gap-1">
                 <FormInput
                   type="text"
                   label="아이디"
                   isValid={!errors.username}
                   {...register('username', {
                     required: '아이디를 입력해주세요.',
-                    validate: {
-                      isValidPattern: (value) =>
-                        regexTest('username', value) ||
+                    pattern: {
+                      value: /^[a-z0-9]{8,20}$/,
+                      message:
                         '아이디는 알파벳 소문자 또는 숫자가 포함된 8~20자여야 합니다.',
                     },
+                    onChange: () => setValue('idDuplicationState', 'require'),
                   })}
                 />
-                <Button className={`h-full w-[80px] px-1 py-1`} type="button">
-                  중복확인
+                <Button
+                  className={`h-full w-[80px] px-1 py-1`}
+                  type="button"
+                  onClick={handleClickDuplicationCheck}
+                >
+                  중복 확인
                 </Button>
+
+                <motion.div
+                  key={getValues('idDuplicationState')}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', bounce: 0.4, duration: 0.3 }}
+                  title={
+                    isIdCheckPass
+                      ? '해당 아이디는 사용가능합니다.'
+                      : '중복 확인이 필요합니다.'
+                  }
+                  className={twMerge(
+                    'absolute right-[95px] flex select-none items-center justify-center rounded-full',
+                    isIdCheckPass ? 'text-naver' : 'text-orange'
+                  )}
+                >
+                  <span className="text-text-small font-semibold">
+                    {isIdCheckPass ? '사용가능' : ''}
+                  </span>
+                </motion.div>
               </div>
               <FormTooltipMessageBox>
                 {tooltipBoxArray[0]}
@@ -210,9 +248,10 @@ export default function SignUpForm() {
                 isValid={!errors.password}
                 {...register('password', {
                   required: '비밀번호를 입력해주세요.',
-                  validate: {
-                    isValidPattern: (value) =>
-                      regexTest('password', value) ||
+                  pattern: {
+                    value:
+                      /^(?=.*[a-zA-Z])(?=.*[0-9]|.*[!@#$_-])[A-Za-z0-9!@#$_-]{8,20}$/,
+                    message:
                       '비밀번호는 영문 필수, 숫자 또는 특수문자(!,@,#,$,_,-)가 포함된 8~20자여야 합니다.',
                   },
                 })}
@@ -229,6 +268,7 @@ export default function SignUpForm() {
                 isValid={!errors.passwordConfirm}
                 {...register('passwordConfirm', {
                   required: '비밀번호 확인을 입력해주세요.',
+
                   validate: {
                     isSameValue: (value) =>
                       getValues('password') === value ||
@@ -286,23 +326,6 @@ export default function SignUpForm() {
           )}
         </div>
       </form>
-      {createModal(
-        {
-          modalName: 'signUp',
-          closeOnOverlayClick: fetchResult.status === 'SUCCESS',
-        },
-        <FeedbackModal
-          iconType={fetchResult.status === 'SUCCESS' ? 'check' : 'warning'}
-          buttonType={fetchResult.status === 'SUCCESS' ? 'confirm' : 'cancel'}
-          onConfirm={() => {
-            navigate('/auth/signin');
-          }}
-        >
-          <span className="break-words font-semibold">
-            {fetchResult.message}
-          </span>
-        </FeedbackModal>
-      )}
     </>
   );
 }
