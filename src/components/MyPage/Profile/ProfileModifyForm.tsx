@@ -23,6 +23,7 @@ import {
   GetUserDataResponse,
   PatientInformation,
 } from '@/types/api/member';
+import { useModal } from '@/hooks/useModal';
 
 export interface IUserInfo {
   label: string;
@@ -241,7 +242,7 @@ function ProfileModifyForm() {
   const [buttonLabel, setButtonLabel] = useState<string>('등록');
   const [isInMatchList, setIsInMatchList] = useState<boolean>(false);
   const { user } = useAuthStore();
-  console.log(user, user?.role);
+  const { alert } = useModal();
   const memberId = user?.memberId;
   const isCompletedProfile: boolean = user?.isCompleteProfile ?? false;
   useEffect(() => {
@@ -334,32 +335,31 @@ function ProfileModifyForm() {
           }),
     };
 
+    let response;
     if (buttonLabel === '등록') {
       if (role === 'CAREGIVER' && registerCaregiver) {
-        const response = await registerCaregiver(
-          transformedData as ICaregiverData
-        );
-        console.log(response);
+        response = await registerCaregiver(transformedData as ICaregiverData);
+        await alert('success', '등록이 완료되었습니다');
       } else if (role === 'USER' && registerPatient) {
-        const response = await registerPatient(transformedData as IPatientData);
-        console.log(response);
+        response = await registerPatient(transformedData as IPatientData);
+        await alert('success', '등록이 완료되었습니다');
       }
     } else if (buttonLabel === '수정' && memberId) {
       if (role === 'CAREGIVER' && modifyCaregiverData) {
-        const response = await modifyCaregiverData(
+        response = await modifyCaregiverData(
           memberId,
           editedData as ICaregiverEditData
         );
-        console.log('간병인 수정 완료:', response);
+        await alert('success', '수정이 완료되었습니다');
       } else if (role === 'USER' && modifyPatientData) {
-        const response = await modifyPatientData(
+        response = await modifyPatientData(
           memberId,
           editedData as IPatientEditData
         );
-        console.log('환자 수정 완료:', response);
+        await alert('success', '수정이 완료되었습니다');
       }
     }
-
+    window.location.reload();
     setIsEditMode(false);
   };
 
@@ -371,7 +371,6 @@ function ProfileModifyForm() {
     reset();
     setIsEditMode(false);
   };
-  console.log(isEditMode);
 
   return (
     <>
@@ -386,7 +385,7 @@ function ProfileModifyForm() {
               className={`bg-transparent text-start text-text-large outline-none`}
               {...register('name', { required: true })}
               type="text"
-              disabled={!isEditMode}
+              disabled={!isEditMode || isCompletedProfile}
               placeholder="이름을 입력해주세요"
             />
           </div>
