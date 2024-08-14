@@ -11,10 +11,11 @@ export default function BoardListItem({
   data: Omit<PostResponse, 'content'>;
   boardType: BoardType;
 }) {
-  const { id, title, name } = data;
+  const { id, title, name, views, postType } = data;
   const [createDate, createTime] = convertDatetime(data.createdAt);
   const [nowDate] = convertDatetime(Date.now());
   const convertedDate = createDate === nowDate ? createTime : createDate;
+  const authorName = postType === 'NOTICE' ? '관리자' : name;
 
   return (
     <li
@@ -34,12 +35,11 @@ export default function BoardListItem({
           >
             {title}
           </span>
-          {/* <span className="board-comments-count">[1]</span> */}
         </Link>
       </div>
-      <span className="board-author">{name}</span>
+      <span className="board-author">{authorName}</span>
       <span className="board-date">{convertedDate}</span>
-      <span className="board-views">152</span>
+      <span className="board-views">{views}</span>
     </li>
   );
 }

@@ -23,6 +23,7 @@ export interface PostResponse {
   createdAt: string;
   updatedAt: string;
   postType: 'FREE' | 'NOTICE';
+  views: number;
 }
 export interface GetListResponse {
   totalElements: number;
