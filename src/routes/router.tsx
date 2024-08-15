@@ -74,11 +74,11 @@ export const router = createBrowserRouter([
                   },
                   {
                     path: 'post',
-                    element: <BoardWrite />,
+                    element: <BoardWrite boardType="board" />,
                   },
                   {
                     path: 'modify/:postId',
-                    element: <BoardModify />,
+                    element: <BoardModify boardType="board" />,
                     loader: postLoader,
                   },
                   {
@@ -97,11 +97,11 @@ export const router = createBrowserRouter([
                   },
                   {
                     path: 'post',
-                    element: <BoardWrite />,
+                    element: <BoardWrite boardType="notice" />,
                   },
                   {
                     path: 'modify/:postId',
-                    element: <BoardModify />,
+                    element: <BoardModify boardType="notice" />,
                     loader: postLoader,
                   },
                   {

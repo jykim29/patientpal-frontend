@@ -1,4 +1,4 @@
-import { Link, useLoaderData, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLoaderData, useNavigate } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 
 import { PostResponse } from '@/types/api/board';
@@ -11,8 +11,22 @@ import { API_FAILED } from '@/constants/api';
 import Button from '../common/Button';
 
 export default function BoardArticle() {
-  const { title, content, name, id, createdAt, updatedAt, memberId, postType } =
-    useLoaderData() as PostResponse;
+  const loaderData = useLoaderData() as PostResponse;
+  if (!loaderData) {
+    window.alert('삭제됐거나 존재하지 않는 게시물입니다.');
+    return <Navigate to=".." replace />;
+  }
+  const {
+    title,
+    content,
+    name,
+    id,
+    createdAt,
+    updatedAt,
+    memberId,
+    postType,
+    views,
+  } = loaderData;
   const { accessToken, user } = useAuthStore();
   const { confirm, alert } = useModal();
   const navigate = useNavigate();
@@ -20,6 +34,7 @@ export default function BoardArticle() {
   const boardName = postType === 'FREE' ? '자유게시판' : '공지사항';
   const myId = user && user.memberId;
   const isMyPost = myId === memberId;
+  const authorName = postType === 'NOTICE' ? '관리자' : name;
   const [createDate, createTime] = convertDatetime(createdAt);
   const [updateDate, updateTime] = convertDatetime(updatedAt);
 
@@ -50,8 +65,8 @@ export default function BoardArticle() {
           </div>
 
           <div className="flex gap-2">
-            <span className="">작성자</span>
-            <span className="divider pr-3 text-gray-dark">{name}</span>
+            <span>작성자</span>
+            <span className="divider pr-3 text-gray-dark">{authorName}</span>
             <span className="divider px-3">
               <span className="mr-2">작성일</span>
               <time className="text-gray-dark" dateTime={createdAt}>
@@ -64,6 +79,7 @@ export default function BoardArticle() {
                 {`${updateDate} ${updateTime}`}
               </time>
             </span>
+            <span className="ml-auto">조회수 {views}</span>
           </div>
         </div>
 

@@ -1,20 +1,12 @@
 import { useCallback, useEffect } from 'react';
-import {
-  Link,
-  Navigate,
-  useLoaderData,
-  useLocation,
-  useNavigate,
-  useParams,
-} from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ReactQuillProps } from 'react-quill';
 import { useForm } from 'react-hook-form';
 
 import { boardService } from '@/services';
 import { useAuthStore } from '@/store/useAuthStore';
 import { API_FAILED } from '@/constants/api';
-import { PostResponse } from '@/types/api/board';
-import { getBoardType } from '@/utils/getBoardType';
+import { BoardType, PostResponse } from '@/types/api/board';
 import { useModal } from '@/hooks/useModal';
 
 import Input from '../common/Input';
@@ -24,37 +16,26 @@ import CustomReactQuill from '../Editor/CustomReactQuill';
 export default function BoardWriteForm({
   title,
   mode,
+  boardType,
+  loaderData,
 }: {
   title: string;
   mode: 'write' | 'modify';
+  boardType: BoardType;
+  loaderData?: PostResponse;
 }) {
   const { alert } = useModal();
-  const { accessToken, user } = useAuthStore();
+  const { accessToken } = useAuthStore();
   const navigate = useNavigate();
-  let loaderData = null;
-  // 게시글 수정일 때 예외처리
-  if (mode === 'modify') {
-    loaderData = useLoaderData() as PostResponse;
-    if (!loaderData) {
-      window.alert('게시물을 찾을 수 없습니다.');
-      return <Navigate to=".." replace />;
-    }
-    const isMyPost = (user?.memberId as number) === loaderData.memberId;
-    if (!isMyPost) {
-      window.alert('권한이 없습니다.');
-      return <Navigate to=".." replace />;
-    }
-  }
+
   const { setValue, register, handleSubmit } = useForm({
     defaultValues: {
-      title: loaderData?.title || '',
-      content: loaderData?.content || '',
+      title: loaderData ? loaderData?.title : '',
+      content: loaderData ? loaderData.content : '',
     },
     reValidateMode: 'onSubmit',
   });
   const { postId } = useParams();
-  const { pathname } = useLocation();
-  const boardType = getBoardType(pathname);
 
   const handleChangeQuill = useCallback<Required<ReactQuillProps>['onChange']>(
     (value) => {
