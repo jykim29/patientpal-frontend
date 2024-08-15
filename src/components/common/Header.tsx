@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FaBell, FaCircle } from 'react-icons/fa6';
+import { FaBell } from 'react-icons/fa6';
 import { twMerge } from 'tailwind-merge';
 import { motion } from 'framer-motion';
 
@@ -8,6 +8,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { API_FAILED } from '@/constants/api';
 import { authService } from '@/services';
 import Button from './Button';
+import NotificationModal from '../Modal/NotificationModal';
 
 type InitialIsShowState = {
   notification: boolean;
@@ -169,21 +170,17 @@ function UnknownProfile({
 }
 
 function Notification() {
-  const [newNotice, setNewNotice] = useState(true);
+  const [isShowNotiModal, setIsShowNotiModal] = useState(false);
   const checkNotice = () => {
-    setNewNotice(false);
-    //모달창 나오게
+    setIsShowNotiModal(!isShowNotiModal);
   };
   return (
-    <button className="relative cursor-pointer" onClick={checkNotice}>
-      <FaBell className="h-[30px] w-[30px]" color="#4166F5" />
-      {newNotice && (
-        <FaCircle
-          className="absolute right-0 top-0 h-[15px] w-[15px]"
-          color="red"
-        />
-      )}
-    </button>
+    <div className="relative">
+      <button className="relative cursor-pointer" onClick={checkNotice}>
+        <FaBell className="h-7 w-7" color="#4166F5" />
+      </button>
+      {isShowNotiModal && <NotificationModal />}
+    </div>
   );
 }
 
