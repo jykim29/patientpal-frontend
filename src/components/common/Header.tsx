@@ -8,7 +8,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { API_FAILED } from '@/constants/api';
 import { authService } from '@/services';
 import Button from './Button';
-import NotificationModal from '../Modal/NotificationModal';
+import { NotificationModal } from '../Modal';
 
 type InitialIsShowState = {
   notification: boolean;
