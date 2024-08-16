@@ -23,8 +23,9 @@ export default function Board({
   const [searchParams] = useSearchParams();
   const [listData, setListData] = useState<GetListResponse | null>(null);
   const isAdmin = user?.role === 'ADMIN';
+  const isUser = user?.role === 'CAREGIVER' || user?.role === 'USER';
   const isShowWriteButton =
-    (boardType === 'notice' && isAdmin) || boardType === 'board';
+    (boardType === 'notice' && isAdmin) || (boardType === 'board' && isUser);
   const pageNumber = Number(searchParams.get('page')) || 0;
   const contents = listData?.content || [];
   const totalPages = listData?.totalPages || 0;

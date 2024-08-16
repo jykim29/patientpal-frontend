@@ -1,4 +1,4 @@
-import { Link, useLoaderData, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLoaderData, useNavigate } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 
 import { PostResponse } from '@/types/api/board';
@@ -11,6 +11,11 @@ import { API_FAILED } from '@/constants/api';
 import Button from '../common/Button';
 
 export default function BoardArticle() {
+  const loaderData = useLoaderData() as PostResponse;
+  if (!loaderData) {
+    window.alert('삭제됐거나 존재하지 않는 게시물입니다.');
+    return <Navigate to=".." replace />;
+  }
   const {
     title,
     content,
@@ -21,7 +26,7 @@ export default function BoardArticle() {
     memberId,
     postType,
     views,
-  } = useLoaderData() as PostResponse;
+  } = loaderData;
   const { accessToken, user } = useAuthStore();
   const { confirm, alert } = useModal();
   const navigate = useNavigate();
@@ -29,6 +34,7 @@ export default function BoardArticle() {
   const boardName = postType === 'FREE' ? '자유게시판' : '공지사항';
   const myId = user && user.memberId;
   const isMyPost = myId === memberId;
+  const authorName = postType === 'NOTICE' ? '관리자' : name;
   const [createDate, createTime] = convertDatetime(createdAt);
   const [updateDate, updateTime] = convertDatetime(updatedAt);
 
@@ -59,26 +65,21 @@ export default function BoardArticle() {
           </div>
 
           <div className="flex gap-2">
-            <div className="divider pr-3">
-              <span className="mr-2">작성자</span>
-              <span className="text-gray-dark">{name}</span>
-            </div>
-            <div className="divider pl-1 pr-3">
+            <span>작성자</span>
+            <span className="divider pr-3 text-gray-dark">{authorName}</span>
+            <span className="divider px-3">
               <span className="mr-2">작성일</span>
               <time className="text-gray-dark" dateTime={createdAt}>
                 {`${createDate} ${createTime}`}
               </time>
-            </div>
-            <div className="pl-1 pr-3">
+            </span>
+            <span className="relative px-3">
               <span className="mr-2">수정일</span>
               <time className="text-gray-dark" dateTime={updatedAt}>
                 {`${updateDate} ${updateTime}`}
               </time>
-            </div>
-            <div className="ml-auto pl-1 pr-5">
-              <span className="mr-2">조회수</span>
-              <span className="text-gray-dark">{views}</span>
-            </div>
+            </span>
+            <span className="ml-auto">조회수 {views}</span>
           </div>
         </div>
 
