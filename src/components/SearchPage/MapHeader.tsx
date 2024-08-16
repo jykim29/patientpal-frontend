@@ -8,6 +8,8 @@ import {
 } from '@/api/search.api';
 import { SetStateAction } from 'react';
 import { UserList } from '@/types/searchResult.model';
+import { useModal } from '@/hooks/useModal';
+import { useNavigate } from 'react-router-dom';
 type MapFormField = {
   index: string;
   key: keyof SearchMapFormData;
@@ -60,12 +62,14 @@ interface MapHeaderProps {
 
 function MapHeader({ setSearchResult }: MapHeaderProps) {
   const { register, handleSubmit } = useForm<SearchMapFormData>();
-
+  const { alert } = useModal();
+  const navigate = useNavigate();
   const { accessToken, user } = useAuthStore();
   const role = user?.role;
   const onSubmit: SubmitHandler<SearchMapFormData> = async (data) => {
     if (!accessToken) {
-      console.log('토큰이 없습니다');
+      await alert('warning', '로그인이 필요한 서비스입니다.');
+      navigate('/auth');
       return;
     }
 
@@ -99,7 +103,7 @@ function MapHeader({ setSearchResult }: MapHeaderProps) {
         {mapIndex.map((i, index) => (
           <fieldset
             key={index}
-            className="flex items-center gap-5 px-5 text-text-large text-white"
+            className="flex items-center gap-5 px-5 text-white text-text-large"
           >
             <label>{i.index}</label>
             <select

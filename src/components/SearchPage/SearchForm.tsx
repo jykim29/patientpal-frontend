@@ -8,6 +8,8 @@ import {
 import Button from '../common/Button';
 import { useAuthStore } from '@/store/useAuthStore';
 import SearchResultModal from './SearchResultModal';
+import { useModal } from '@/hooks/useModal';
+import { useNavigate } from 'react-router-dom';
 
 type SearchFormData = {
   addr: string;
@@ -185,10 +187,12 @@ function SearchForm({ setCurrentLocation }: SearchFormProps) {
   const [searchResult, setSearchResult] = useState<any[]>([]);
   const { accessToken, user } = useAuthStore();
   const role = user?.role;
-
+  const { alert } = useModal();
+  const navigate = useNavigate();
   const onSubmit: SubmitHandler<SearchFormData> = async (data) => {
     if (!accessToken) {
-      console.log('토큰이 없습니다');
+      await alert('warning', '로그인이 필요한 서비스입니다.');
+      navigate('/auth');
       return;
     }
 
@@ -247,9 +251,9 @@ function SearchForm({ setCurrentLocation }: SearchFormProps) {
         {formFields.map((item, index) => (
           <fieldset
             key={index}
-            className="flex w-full items-center justify-between gap-5 px-5"
+            className="flex items-center justify-between w-full gap-5 px-5"
           >
-            <label className="text-text-large text-white">{item.index}</label>
+            <label className="text-white text-text-large">{item.index}</label>
             {item.type === 'select' ? (
               <select
                 {...register(item.key, {})}
