@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import MenuTitle from '../components/common/MenuTitle';
 import SearchByCity from '../components/SearchPage/SearchByCity';
 import SearchByMap from '../components/SearchPage/SearchByMap';
