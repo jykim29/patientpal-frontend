@@ -17,7 +17,6 @@ interface CaregiverSearchResponse {
 }
 
 const getPatientSearchResult = async (
-  token: string,
   searchParams = {},
   config = {}
 ): Promise<CaregiverSearchResponse> => {
@@ -26,9 +25,6 @@ const getPatientSearchResult = async (
     {
       ...config,
       params: searchParams,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     }
   )) as CaregiverSearchResponse;
 
@@ -36,7 +32,6 @@ const getPatientSearchResult = async (
 };
 
 const getCaregiverSearchResult = async (
-  token: string,
   searchParams = {},
   config = {}
 ): Promise<PatientSearchResponse> => {
@@ -45,9 +40,6 @@ const getCaregiverSearchResult = async (
     {
       ...config,
       params: searchParams,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     }
   )) as PatientSearchResponse;
 
