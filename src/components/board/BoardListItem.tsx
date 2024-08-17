@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
+import { differenceInCalendarDays, format } from 'date-fns';
 
 import { BoardType, PostResponse } from '@/types/api/board';
-import { convertDatetime } from '@/utils/convertDatetime';
 
 export default function BoardListItem({
   data,
@@ -12,9 +12,14 @@ export default function BoardListItem({
   boardType: BoardType;
 }) {
   const { id, title, name, views, postType } = data;
-  const [createDate, createTime] = convertDatetime(data.createdAt);
-  const [nowDate] = convertDatetime(Date.now());
-  const convertedDate = createDate === nowDate ? createTime : createDate;
+  const [createdDate, createdTime] = format(
+    data.createdAt,
+    'yyyy-MM-dd HH:mm'
+  ).split(' ');
+  const convertedDate =
+    differenceInCalendarDays(new Date(), createdDate) > 0
+      ? createdDate
+      : createdTime;
   const authorName = postType === 'NOTICE' ? '관리자' : name;
 
   return (

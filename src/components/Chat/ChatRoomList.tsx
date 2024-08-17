@@ -1,29 +1,32 @@
-import ChatRoomCard from './ChatRoomCard';
+import { useChatContext } from '@/hooks/useChatContext';
+
+import ChatRoomListItem from './ChatRoomListItem';
 
 export default function ChatRoomList() {
+  const {
+    roomListState: [roomList],
+  } = useChatContext();
+
   return (
-    <ul className="mt-5 flex max-h-[500px] flex-col gap-2 overflow-y-auto rounded-2xl border border-tertiary p-10 shadow-[0px_0px_8px_4px_#a2bffe40]">
-      <ChatRoomCard
-        roomId="1"
-        username="김영희"
-        lastMessage="안녕하세요. 반갑습니다."
-        lastReceiveDate={new Date('2024-05-13').toISOString()}
-        unreadMessageCount="38"
-      />
-      <ChatRoomCard
-        roomId="2"
-        username="김철수"
-        lastMessage="안녕하세요. 반갑습니다."
-        lastReceiveDate={new Date('2024-02-23').toISOString()}
-        unreadMessageCount="158"
-      />
-      <ChatRoomCard
-        roomId="3"
-        username="박진수"
-        lastMessage="안녕하세요. 반갑습니다."
-        lastReceiveDate={new Date('2024-01-11').toISOString()}
-        unreadMessageCount="97"
-      />
+    <ul className="mt-5 flex max-h-[500px] flex-col gap-2 overflow-y-auto rounded-2xl border border-tertiary p-5 shadow-[0px_0px_8px_4px_#a2bffe40]">
+      {roomList && roomList.length > 0 ? (
+        roomList.map((value) => {
+          if (value)
+            return (
+              <ChatRoomListItem
+                key={value.chatId}
+                roomId={value.chatId}
+                lastMessage="현재 메세지 미리보기 기능은 지원되지 않습니다."
+                username={value.partnerInfo.name}
+                profileImageUrl={value.partnerInfo.profileImageUrl}
+              />
+            );
+        })
+      ) : (
+        <p className="w-full text-center text-text-large font-semibold">
+          현재 채팅중인 방이 없습니다.
+        </p>
+      )}
     </ul>
   );
 }

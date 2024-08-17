@@ -23,6 +23,7 @@ import ProfilePage from '@/pages/mypage/ProfilePage';
 import ReviewPage from '@/pages/mypage/ReviewPage';
 import SearchPage from '@/pages/SearchPage';
 import Error from '@/components/common/Error';
+import ChatContextProvider from '@/context/ChatContextProvider';
 
 export const router = createBrowserRouter([
   {
@@ -127,12 +128,22 @@ export const router = createBrowserRouter([
                 element: <ProfilePage />,
               },
               {
-                path: 'chat/lobby',
-                element: <ChatLobby title="채팅 목록" />,
-              },
-              {
-                path: 'chat/room/:roomId',
-                element: <ChatRoom />,
+                path: 'chat',
+                element: <ChatContextProvider />,
+                children: [
+                  {
+                    index: true,
+                    element: <Navigate to={'lobby'} replace />,
+                  },
+                  {
+                    path: 'lobby',
+                    element: <ChatLobby title="채팅 목록" />,
+                  },
+                  {
+                    path: 'room/:roomId',
+                    element: <ChatRoom />,
+                  },
+                ],
               },
               {
                 path: 'contract/write/:memberId',

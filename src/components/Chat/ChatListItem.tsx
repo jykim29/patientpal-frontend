@@ -1,0 +1,29 @@
+import { format } from 'date-fns';
+import { useAuthStore } from '@/store/useAuthStore';
+import { MessageItem } from '@/types/api/chat';
+
+export default function ChatListItem({
+  data: { content, createdDate, senderId, profileImageUrl },
+}: {
+  data: Partial<MessageItem>;
+}) {
+  const myId = useAuthStore((state) => state.user?.memberId);
+  return (
+    <li
+      className={`chat-list-item ${senderId === myId ? 'me' : 'other-person'}`}
+    >
+      <img
+        className="profile-image"
+        src={profileImageUrl ?? '/assets/default_profile.jpg'}
+        alt="프로필"
+      />
+      <p className="chat-text">{content}</p>
+      <time
+        className="self-end text-text-small text-gray-medium-dark"
+        dateTime={new Date(createdDate as string).toISOString()}
+      >
+        {format(createdDate as string, 'yyyy-MM-dd HH:mm')}
+      </time>
+    </li>
+  );
+}

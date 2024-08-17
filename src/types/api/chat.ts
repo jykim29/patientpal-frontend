@@ -8,7 +8,16 @@ export interface GetRoomInfoResponse {
   chatType: ChatType;
   managerIds: [number, number];
 }
-export type GetJoinedRoomInfoResponse = GetRoomInfoResponse[];
+
+export type GetRoomDataResponse = {
+  partnerInfo: {
+    memberId: number | undefined;
+    name: any;
+    profileImageUrl: any;
+  };
+  chatId: number;
+  chatType: ChatType;
+};
 export type CreateRoomRequestBody = {
   memberIds: [number, number];
 };
@@ -22,6 +31,8 @@ export interface MessageItem {
   content: string;
   senderId: number;
   chatId: number;
+  name?: string;
+  profileImageUrl?: string;
 }
 export interface GetMessagesResponse extends Pagination {
   content: MessageItem[];

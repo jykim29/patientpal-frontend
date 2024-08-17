@@ -1,12 +1,14 @@
-import { FaCakeCandles, FaCircleUser } from 'react-icons/fa6';
+import { useNavigate } from 'react-router-dom';
+import { FaCakeCandles, FaCircleUser, FaRegFileLines } from 'react-icons/fa6';
 import { FaStar } from 'react-icons/fa';
 import { BsGenderAmbiguous } from 'react-icons/bs';
-import Button from '../common/Button';
-import { FaRegFileLines } from 'react-icons/fa6';
+import { API_FAILED } from '@/constants/api';
+import { useModal } from '@/hooks/useModal';
+import { chatService } from '@/services';
+import { useAuthStore } from '@/store/useAuthStore';
 import { UserList } from '@/types/searchResult.model';
 import { formatGenderToKR } from '@/utils/format';
-import { useAuthStore } from '@/store/useAuthStore';
-import { useNavigate } from 'react-router-dom';
+import Button from '../common/Button';
 interface Props {
   searchResult: Partial<UserList>;
 }
@@ -14,8 +16,8 @@ interface Props {
 const Star = (props: Pick<UserList, 'rating'>) => {
   return (
     <span className="flex items-center pr-[8px]">
-      {Array.from({ length: props.rating + 1 }).map(() => (
-        <FaStar className="h-[17px] w-[17px]" color="F6C002" />
+      {Array.from({ length: props.rating + 1 }).map((_, index) => (
+        <FaStar key={index} className="h-[17px] w-[17px]" color="F6C002" />
       ))}
     </span>
   );
@@ -34,12 +36,21 @@ function ResultItem({ searchResult }: Props) {
   } = searchResult;
 
   const { user } = useAuthStore();
+  const { alert } = useModal();
   const navigate = useNavigate();
   const handleContractBtn = () => {
     navigate(`/mypage/contract/write/${id}`);
   };
-  const handleChatBtn = () => {
-    navigate(`/mypage/chat/room/${id}`);
+  const handleChatBtn = async () => {
+    if (!user) return;
+    const createRoomResponse = await chatService.createRoom([
+      user.memberId,
+      id as number,
+    ]);
+    if (createRoomResponse.status === API_FAILED)
+      return alert('warning', createRoomResponse.data.message as string);
+    const chatId = createRoomResponse.data.chatId;
+    return navigate(`/mypage/chat/room/${chatId}`);
   };
 
   return (
