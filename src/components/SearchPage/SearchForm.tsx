@@ -1,15 +1,11 @@
 import { SetStateAction, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
-import {
-  getCaregiverSearchResult,
-  getPatientSearchResult,
-} from '@/api/search.api';
 import Button from '../common/Button';
 import { useAuthStore } from '@/store/useAuthStore';
 import SearchResultModal from './SearchResultModal';
-import { useModal } from '@/hooks/useModal';
-import { useNavigate } from 'react-router-dom';
+
+import { useSearch } from '@/hooks/useSearch';
 
 type SearchFormData = {
   addr: string;
@@ -70,7 +66,6 @@ const caregiverForm: FormFieldType[] = [
   },
   { index: '성별', key: 'gender', array: ['모두', '남', '여'], type: 'select' },
   { index: '이름', key: 'name', type: 'input' },
-  // { index: '키워드', key: 'keyword', type: 'input' },
   {
     index: '나이',
     key: 'ageLoe',
@@ -183,58 +178,37 @@ interface SearchFormProps {
 
 function SearchForm({ setCurrentLocation }: SearchFormProps) {
   const { register, handleSubmit } = useForm<SearchFormData>();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchResult, setSearchResult] = useState<any[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { accessToken, user } = useAuthStore();
   const role = user?.role;
-  const { alert } = useModal();
-  const navigate = useNavigate();
+  const { fetchSearchResultByRole } = useSearch(role, accessToken);
   const onSubmit: SubmitHandler<SearchFormData> = async (data) => {
-    if (!accessToken) {
-      await alert('warning', '로그인이 필요한 서비스입니다.');
-      navigate('/auth');
-      return;
+    const searchParams: any = {};
+
+    if (data.addr && data.addrDetail) {
+      searchParams.addr =
+        data.addrDetail === '모두'
+          ? data.addr
+          : data.addr + ' ' + data.addrDetail;
+      setCurrentLocation(searchParams.addr);
+    }
+    if (data.gender && data.gender !== '모두')
+      searchParams.gender = data.gender === '남' ? 'MALE' : 'FEMALE';
+    if (data.name) searchParams.name = data.name;
+
+    if (data.experienceYearsGoe && data.experienceYearsGoe !== '모두') {
+      searchParams.experienceYearsGoe =
+        experienceYearsMapping[
+          data.experienceYearsGoe as keyof typeof experienceYearsMapping
+        ];
     }
 
-    try {
-      const searchParams: any = {};
-      console.log(data);
-      if (data.addr && data.addrDetail) {
-        searchParams.addr =
-          data.addrDetail === '모두'
-            ? data.addr
-            : data.addr + ' ' + data.addrDetail;
-        setCurrentLocation(searchParams.addr);
-      }
-      if (data.gender && data.gender !== '모두')
-        searchParams.gender = data.gender === '남' ? 'MALE' : 'FEMALE';
-      if (data.name) searchParams.name = data.name;
-      // if (data.keyword) searchParams.keyword = data.keyword;
-
-      if (data.experienceYearsGoe && data.experienceYearsGoe !== '모두') {
-        searchParams.experienceYearsGoe =
-          experienceYearsMapping[
-            data.experienceYearsGoe as keyof typeof experienceYearsMapping
-          ];
-      }
-
-      if (data.ageLoe && data.ageLoe !== '모두') {
-        searchParams.ageLoe =
-          ageMapping[data.ageLoe as keyof typeof ageMapping];
-      }
-
-      let response;
-      if (role === 'CAREGIVER') {
-        response = await getCaregiverSearchResult(accessToken, searchParams);
-        setSearchResult(response.data.patientProfileList);
-      } else if (role === 'USER') {
-        response = await getPatientSearchResult(accessToken, searchParams);
-        setSearchResult(response.data.caregiverProfileList);
-      }
-    } catch (error) {
-      console.error(error);
+    if (data.ageLoe && data.ageLoe !== '모두') {
+      searchParams.ageLoe = ageMapping[data.ageLoe as keyof typeof ageMapping];
     }
-    setIsModalOpen(true);
+    await fetchSearchResultByRole(searchParams, setSearchResult);
+    await setIsModalOpen(true);
   };
 
   let formFields;
@@ -251,9 +225,9 @@ function SearchForm({ setCurrentLocation }: SearchFormProps) {
         {formFields.map((item, index) => (
           <fieldset
             key={index}
-            className="flex items-center justify-between w-full gap-5 px-5"
+            className="flex w-full items-center justify-between gap-5 px-5"
           >
-            <label className="text-white text-text-large">{item.index}</label>
+            <label className="text-text-large text-white">{item.index}</label>
             {item.type === 'select' ? (
               <select
                 {...register(item.key, {})}

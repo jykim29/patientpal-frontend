@@ -2,14 +2,9 @@ import Button from '../common/Button';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { SearchMapFormData } from '@/types/formData.interface';
 import { useAuthStore } from '@/store/useAuthStore';
-import {
-  getCaregiverSearchResult,
-  getPatientSearchResult,
-} from '@/api/search.api';
 import { SetStateAction } from 'react';
 import { UserList } from '@/types/searchResult.model';
-import { useModal } from '@/hooks/useModal';
-import { useNavigate } from 'react-router-dom';
+import { useSearch } from '@/hooks/useSearch';
 type MapFormField = {
   index: string;
   key: keyof SearchMapFormData;
@@ -62,17 +57,10 @@ interface MapHeaderProps {
 
 function MapHeader({ setSearchResult }: MapHeaderProps) {
   const { register, handleSubmit } = useForm<SearchMapFormData>();
-  const { alert } = useModal();
-  const navigate = useNavigate();
   const { accessToken, user } = useAuthStore();
   const role = user?.role;
+  const { fetchSearchResultByRole } = useSearch(role, accessToken);
   const onSubmit: SubmitHandler<SearchMapFormData> = async (data) => {
-    if (!accessToken) {
-      await alert('warning', '로그인이 필요한 서비스입니다.');
-      navigate('/auth');
-      return;
-    }
-
     try {
       const searchParams: any = {};
 
@@ -82,14 +70,7 @@ function MapHeader({ setSearchResult }: MapHeaderProps) {
         searchParams.addr = data.city + ' ' + data.district;
       }
 
-      let response;
-      if (role === 'CAREGIVER') {
-        response = await getCaregiverSearchResult(accessToken, searchParams);
-        setSearchResult(response.data.patientProfileList);
-      } else if (role === 'USER') {
-        response = await getPatientSearchResult(accessToken, searchParams);
-        setSearchResult(response.data.caregiverProfileList);
-      }
+      await fetchSearchResultByRole(searchParams, setSearchResult);
     } catch (error) {
       console.error(error);
     }
@@ -103,7 +84,7 @@ function MapHeader({ setSearchResult }: MapHeaderProps) {
         {mapIndex.map((i, index) => (
           <fieldset
             key={index}
-            className="flex items-center gap-5 px-5 text-white text-text-large"
+            className="flex items-center gap-5 px-5 text-text-large text-white"
           >
             <label>{i.index}</label>
             <select
