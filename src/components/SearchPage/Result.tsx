@@ -6,8 +6,6 @@ interface Props {
 }
 
 function Result({ searchResult }: Props) {
-  console.log(searchResult);
-
   return (
     <div className="flex flex-col gap-3">
       {searchResult.map((item, index) => (
