@@ -74,8 +74,6 @@ function MapHeader({ setSearchResult }: MapHeaderProps) {
     } catch (error) {
       console.error(error);
     }
-
-    console.log(data);
   };
 
   return (
@@ -84,7 +82,7 @@ function MapHeader({ setSearchResult }: MapHeaderProps) {
         {mapIndex.map((i, index) => (
           <fieldset
             key={index}
-            className="flex items-center gap-5 px-5 text-text-large text-white"
+            className="flex items-center gap-5 px-5 text-white text-text-large"
           >
             <label>{i.index}</label>
             <select
