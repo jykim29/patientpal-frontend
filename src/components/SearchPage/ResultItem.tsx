@@ -7,6 +7,7 @@ import { UserList } from '@/types/searchResult.model';
 import { formatGenderToKR } from '@/utils/format';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
+import { useModal } from '@/hooks/useModal';
 interface Props {
   searchResult: Partial<UserList>;
 }
@@ -14,8 +15,8 @@ interface Props {
 const Star = (props: Pick<UserList, 'rating'>) => {
   return (
     <span className="flex items-center pr-[8px]">
-      {Array.from({ length: props.rating + 1 }).map(() => (
-        <FaStar className="h-[17px] w-[17px]" color="F6C002" />
+      {Array.from({ length: props.rating + 1 }).map((_, index) => (
+        <FaStar key={index} className="h-[17px] w-[17px]" color="F6C002" />
       ))}
     </span>
   );
@@ -34,18 +35,29 @@ function ResultItem({ searchResult }: Props) {
   } = searchResult;
 
   const { user } = useAuthStore();
+  const { alert } = useModal();
   const navigate = useNavigate();
   const handleContractBtn = () => {
+    if (user === null) {
+      alert('warning', '로그인이 필요한 서비스입니다.');
+      navigate('/auth');
+      return;
+    }
     navigate(`/mypage/contract/write/${id}`);
   };
   const handleChatBtn = () => {
+    if (user === null) {
+      alert('warning', '로그인이 필요한 서비스입니다.');
+      navigate('/auth');
+      return;
+    }
     navigate(`/mypage/chat/room/${id}`);
   };
 
   return (
     <div className="flex items-center justify-between gap-2 rounded-[10px] bg-white px-5 py-3 shadow-sm">
       <div className="flex items-center gap-4">
-        <FaCircleUser className="h-10 w-10" color="gray" />
+        <FaCircleUser className="w-10 h-10" color="gray" />
         <p className="text-text-large">{name}</p>
         <ul className="flex items-center gap-5">
           <li className="flex items-center gap-1">
