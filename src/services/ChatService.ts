@@ -1,4 +1,5 @@
 import { AxiosRequestConfig } from 'axios';
+import { stringify } from 'qs';
 
 import { HTTPClient } from '@/api/httpClient';
 import { API_ENDPOINT, API_FAILED, API_SUCCESS } from '@/constants/api';
@@ -11,8 +12,7 @@ import {
   PostMessageResponse,
 } from '@/types/api/chat';
 import { FetchResult } from '@/types/api/common';
-import { getCaregiverProfile, getPatientProfile } from '@/api/profile.api';
-import { GetUserDataResponse } from '@/types/api/member';
+import { GetMemberListResponse } from '@/types/api/member';
 
 export default class ChatService {
   private httpClient;
@@ -21,12 +21,9 @@ export default class ChatService {
   }
 
   async getAllRoomData(
-    user: GetUserDataResponse,
-    accessToken: string,
+    myMemberId: number,
     config: AxiosRequestConfig = {}
   ): Promise<FetchResult<GetRoomDataResponse[]>> {
-    const myId = user.memberId;
-    const myRole = user.role;
     const response = await this.httpClient.GET<GetRoomInfoResponse[]>(
       API_ENDPOINT.CHATS,
       config
@@ -34,74 +31,33 @@ export default class ChatService {
     if (response.status === API_FAILED) {
       return { data: response.data, status: API_FAILED };
     }
-    const filteredData = response.data.map((value) => ({
-      ...value,
-      managerIds: value.managerIds.find((id) => myId !== id),
-    }));
-    const getProfile =
-      myRole === 'USER' ? getPatientProfile : getCaregiverProfile;
-    const addInfoData = await Promise.all(
-      filteredData.map(async (value) => {
-        const { data } = await getProfile(
-          value.managerIds as number,
-          accessToken as string
-        );
-        return {
-          chatId: value.chatId,
-          chatType: value.chatType,
-          partnerInfo: {
-            memberId: value.managerIds,
-            name: (data as any).name,
-            profileImageUrl:
-              (data as any).image ?? '/assets/default_profile.jpg',
-          },
-        };
-      })
+    const partnerIds = response.data.flatMap((value) =>
+      value.managerIds.filter((id) => myMemberId !== id)
     );
-    return { data: addInfoData, status: API_SUCCESS };
-  }
-
-  async getRoomData(
-    user: GetUserDataResponse,
-    accessToken: string,
-    roomId: number,
-    config: AxiosRequestConfig = {}
-  ): Promise<FetchResult<GetRoomDataResponse>> {
-    const myId = user.memberId;
-    const myRole = user.role;
-    const response = await this.httpClient.GET<GetRoomInfoResponse>(
-      `${API_ENDPOINT.CHATS}/${roomId}`,
-      config
-    );
-    if (response.status === API_FAILED) {
-      return { data: response.data, status: API_FAILED };
-    }
-    if (!response.data.managerIds.includes(myId)) {
-      return {
-        data: {
-          message: '자신이 참여한 채팅방이 아닙니다.',
+    const { data: getMemberListData, status: getMemberListStatus } =
+      await this.httpClient.GET<GetMemberListResponse>('/member', {
+        ...config,
+        params: {
+          memberIds: partnerIds,
         },
-        status: API_FAILED,
-      };
-    }
-    const partnerId = response.data.managerIds.find((value) => value !== myId);
-    const getProfile =
-      myRole === 'USER' ? getPatientProfile : getCaregiverProfile;
-    const { data: partnerData } = await getProfile(
-      partnerId as number,
-      accessToken
-    );
-    const filteredData: GetRoomDataResponse = {
-      chatId: response.data.chatId,
-      chatType: response.data.chatType,
+        paramsSerializer: (params) =>
+          stringify(params, { arrayFormat: 'comma' }),
+      });
+    if (getMemberListStatus === API_FAILED)
+      return { data: getMemberListData, status: API_FAILED };
+
+    const combinedData = response.data.map((value, index) => ({
+      chatId: value.chatId,
+      chatType: value.chatType,
       partnerInfo: {
-        memberId: (partnerData as any).memberId,
-        name: (partnerData as any).name,
+        ...getMemberListData[index],
         profileImageUrl:
-          (partnerData as any).image ?? '/assets/default_profile.jpg',
+          getMemberListData[index].profileImageUrl ??
+          '/assets/default_profile.jpg',
+        memberId: partnerIds[index],
       },
-    };
-    return { data: filteredData, status: API_SUCCESS };
+    }));
+    return { data: combinedData, status: API_SUCCESS };
   }
 
   async createRoom(

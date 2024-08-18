@@ -1,4 +1,5 @@
 import { Pagination } from './common';
+import { MemberListItem } from './member';
 
 type ChatType = 'PUBLIC' | 'PRIVATE' | 'DIRECT';
 type MessageType = 'CHAT' | 'JOIN' | 'LEAVE';
@@ -10,11 +11,7 @@ export interface GetRoomInfoResponse {
 }
 
 export type GetRoomDataResponse = {
-  partnerInfo: {
-    memberId: number | undefined;
-    name: any;
-    profileImageUrl: any;
-  };
+  partnerInfo: MemberListItem;
   chatId: number;
   chatType: ChatType;
 };

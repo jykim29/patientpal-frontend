@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Client, IMessage } from '@stomp/stompjs';
 import _ from 'lodash';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -17,26 +18,41 @@ export interface SocketMessage {
   content: string;
 }
 
+export interface CurrentRoomMessagesState {
+  messages: MessageItem[];
+  pageNumber: number;
+  totalPages: number;
+  first: boolean;
+  last: boolean;
+}
+
 export function useChat(stompClient: Client) {
   const { alert } = useModal();
   const { user, accessToken } = useAuthStore();
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const loadingState = useState<boolean>(false);
-  const roomListState = useState<GetRoomDataResponse[]>([]);
+  const loadingState = useState<boolean>(true);
+  const roomListState = useState<GetRoomDataResponse[] | null>(null);
   const currentRoomDataState = useState<GetRoomDataResponse | null>(null);
-  const currentRoomMessagesState = useState<MessageItem[]>([]);
+  const currentRoomMessagesState = useState<CurrentRoomMessagesState>({
+    messages: [],
+    pageNumber: 0,
+    totalPages: 0,
+    first: true,
+    last: true,
+  });
+  const { roomId } = useParams();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
   const [, setCurrentRoomMessages] = currentRoomMessagesState;
 
   const connect = (roomId: number) => {
-    stompClient.onConnect = (frame) => {
-      console.log('연결됨', frame);
+    stompClient.onConnect = () => {
       joinRoom(roomId);
     };
     stompClient.activate();
   };
   const disconnect = () => {
-    stompClient.onDisconnect = (frame) => {
-      console.log('연결끊김', frame);
+    stompClient.onDisconnect = () => {
       setIsConnected(false);
     };
     stompClient.deactivate();
@@ -58,10 +74,12 @@ export function useChat(stompClient: Client) {
       messageType: 'CHAT',
       senderId: memberId,
     };
-    setCurrentRoomMessages((prev) => [...prev, newMessage]);
+    setCurrentRoomMessages((prev) => ({
+      ...prev,
+      messages: [...prev.messages, newMessage],
+    }));
   };
   const joinRoom = (roomId: number) => {
-    console.log('join room');
     stompClient.subscribe(
       `/topic/directChat/${roomId}`,
       (message) => handleSubscribe(roomId, message),
@@ -91,7 +109,6 @@ export function useChat(stompClient: Client) {
       profileImageUrl: user.image,
       createdAt: toLocaleISOString(new Date()),
     };
-    console.log(publishBody);
     stompClient.publish({
       destination: `/app/chat/${roomId}`,
       body: JSON.stringify(publishBody),
@@ -105,11 +122,88 @@ export function useChat(stompClient: Client) {
       },
     });
     if (response.status === API_FAILED) return false;
-    const reverseContent = response.data.content.reverse();
-    setCurrentRoomMessages((prev) => [...reverseContent, ...prev]);
+    const reverseMessages = response.data.content.reverse();
+
+    setCurrentRoomMessages((prev) => ({
+      messages: [...prev.messages, ...reverseMessages],
+      pageNumber: response.data.number,
+      totalPages: response.data.totalPages,
+      first: response.data.first,
+      last: response.data.last,
+    }));
     setIsConnected(true);
     return true;
   };
+
+  const getRoomListData = async () => {
+    if (!user || !accessToken) {
+      await alert('warning', '접근 권한이 없습니다.');
+      return null;
+    }
+    const getAllRoomDataResponse = await chatService.getAllRoomData(
+      user.memberId,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    if (getAllRoomDataResponse.status === API_FAILED) {
+      await alert('warning', getAllRoomDataResponse.data.message as string);
+      return null;
+    }
+    return getAllRoomDataResponse.data;
+  };
+  const getCurrentRoomData = async (roomList: GetRoomDataResponse[]) => {
+    const currentRoomData = roomList.find(
+      (value) => value.chatId === Number(roomId)
+    );
+    if (!currentRoomData) {
+      await alert('warning', '자신이 참여한 채팅방이 아닙니다.');
+      return null;
+    }
+    return currentRoomData;
+  };
+  const initializeRoom = async (roomList: GetRoomDataResponse[]) => {
+    const roomListData = roomListState[0] ? roomListState[0] : roomList;
+    const currentRoomData = await getCurrentRoomData(roomListData);
+    if (!currentRoomData) return navigate('/mypage/chat/lobby');
+    connect(Number(roomId));
+    const getMessagesResponse = await getMessages(Number(roomId), 0);
+    if (!getMessagesResponse) {
+      await alert('warning', '서버 오류로 메세지를 불러올 수 없습니다.');
+      return navigate('/mypage/chat/lobby');
+    }
+    return currentRoomData;
+  };
+  const initialize = async () => {
+    loadingState[1](true);
+    const roomList = await getRoomListData();
+    if (!roomList) return navigate('/');
+
+    let currentRoomData = null;
+    if (pathname.startsWith('/mypage/chat/room'))
+      currentRoomData = await initializeRoom(roomList);
+
+    roomListState[1](roomList);
+    if (currentRoomData) currentRoomDataState[1](currentRoomData);
+    loadingState[1](false);
+  };
+
+  useEffect(() => {
+    if (roomListState[0] && pathname.startsWith('/mypage/chat/room')) {
+      loadingState[1](true);
+      initializeRoom(roomListState[0]).then((res) => {
+        if (!res) return;
+        currentRoomDataState[1](res);
+        loadingState[1](false);
+      });
+    }
+  }, [pathname]);
+
+  useEffect(() => {
+    initialize();
+  }, []);
 
   return {
     isConnected,

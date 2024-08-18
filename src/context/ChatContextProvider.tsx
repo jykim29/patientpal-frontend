@@ -1,23 +1,23 @@
 import { createContext } from 'react';
 import { Outlet } from 'react-router-dom';
-import { GetRoomDataResponse, MessageItem } from '@/types/api/chat';
-import { useChat } from '@/hooks/useChat';
+import { GetRoomDataResponse } from '@/types/api/chat';
+import { CurrentRoomMessagesState, useChat } from '@/hooks/useChat';
 import { stompClient } from '@/api/stompClient';
 
 interface ChatContextValues {
   isConnected: boolean;
   loadingState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
   roomListState: [
-    GetRoomDataResponse[],
-    React.Dispatch<React.SetStateAction<GetRoomDataResponse[]>>,
+    GetRoomDataResponse[] | null,
+    React.Dispatch<React.SetStateAction<GetRoomDataResponse[] | null>>,
   ];
   currentRoomDataState: [
     GetRoomDataResponse | null,
     React.Dispatch<React.SetStateAction<GetRoomDataResponse | null>>,
   ];
   currentRoomMessagesState: [
-    MessageItem[],
-    React.Dispatch<React.SetStateAction<MessageItem[]>>,
+    CurrentRoomMessagesState,
+    React.Dispatch<React.SetStateAction<CurrentRoomMessagesState>>,
   ];
   connect: (roomId: number) => void;
   disconnect: (roomId: number) => void;
