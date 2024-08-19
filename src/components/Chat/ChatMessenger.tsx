@@ -22,12 +22,12 @@ function ChatMessenger() {
         {/* Messenger Header */}
         <div className="flex items-center gap-5 border-b border-gray-medium bg-gray-light px-5 py-3">
           <Link to="/mypage/chat/lobby">
-            <img src="/assets/chevron_left.svg" alt="뒤로 가기" />
+            <img src="/assets/chevron_left.svg" alt="이전 페이지로 이동" />
           </Link>
           <img
             className="h-14 w-14 rounded-full"
             src={currentRoomData?.partnerInfo.profileImageUrl}
-            alt="유저네임"
+            alt="상대방 프로필 사진"
           />
           <span className="text-text-large font-semibold">
             {currentRoomData?.partnerInfo.name ?? ''}

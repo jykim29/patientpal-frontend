@@ -1,6 +1,7 @@
 import { format } from 'date-fns';
 import { useAuthStore } from '@/store/useAuthStore';
 import { MessageItem } from '@/types/api/chat';
+import { toLocaleISOString } from '@/utils/toLocaleISOString';
 
 export default function ChatListItem({
   data: { content, createdDate, senderId, profileImageUrl },
@@ -20,7 +21,7 @@ export default function ChatListItem({
       <p className="chat-text">{content}</p>
       <time
         className="self-end text-text-small text-gray-medium-dark"
-        dateTime={new Date(createdDate as string).toISOString()}
+        dateTime={toLocaleISOString(new Date(createdDate as string))}
       >
         {format(createdDate as string, 'yyyy-MM-dd HH:mm')}
       </time>

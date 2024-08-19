@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 import { useChatContext } from '@/hooks/useChatContext';
+import { useModal } from '@/hooks/useModal';
 import Button from '../common/Button';
 import Input from '../common/Input';
 
 export default function ChatMessageForm() {
+  const { alert } = useModal();
   const {
     sendMessage,
     currentRoomDataState: [currentRoomData],
@@ -42,6 +44,10 @@ export default function ChatMessageForm() {
         name="attach"
         id="attach"
         accept=".jpg, .png"
+        onClick={async (e) => {
+          e.preventDefault();
+          await alert('warning', '현재 준비중인 기능입니다.');
+        }}
       />
       <div className="flex-1">
         <label className="sr-only" htmlFor="message">
