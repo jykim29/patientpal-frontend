@@ -76,7 +76,7 @@ export function useChat(stompClient: Client) {
     };
     setCurrentRoomMessages((prev) => ({
       ...prev,
-      messages: [...prev.messages, newMessage],
+      messages: [newMessage, ...prev.messages],
     }));
   };
   const joinRoom = (roomId: number) => {
@@ -122,10 +122,9 @@ export function useChat(stompClient: Client) {
       },
     });
     if (response.status === API_FAILED) return false;
-    const reverseMessages = response.data.content.reverse();
 
     setCurrentRoomMessages((prev) => ({
-      messages: [...prev.messages, ...reverseMessages],
+      messages: [...prev.messages, ...response.data.content],
       pageNumber: response.data.number,
       totalPages: response.data.totalPages,
       first: response.data.first,
