@@ -39,10 +39,19 @@ function ResultItem({ searchResult }: Props) {
   const { alert } = useModal();
   const navigate = useNavigate();
   const handleContractBtn = () => {
+    if (user === null) {
+      alert('warning', '로그인이 필요한 서비스입니다.');
+      navigate('/auth');
+      return;
+    }
     navigate(`/mypage/contract/write/${id}`);
   };
   const handleChatBtn = async () => {
-    if (!user) return;
+    if (user === null) {
+      alert('warning', '로그인이 필요한 서비스입니다.');
+      navigate('/auth/signin');
+      return;
+    }
     const createRoomResponse = await chatService.createRoom([
       user.memberId,
       id as number,
