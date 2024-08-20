@@ -1,18 +1,33 @@
-import { Link, useLoaderData, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLoaderData, useNavigate } from 'react-router-dom';
 import DOMPurify from 'dompurify';
+import { format } from 'date-fns';
 
 import { PostResponse } from '@/types/api/board';
-import { convertDatetime } from '@/utils/convertDatetime';
 import { boardService } from '@/services';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useModal } from '@/hooks/useModal';
 import { API_FAILED } from '@/constants/api';
+import { toLocaleISOString } from '@/utils/toLocaleISOString';
 
 import Button from '../common/Button';
 
 export default function BoardArticle() {
-  const { title, content, name, id, createdAt, updatedAt, memberId, postType } =
-    useLoaderData() as PostResponse;
+  const loaderData = useLoaderData() as PostResponse;
+  if (!loaderData) {
+    window.alert('삭제됐거나 존재하지 않는 게시물입니다.');
+    return <Navigate to=".." replace />;
+  }
+  const {
+    title,
+    content,
+    name,
+    id,
+    createdAt,
+    updatedAt,
+    memberId,
+    postType,
+    views,
+  } = loaderData;
   const { accessToken, user } = useAuthStore();
   const { confirm, alert } = useModal();
   const navigate = useNavigate();
@@ -20,8 +35,15 @@ export default function BoardArticle() {
   const boardName = postType === 'FREE' ? '자유게시판' : '공지사항';
   const myId = user && user.memberId;
   const isMyPost = myId === memberId;
-  const [createDate, createTime] = convertDatetime(createdAt);
-  const [updateDate, updateTime] = convertDatetime(updatedAt);
+  const authorName = postType === 'NOTICE' ? '관리자' : name;
+  const createdDatetime = format(
+    toLocaleISOString(new Date(createdAt)),
+    'yyyy-MM-dd HH:mm'
+  );
+  const updatedDatetime = format(
+    toLocaleISOString(new Date(updatedAt)),
+    'yyyy-MM-dd HH:mm'
+  );
 
   const handleDeletePost = async () => {
     if (!(await confirm('정말 삭제하시겠습니까?'))) return;
@@ -50,20 +72,21 @@ export default function BoardArticle() {
           </div>
 
           <div className="flex gap-2">
-            <span className="">작성자</span>
-            <span className="divider pr-3 text-gray-dark">{name}</span>
+            <span>작성자</span>
+            <span className="divider pr-3 text-gray-dark">{authorName}</span>
             <span className="divider px-3">
               <span className="mr-2">작성일</span>
               <time className="text-gray-dark" dateTime={createdAt}>
-                {`${createDate} ${createTime}`}
+                {createdDatetime}
               </time>
             </span>
             <span className="relative px-3">
               <span className="mr-2">수정일</span>
               <time className="text-gray-dark" dateTime={updatedAt}>
-                {`${updateDate} ${updateTime}`}
+                {updatedDatetime}
               </time>
             </span>
+            <span className="ml-auto">조회수 {views}</span>
           </div>
         </div>
 

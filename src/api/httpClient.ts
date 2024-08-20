@@ -8,7 +8,7 @@ import {
 import { ErrorResponse, FetchResult } from '@/types/api/common';
 import { createAxiosInstance } from '@/utils/createAxiosInstance';
 
-const axiosInstance = createAxiosInstance(BASE_URL, {
+const axiosInstance = createAxiosInstance(BASE_URL.API, {
   timeout: 1 * 1000 * TIMEOUT_SECONDS,
   headers: {
     'Content-Type': 'application/json',

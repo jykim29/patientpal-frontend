@@ -1,12 +1,11 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { format } from 'date-fns';
+import { differenceInCalendarDays, format } from 'date-fns';
 
 import Button from '@/components/common/Button';
 import { ContractFormData } from '@/types/formData.interface';
 import { UserRole } from '@/types/user';
 import { SendRequestBody } from '@/types/api/match';
-import { convertDatetime } from '@/utils/convertDatetime';
 import { matchService } from '@/services/MatchService';
 import { useAuthStore } from '@/store/useAuthStore';
 import { API_FAILED } from '@/constants/api';
@@ -24,7 +23,7 @@ const initialContractFormData: ContractFormData = {
     isNok: 'false',
   },
   CAREGIVER: {
-    careStartDateTime: convertDatetime(new Date().getTime())[0],
+    careStartDateTime: format(new Date(), 'yyyy-MM-dd'),
     careEndDateTime: '',
     totalAmount: 0,
     significant: '',
@@ -38,6 +37,7 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -52,15 +52,26 @@ export default function ContractForm({ memberId = '' }: { memberId?: string }) {
     data: ContractFormData['USER'] | ContractFormData['CAREGIVER']
   ) => {
     if (memberId === '') return;
+    if (
+      differenceInCalendarDays(data.careEndDateTime, data.careStartDateTime) < 0
+    ) {
+      return setError('root', {
+        type: 'validate',
+        message: '종료 날짜는 시작 날짜보다 앞설 수 없습니다.',
+      });
+    }
     if (!(await confirm('정말 전송하시겠습니까?'))) return;
-
     const requestBody: SendRequestBody['USER'] | SendRequestBody['CAREGIVER'] =
       {
         ...data,
-        careStartDateTime: new Date(data.careStartDateTime).toISOString(),
-        careEndDateTime: new Date(
-          `${data.careEndDateTime}T23:59:59Z`
-        ).toISOString(),
+        careStartDateTime: format(
+          data.careStartDateTime,
+          "yyyy-MM-dd'T'00:00:00.000"
+        ),
+        careEndDateTime: format(
+          data.careEndDateTime,
+          "yyyy-MM-dd'T'23:59:59.000"
+        ),
         totalAmount: Number(data.totalAmount),
       };
     if (myRole === 'USER')

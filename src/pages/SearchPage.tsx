@@ -11,14 +11,23 @@ interface Props {
 
 function SearchPage({ searchType }: Props) {
   const { user } = useAuthStore();
+  let menuTitle = '간병인 찾기';
+
+  switch (user?.role) {
+    case 'CAREGIVER':
+      menuTitle = '환자 찾기';
+      break;
+    case 'USER':
+      menuTitle = '간병인 찾기';
+      break;
+    default:
+      menuTitle = '간병인 찾기';
+      break;
+  }
 
   return (
     <main className="flex flex-col justify-center gap-[52px] px-[52px] py-8">
-      {user?.role === 'CAREGIVER' ? (
-        <MenuTitle title="환자 찾기" />
-      ) : (
-        <MenuTitle title="간병인 찾기" />
-      )}
+      <MenuTitle title={menuTitle} />
       {searchType === 'city' && <SearchByCity />}
       {searchType === 'map' && <SearchByMap />}
     </main>
