@@ -70,9 +70,9 @@ function Header() {
     ) : (
       <UnknownProfile isShow={isShow} onClick={handleClickToggleButton} />
     );
-
   useEffect(() => {
-    setIsShow({ notification: false, shortcut: false });
+    if (isShow.shortcut || isShow.notification)
+      setIsShow({ notification: false, shortcut: false });
   }, [pathname]);
 
   return (

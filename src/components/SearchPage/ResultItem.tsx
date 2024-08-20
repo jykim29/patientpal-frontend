@@ -1,13 +1,14 @@
-import { FaCakeCandles, FaCircleUser } from 'react-icons/fa6';
+import { useNavigate } from 'react-router-dom';
+import { FaCakeCandles, FaCircleUser, FaRegFileLines } from 'react-icons/fa6';
 import { FaStar } from 'react-icons/fa';
 import { BsGenderAmbiguous } from 'react-icons/bs';
-import Button from '../common/Button';
-import { FaRegFileLines } from 'react-icons/fa6';
+import { API_FAILED } from '@/constants/api';
+import { useModal } from '@/hooks/useModal';
+import { chatService } from '@/services';
+import { useAuthStore } from '@/store/useAuthStore';
 import { UserList } from '@/types/searchResult.model';
 import { formatGenderToKR } from '@/utils/format';
-import { useAuthStore } from '@/store/useAuthStore';
-import { useNavigate } from 'react-router-dom';
-import { useModal } from '@/hooks/useModal';
+import Button from '../common/Button';
 interface Props {
   searchResult: Partial<UserList>;
 }
@@ -45,19 +46,26 @@ function ResultItem({ searchResult }: Props) {
     }
     navigate(`/mypage/contract/write/${id}`);
   };
-  const handleChatBtn = () => {
+  const handleChatBtn = async () => {
     if (user === null) {
       alert('warning', '로그인이 필요한 서비스입니다.');
-      navigate('/auth');
+      navigate('/auth/signin');
       return;
     }
-    navigate(`/mypage/chat/room/${id}`);
+    const createRoomResponse = await chatService.createRoom([
+      user.memberId,
+      id as number,
+    ]);
+    if (createRoomResponse.status === API_FAILED)
+      return alert('warning', createRoomResponse.data.message as string);
+    const chatId = createRoomResponse.data.chatId;
+    return navigate(`/mypage/chat/room/${chatId}`);
   };
 
   return (
     <div className="flex items-center justify-between gap-2 rounded-[10px] bg-white px-5 py-3 shadow-sm">
       <div className="flex items-center gap-4">
-        <FaCircleUser className="w-10 h-10" color="gray" />
+        <FaCircleUser className="h-10 w-10" color="gray" />
         <p className="text-text-large">{name}</p>
         <ul className="flex items-center gap-5">
           <li className="flex items-center gap-1">

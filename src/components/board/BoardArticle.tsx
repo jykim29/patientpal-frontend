@@ -1,12 +1,13 @@
 import { Link, Navigate, useLoaderData, useNavigate } from 'react-router-dom';
 import DOMPurify from 'dompurify';
+import { format } from 'date-fns';
 
 import { PostResponse } from '@/types/api/board';
-import { convertDatetime } from '@/utils/convertDatetime';
 import { boardService } from '@/services';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useModal } from '@/hooks/useModal';
 import { API_FAILED } from '@/constants/api';
+import { toLocaleISOString } from '@/utils/toLocaleISOString';
 
 import Button from '../common/Button';
 
@@ -35,8 +36,14 @@ export default function BoardArticle() {
   const myId = user && user.memberId;
   const isMyPost = myId === memberId;
   const authorName = postType === 'NOTICE' ? '관리자' : name;
-  const [createDate, createTime] = convertDatetime(createdAt);
-  const [updateDate, updateTime] = convertDatetime(updatedAt);
+  const createdDatetime = format(
+    toLocaleISOString(new Date(createdAt)),
+    'yyyy-MM-dd HH:mm'
+  );
+  const updatedDatetime = format(
+    toLocaleISOString(new Date(updatedAt)),
+    'yyyy-MM-dd HH:mm'
+  );
 
   const handleDeletePost = async () => {
     if (!(await confirm('정말 삭제하시겠습니까?'))) return;
@@ -70,13 +77,13 @@ export default function BoardArticle() {
             <span className="divider px-3">
               <span className="mr-2">작성일</span>
               <time className="text-gray-dark" dateTime={createdAt}>
-                {`${createDate} ${createTime}`}
+                {createdDatetime}
               </time>
             </span>
             <span className="relative px-3">
               <span className="mr-2">수정일</span>
               <time className="text-gray-dark" dateTime={updatedAt}>
-                {`${updateDate} ${updateTime}`}
+                {updatedDatetime}
               </time>
             </span>
             <span className="ml-auto">조회수 {views}</span>

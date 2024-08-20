@@ -1,6 +1,13 @@
 import { Role } from '../user';
 
 export type GetUserDataResponse = PatientInformation & CaregiverInformation;
+export type MemberListItem = {
+  memberId: number;
+  username: string;
+  name: string;
+  profileImageUrl: string;
+};
+export type GetMemberListResponse = MemberListItem[];
 
 export type Gender = 'MALE' | 'FEMALE';
 export type Address = {

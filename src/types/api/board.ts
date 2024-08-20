@@ -1,3 +1,5 @@
+import { Pagination } from './common';
+
 // Board Type
 export type BoardTypes = {
   notice: 'notice';
@@ -25,31 +27,7 @@ export interface PostResponse {
   postType: 'FREE' | 'NOTICE';
   views: number;
 }
-export interface GetListResponse {
-  totalElements: number;
-  totalPages: number;
-  numberOfElements: number;
-  pageable: {
-    paged: boolean;
-    unpaged: boolean;
-    pageNumber: number;
-    pageSize: number;
-    offset: number;
-    sort: {
-      unsorted: boolean;
-      sorted: boolean;
-      empty: boolean;
-    };
-  };
-  size: number;
+
+export interface GetListResponse extends Pagination {
   content: Omit<PostResponse, 'content'>[];
-  number: number;
-  sort: {
-    unsorted: boolean;
-    sorted: boolean;
-    empty: boolean;
-  };
-  first: boolean;
-  last: boolean;
-  empty: boolean;
 }
