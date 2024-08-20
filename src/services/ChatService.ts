@@ -46,17 +46,27 @@ export default class ChatService {
     if (getMemberListStatus === API_FAILED)
       return { data: getMemberListData, status: API_FAILED };
 
-    const combinedData = response.data.map((value, index) => ({
-      chatId: value.chatId,
-      chatType: value.chatType,
-      partnerInfo: {
-        ...getMemberListData[index],
-        profileImageUrl:
-          getMemberListData[index].profileImageUrl ??
-          '/assets/default_profile.jpg',
-        memberId: partnerIds[index],
-      },
-    }));
+    const combinedData = response.data.map((value) => {
+      const partnerInfoData =
+        getMemberListData.find((member) =>
+          value.managerIds.includes(member.memberId)
+        ) || null;
+      if (!partnerInfoData)
+        return {
+          chatId: value.chatId,
+          chatType: value.chatType,
+          partnerInfo: null,
+        };
+      return {
+        chatId: value.chatId,
+        chatType: value.chatType,
+        partnerInfo: {
+          ...partnerInfoData,
+          profileImageUrl:
+            partnerInfoData?.profileImageUrl ?? '/assets/default_profile.jpg',
+        },
+      };
+    });
     return { data: combinedData, status: API_SUCCESS };
   }
 

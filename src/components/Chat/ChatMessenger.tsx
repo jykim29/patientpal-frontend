@@ -13,7 +13,7 @@ function ChatMessenger() {
       {/* Title */}
       <div className="flex w-full items-center justify-between">
         <h3 className="text-title-small">
-          {currentRoomData?.partnerInfo.name ?? ''} 님과의 채팅
+          {currentRoomData?.partnerInfo?.name ?? ''} 님과의 채팅
         </h3>
       </div>
 
@@ -26,11 +26,14 @@ function ChatMessenger() {
           </Link>
           <img
             className="h-14 w-14 rounded-full"
-            src={currentRoomData?.partnerInfo.profileImageUrl}
+            src={
+              currentRoomData?.partnerInfo?.profileImageUrl ??
+              '/assets/default_profile.jpg'
+            }
             alt="상대방 프로필 사진"
           />
           <span className="text-text-large font-semibold">
-            {currentRoomData?.partnerInfo.name ?? ''}
+            {currentRoomData?.partnerInfo?.name ?? ''}
           </span>
         </div>
 

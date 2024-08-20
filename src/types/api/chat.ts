@@ -11,7 +11,7 @@ export interface GetRoomInfoResponse {
 }
 
 export type GetRoomDataResponse = {
-  partnerInfo: MemberListItem;
+  partnerInfo: MemberListItem | null;
   chatId: number;
   chatType: ChatType;
 };

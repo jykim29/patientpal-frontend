@@ -15,8 +15,11 @@ export default function ChatRoomList() {
             key={value.chatId}
             roomId={value.chatId}
             lastMessage="현재 메세지 미리보기 기능은 지원되지 않습니다."
-            username={value.partnerInfo.name}
-            profileImageUrl={value.partnerInfo.profileImageUrl}
+            username={value.partnerInfo?.name ?? ''}
+            profileImageUrl={
+              value.partnerInfo?.profileImageUrl ??
+              '/assets/default_profile.jpg'
+            }
           />
         ))
       ) : (

@@ -67,12 +67,18 @@ export default function ChatMessageForm() {
       <Button type="submit" className={sendButtonClassName}>
         <img src="/assets/send.svg" title="전송" alt="전송" />
       </Button>
-      <Link
-        to={`/mypage/contract/write/${currentRoomData?.partnerInfo.memberId}`}
-        className="inline-flex items-center justify-center gap-2 rounded-md border-2 border-gold bg-orange px-2.5 py-2.5 text-white transition-all hover:brightness-[0.95] active:brightness-[1.05]"
-      >
-        <img src="/assets/paper_pencil.svg" title="계약서 작성" alt="계약서" />
-      </Link>
+      {currentRoomData?.partnerInfo && (
+        <Link
+          to={`/mypage/contract/write/${currentRoomData.partnerInfo.memberId}`}
+          className="inline-flex items-center justify-center gap-2 rounded-md border-2 border-gold bg-orange px-2.5 py-2.5 text-white transition-all hover:brightness-[0.95] active:brightness-[1.05]"
+        >
+          <img
+            src="/assets/paper_pencil.svg"
+            title="계약서 작성"
+            alt="계약서"
+          />
+        </Link>
+      )}
     </form>
   );
 }
