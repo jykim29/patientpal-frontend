@@ -191,12 +191,15 @@ function Notification({
     <div className="relative">
       <button
         id="notification"
+        title="알림 목록"
         className="relative cursor-pointer"
         onClick={handleClick}
       >
-        <span className="absolute right-0 top-0 h-4 w-4 rounded-full bg-negative text-text-small text-white">
-          {notificationList.length}
-        </span>
+        {notificationList.length > 0 && (
+          <span className="absolute right-0 top-0 h-4 w-4 rounded-full bg-negative text-text-small text-white">
+            {notificationList.length}
+          </span>
+        )}
         <FaBell className="h-7 w-7" color="#4166F5" />
       </button>
       {isShow && <NotificationModal />}
