@@ -75,4 +75,8 @@ export const API_ENDPOINT = Object.freeze({
   },
   CHATS: '/chats', // 채팅방
   MESSAGES: '/messages', // 채팅 메세지
+  NOTIFICATION: {
+    SUBSCRIBE: '/notification/subscribe',
+    READ: '/notification/read',
+  },
 });
