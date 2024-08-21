@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { useAuthStore } from '@/store/useAuthStore';
 import { API_FAILED } from '@/constants/api';
 import { authService } from '@/services';
+import { useNotificationStore } from '@/store/useNotificationStore';
 import Button from './Button';
 import { NotificationModal } from '../Modal';
 
@@ -65,11 +66,20 @@ function Header() {
   if (user && isLoggedIn)
     accountSectionContent = isCompleteProfile ? (
       <>
-        <Notification />
-        <UserProfile isShow={isShow} onClick={handleClickToggleButton} />
+        <Notification
+          isShow={isShow.notification}
+          onClick={handleClickToggleButton}
+        />
+        <UserProfile
+          isShow={isShow.shortcut}
+          onClick={handleClickToggleButton}
+        />
       </>
     ) : (
-      <UnknownProfile isShow={isShow} onClick={handleClickToggleButton} />
+      <UnknownProfile
+        isShow={isShow.shortcut}
+        onClick={handleClickToggleButton}
+      />
     );
   useEffect(() => {
     if (isShow.shortcut || isShow.notification)
@@ -98,7 +108,7 @@ function UserProfile({
   isShow,
   onClick: handleClick,
 }: {
-  isShow: InitialIsShowState;
+  isShow: InitialIsShowState['shortcut'];
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   const { user } = useAuthStore();
@@ -119,13 +129,13 @@ function UserProfile({
         <button
           id="shortcut"
           title="메뉴 펼치기"
-          className={`h-6 w-6 bg-[length:12px_12px] bg-center bg-no-repeat hover:bg-gray-light ${isShow.shortcut ? "bg-[url('/assets/chevron_up.svg')]" : "bg-[url('/assets/chevron_down.svg')]"}`}
+          className={`h-6 w-6 bg-[length:12px_12px] bg-center bg-no-repeat hover:bg-gray-light ${isShow ? "bg-[url('/assets/chevron_up.svg')]" : "bg-[url('/assets/chevron_down.svg')]"}`}
           type="button"
           onClick={handleClick}
         >
           <span className="sr-only">메뉴 펼치기</span>
         </button>
-        {user && isShow.shortcut && (
+        {user && isShow && (
           <ShortcutMenu
             className="right-[-10px] top-[140%] w-32"
             menuList={shortcutMenuArray[Number(user.isCompleteProfile)]}
@@ -140,7 +150,7 @@ function UnknownProfile({
   isShow,
   onClick: handleClick,
 }: {
-  isShow: InitialIsShowState;
+  isShow: InitialIsShowState['shortcut'];
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   const { user } = useAuthStore();
@@ -159,7 +169,7 @@ function UnknownProfile({
         />
         <span>프로필을 먼저 등록해주세요.</span>
       </button>
-      {user && isShow.shortcut && (
+      {user && isShow && (
         <ShortcutMenu
           className="left-[50px] top-[120%] w-[120px]"
           menuList={shortcutMenuArray[Number(user.isCompleteProfile)]}
@@ -169,17 +179,27 @@ function UnknownProfile({
   );
 }
 
-function Notification() {
-  const [isShowNotiModal, setIsShowNotiModal] = useState(false);
-  const checkNotice = () => {
-    setIsShowNotiModal(!isShowNotiModal);
-  };
+function Notification({
+  isShow,
+  onClick: handleClick,
+}: {
+  isShow: InitialIsShowState['notification'];
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+}) {
+  const { notificationList } = useNotificationStore();
   return (
     <div className="relative">
-      <button className="relative cursor-pointer" onClick={checkNotice}>
+      <button
+        id="notification"
+        className="relative cursor-pointer"
+        onClick={handleClick}
+      >
+        <span className="absolute right-0 top-0 h-4 w-4 rounded-full bg-negative text-text-small text-white">
+          {notificationList.length}
+        </span>
         <FaBell className="h-7 w-7" color="#4166F5" />
       </button>
-      {isShowNotiModal && <NotificationModal />}
+      {isShow && <NotificationModal />}
     </div>
   );
 }

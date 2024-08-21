@@ -1,63 +1,111 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
-import Button from '../common/Button';
+import { format } from 'date-fns';
+import {
+  NotificationItem,
+  useNotificationStore,
+} from '@/store/useNotificationStore';
+import { notificationService } from '@/services';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function NotificationModal({
   className = '',
 }: {
   className?: string;
 }) {
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const notificationList = useNotificationStore(
+    (state) => state.notificationList
+  );
+  const [filter, setFilter] = useState<string>('ALL');
   const combinedClassName = twMerge(
-    'absolute -left-[100px] top-[120%] z-10 w-[400px] border border-gray-medium bg-white shadow-lg',
+    'absolute -left-[150px] top-[120%] z-10 w-[450px] border border-gray-light-medium rounded-sm bg-white shadow-lg',
     className
   );
+  const filteredNotificationList =
+    filter === 'ALL'
+      ? notificationList
+      : notificationList.filter((value) => value.type === filter);
+  const handleChageFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFilter(e.currentTarget.value);
+  };
+  const handleClickReadAllNotification = async () => {
+    await notificationService.readAllNotification({
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+  };
   return (
     <div className={combinedClassName}>
       <div className="flex w-full items-center border-b border-gray-light-medium px-5 py-2">
         <span className="text-text-large font-semibold">알림</span>
-        <span className="ml-1 text-orange">(0건)</span>
+        <span className="ml-1 text-orange">{`(${filteredNotificationList.length}건)`}</span>
         <select
           aria-label="알림 종류"
           className="ml-2 rounded-md border border-gray-medium text-text-small"
           name="type"
           id="type"
+          onChange={handleChageFilter}
         >
-          <option value="all">전체</option>
-          <option value="match">매칭</option>
-          <option value="chat">채팅</option>
-          <option value="review">리뷰</option>
+          <option value="ALL">전체</option>
+          <option value="MATCH">매칭</option>
+          <option value="CHAT">채팅</option>
+          <option value="REVIEW">리뷰</option>
         </select>
         <button
           type="button"
-          className="ml-auto rounded-md p-1 text-text-small text-gray-medium-dark hover:bg-gray-light"
+          className="ml-auto rounded-md p-1 text-text-small text-primary hover:bg-gray-light hover:underline"
+          onClick={handleClickReadAllNotification}
         >
-          전체 삭제
+          모두 읽음처리
         </button>
       </div>
-      <NotificationList />
+      <NotificationList listData={filteredNotificationList} />
     </div>
   );
 }
 
-function NotificationList() {
+function NotificationList({ listData }: { listData: NotificationItem[] }) {
   return (
     <div className="max-h-[300px] w-full overflow-auto">
       <ul className="flex w-full flex-col">
-        <NotificationListItem />
-        <NotificationListItem />
-        <NotificationListItem />
-        <NotificationListItem />
-        <NotificationListItem />
-        <NotificationListItem />
-        <NotificationListItem />
-        <NotificationListItem />
-        <NotificationListItem />
-        <NotificationListItem />
+        {listData.length === 0 && (
+          <li className="px-3 py-6 text-center text-gray-dark">
+            <p>현재 도착한 알림이 없습니다.</p>
+          </li>
+        )}
+        {listData.map((items) => (
+          <NotificationListItem key={items.id} {...items} />
+        ))}
       </ul>
     </div>
   );
 }
 
-function NotificationListItem() {
+function NotificationListItem({ name, type, createdDate }: NotificationItem) {
+  let notificationMessage = '';
+  let destinationPath = '/';
+  switch (type) {
+    case 'MATCH': {
+      notificationMessage = `${name} 님으로부터 매칭 신청이 도작하였습니다.`;
+      destinationPath = '/mypage/match-record';
+      break;
+    }
+    case 'CHAT': {
+      notificationMessage = `${name} 님이 1대1 채팅 신청을 하였습니다.`;
+      destinationPath = '/mypage/chat/lobby';
+      break;
+    }
+    case 'REVIEW': {
+      notificationMessage = `${name} 님이 후기를 작성하였습니다.`;
+      destinationPath = '/mypage/review';
+      break;
+    }
+    default:
+      break;
+  }
   return (
     <li className="flex select-none items-center justify-between gap-3 border-b border-gray-light-medium px-3 py-2 hover:bg-yellow-50">
       <img
@@ -66,16 +114,19 @@ function NotificationListItem() {
         alt="프로필"
       />
       <div className="flex-1 text-text-small">
-        <p>
-          <strong className="mr-1">김환자</strong>님으로부터 매칭 신청이
-          도착하였습니다.
-        </p>
-        <time className="block text-gray-medium">2024-08-15 23:21:12</time>
+        <p>{notificationMessage}</p>
+        <time className="block text-gray-medium">
+          {format(createdDate, 'yyyy-MM-dd HH:mm:ss')}
+        </time>
       </div>
       <div className="w-12">
-        <Button className="w-full px-0 py-1 text-sm" type="button">
+        <Link
+          to={destinationPath}
+          className="w-full rounded-md bg-primary px-2 py-1 text-sm text-white"
+          type="button"
+        >
           이동
-        </Button>
+        </Link>
       </div>
     </li>
   );
