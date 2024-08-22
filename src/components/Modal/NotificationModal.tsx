@@ -11,8 +11,10 @@ import { useAuthStore } from '@/store/useAuthStore';
 
 export default function NotificationModal({
   className = '',
+  onClick: handleToggleModal,
 }: {
   className?: string;
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   const accessToken = useAuthStore((state) => state.accessToken);
   const notificationList = useNotificationStore(
@@ -54,13 +56,21 @@ export default function NotificationModal({
           <option value="CHAT">채팅</option>
           <option value="REVIEW">리뷰</option>
         </select>
+        {filteredNotificationList.length > 0 && (
+          <button
+            type="button"
+            className="ml-3 rounded-md p-1 text-text-small text-primary hover:bg-gray-light hover:underline"
+            onClick={handleClickReadAllNotification}
+          >
+            모두 읽음처리
+          </button>
+        )}
         <button
+          id="notification"
+          className="ml-auto h-4 w-4 bg-[url('/assets/cross_black.svg')] bg-center bg-no-repeat"
           type="button"
-          className="ml-auto rounded-md p-1 text-text-small text-primary hover:bg-gray-light hover:underline"
-          onClick={handleClickReadAllNotification}
-        >
-          모두 읽음처리
-        </button>
+          onClick={handleToggleModal}
+        ></button>
       </div>
       <NotificationList listData={filteredNotificationList} />
     </div>

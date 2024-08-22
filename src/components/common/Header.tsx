@@ -181,7 +181,7 @@ function UnknownProfile({
 
 function Notification({
   isShow,
-  onClick: handleClick,
+  onClick: handleToggleModal,
 }: {
   isShow: InitialIsShowState['notification'];
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -193,7 +193,7 @@ function Notification({
         id="notification"
         title="알림 목록"
         className="relative cursor-pointer"
-        onClick={handleClick}
+        onClick={handleToggleModal}
       >
         {notificationList.length > 0 && (
           <span className="absolute right-0 top-0 h-4 w-4 rounded-full bg-negative text-text-small text-white">
@@ -202,7 +202,7 @@ function Notification({
         )}
         <FaBell className="h-7 w-7" color="#4166F5" />
       </button>
-      {isShow && <NotificationModal />}
+      {isShow && <NotificationModal onClick={handleToggleModal} />}
     </div>
   );
 }
