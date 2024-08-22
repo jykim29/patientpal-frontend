@@ -111,7 +111,7 @@ export default function BoardArticle() {
             </Button>
           </>
         )}
-        <Link to={'../'} className="link-button bg-primary">
+        <Link to={'..'} className="link-button bg-primary">
           목록으로
         </Link>
       </div>
