@@ -40,7 +40,7 @@ function ModalOverlay({
 }>) {
   const { closeAllModal } = useModal();
   const combinedClassName = twMerge(
-    'fixed w-screen h-screen bg-overlay top-0 left-0 z-10',
+    'fixed w-screen h-screen bg-overlay top-0 left-0 z-[99]',
     className
   );
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
