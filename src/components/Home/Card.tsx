@@ -1,53 +1,47 @@
-import { useNavigate } from 'react-router-dom';
-import { FaCircleUser } from 'react-icons/fa6';
-import { FaCakeCandles } from 'react-icons/fa6';
+import { Link } from 'react-router-dom';
+import { FaCakeCandles, FaCircleUser } from 'react-icons/fa6';
+import { useAuthStore } from '@/store/useAuthStore';
 
-interface SmallCardProps {
-  text: string;
-  img: string;
-  index: number;
+interface ShortcutCardProps {
+  label: string;
+  buttonImageUrl: string;
+  path: string;
 }
-
-interface LargeCardProps {
+interface RankCardProps {
   index: number;
   name: string;
   color: 'gold' | 'silver' | 'bronze';
 }
+interface RecommendCardProps {
+  memberId: number;
+  name: string;
+  gender: 'MALE' | 'FEMALE';
+  age: number;
+  address: string;
+  image: string;
+  experienceYears?: number;
+}
 
 type CardType = {
-  Small: React.FC<SmallCardProps>;
-  Large: React.FC<LargeCardProps>;
+  Shortcut: React.FC<ShortcutCardProps>;
+  Rank: React.FC<RankCardProps>;
+  Recommend: React.FC<RecommendCardProps>;
 };
 
-export const Card: CardType = {
-  Small: ({ text, img, index }) => {
-    const navigate = useNavigate();
-    const moveTo = (index: number) => {
-      switch (index) {
-        case 0:
-          navigate('/search');
-          break;
-        case 1:
-          navigate('/contract');
-          break;
-        case 2:
-          navigate('/community/forum');
-          break;
-      }
-    };
-
+const Card: CardType = {
+  Shortcut: ({ label, buttonImageUrl, path }: ShortcutCardProps) => {
     return (
-      <div
-        className="flex h-[100px] cursor-pointer items-center gap-1 rounded-[15px] bg-gray-light px-8 py-3 drop-shadow-lg"
-        onClick={() => moveTo(index)}
+      <Link
+        to={path}
+        className="flex h-[80px] cursor-pointer items-center gap-1 rounded-xl bg-gray-light px-4 py-2 shadow-lg"
       >
-        <p className="text-nowrap text-title-small">{text}</p>
-        <img src="/assets/right circle icon.png"></img>
-        <img src={img}></img>
-      </div>
+        <p className="text-nowrap text-text-large font-semibold">{label}</p>
+        <img src="/assets/right_circle_icon.png" alt="바로가기 이동" />
+        <img className="h-full" src={buttonImageUrl} alt={label} />
+      </Link>
     );
   },
-  Large: ({ index, name, color }) => {
+  Rank: ({ index, name, color }: RankCardProps) => {
     const colorVarient: Record<'gold' | 'silver' | 'bronze', string> = {
       gold: 'bg-gold',
       silver: 'bg-gray-light-medium',
@@ -103,4 +97,52 @@ export const Card: CardType = {
       </div>
     );
   },
+  Recommend: ({
+    memberId,
+    name,
+    age,
+    address,
+    gender,
+    image,
+    experienceYears,
+  }: RecommendCardProps) => {
+    const user = useAuthStore((state) => state.user);
+    const myRole = user && user.role;
+    const roleName = myRole === 'CAREGIVER' ? '환자님' : '간병인님';
+    const description = {
+      genderName: gender === 'MALE' ? '남성' : '여성',
+      ageName: `${age}세`,
+      experienceYearsName: experienceYears
+        ? `경력 ${experienceYears}년`
+        : undefined,
+    };
+    const imageSrc = image ?? '/assets/default_profile.jpg';
+    return (
+      <div className="flex h-full w-[230px] shrink-0 flex-col items-center justify-center gap-2 rounded-md border border-tertiary p-4 text-text-small shadow-md">
+        <img
+          className="pointer-events-none h-16 w-16 rounded-full"
+          src={imageSrc}
+          alt={name}
+        />
+        <div>
+          <span className="mr-1 text-text-medium font-semibold">{name}</span>
+          <span>{roleName}</span>
+        </div>
+        <span>
+          {Object.values(description)
+            .filter((value) => value)
+            .join(' / ')}
+        </span>
+        <span>{address}</span>
+        <Link
+          to={`/mypage/contract/write/${memberId}`}
+          className="rounded-md bg-primary px-2 py-1 text-white transition-all hover:bg-secondary"
+        >
+          매칭 신청
+        </Link>
+      </div>
+    );
+  },
 };
+
+export default Card;
