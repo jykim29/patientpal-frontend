@@ -38,19 +38,31 @@ function ResultItem({ searchResult }: Props) {
   const { user } = useAuthStore();
   const { alert } = useModal();
   const navigate = useNavigate();
-  const handleContractBtn = () => {
+  const handleContractBtn = async () => {
     if (user === null) {
-      alert('warning', '로그인이 필요한 서비스입니다.');
-      navigate('/auth');
-      return;
+      await alert('warning', '로그인이 필요한 서비스입니다.');
+      return navigate('/auth/signin');
+    }
+    if (!user.isCompleteProfile) {
+      await alert(
+        'warning',
+        '서비스 이용을 위해서 먼저 프로필 작성이 필요합니다.'
+      );
+      return navigate('/mypage/profile');
     }
     navigate(`/mypage/contract/write/${id}`);
   };
   const handleChatBtn = async () => {
     if (user === null) {
-      alert('warning', '로그인이 필요한 서비스입니다.');
-      navigate('/auth/signin');
-      return;
+      await alert('warning', '로그인이 필요한 서비스입니다.');
+      return navigate('/auth/signin');
+    }
+    if (!user.isCompleteProfile) {
+      await alert(
+        'warning',
+        '서비스 이용을 위해서 먼저 프로필 작성이 필요합니다.'
+      );
+      return navigate('/mypage/profile');
     }
     const createRoomResponse = await chatService.createRoom([
       user.memberId,
