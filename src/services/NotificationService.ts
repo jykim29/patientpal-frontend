@@ -7,7 +7,10 @@ import {
   API_SUCCESS,
   BASE_URL,
 } from '@/constants/api';
-import { useNotificationStore } from '@/store/useNotificationStore';
+import {
+  NotificationItem,
+  useNotificationStore,
+} from '@/store/useNotificationStore';
 
 export class NotificationService {
   private httpClient;
@@ -47,10 +50,10 @@ export class NotificationService {
       console.log(event);
       if (targetRef.current) targetRef.current.close();
     };
-    targetRef.current.addEventListener('sse', (event) => {
-      const parsedData = JSON.parse((event as any).data);
-      if (parsedData) this.setList(parsedData);
-    });
+    targetRef.current.onmessage = (event) => {
+      const parsedData: NotificationItem = JSON.parse(event.data);
+      if (parsedData && parsedData.type !== 'CONNECT') this.setList(parsedData);
+    };
   }
 
   async readAllNotification(config: AxiosRequestConfig = {}) {

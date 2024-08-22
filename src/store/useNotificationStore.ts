@@ -5,7 +5,7 @@ export type NotificationItem = {
   id: string;
   name: string;
   content: string;
-  type: 'MATCH' | 'CHAT' | 'REVIEW';
+  type: 'MATCH' | 'CHAT' | 'REVIEW' | 'CONNECT';
   createdDate: string;
 };
 type InitialState = {
