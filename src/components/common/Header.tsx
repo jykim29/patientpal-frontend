@@ -209,7 +209,7 @@ function ShortcutMenu({
       },
     });
     if (status === API_FAILED) return;
-    return navigate('./');
+    return navigate(0);
   };
   return (
     <motion.ul
