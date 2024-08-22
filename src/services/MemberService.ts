@@ -1,8 +1,12 @@
 import { AxiosRequestConfig } from 'axios';
+import { Role } from '@/types/user';
 
 import { HTTPClient } from '@/api/httpClient';
 import { API_ENDPOINT, API_FAILED, API_SUCCESS } from '@/constants/api';
-import { GetUserDataResponse } from '@/types/api/member';
+import {
+  GetRecommendUserDataResponse,
+  GetUserDataResponse,
+} from '@/types/api/member';
 import { FetchResult } from '@/types/api/common';
 import { decodeTokenPayload } from '@/utils/decodeTokenPayload';
 import { useAuthStore } from './../store/useAuthStore';
@@ -33,6 +37,24 @@ export default class MemberService {
       },
     });
     return { data, status: API_SUCCESS };
+  }
+
+  async getRecommendUserData(
+    myRole: Role,
+    config: AxiosRequestConfig = {}
+  ): Promise<FetchResult<GetRecommendUserDataResponse>> {
+    console.log(myRole);
+    const endPoint =
+      myRole === 'USER'
+        ? API_ENDPOINT.PATIENT.RECOMMEND
+        : API_ENDPOINT.CAREGIVER.RECOMMEND;
+    const response = await this.httpClient.GET<GetRecommendUserDataResponse>(
+      endPoint,
+      config
+    );
+    if (response.status === API_FAILED)
+      return { data: response.data, status: API_FAILED };
+    return { data: response.data, status: API_SUCCESS };
   }
 
   async checkUsername(

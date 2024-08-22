@@ -56,6 +56,7 @@ export const API_ENDPOINT = Object.freeze({
         `/caregiver/profile/${memberId}/register/toMatchList`, // 간병인 프로필 매칭리스트에 추가
     },
     GENERATE_S3_PRESIGNED_URL: '/caregiver/presigned',
+    RECOMMEND: '/caregiver/recommend', // 맞춤 추천 환자 조회
   },
   PATIENT: {
     PROFILE: {
@@ -68,6 +69,7 @@ export const API_ENDPOINT = Object.freeze({
         `/patient/profile/${memberId}/register/toMatchList`, // 환자 프로필 매칭리스트에 추가
     },
     GENERATE_S3_PRESIGNED_URL: '/patient/presigned',
+    RECOMMEND: '/patient/recommend', // 맞춤 추천 간병인 조회
   },
   COMMUNITY: {
     NOTICE: '/notice',
