@@ -29,7 +29,7 @@ export default function NotificationModal({
     filter === 'ALL'
       ? notificationList
       : notificationList.filter((value) => value.type === filter);
-  const handleChageFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleChangeFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFilter(e.currentTarget.value);
   };
   const handleClickReadAllNotification = async () => {
@@ -49,7 +49,7 @@ export default function NotificationModal({
           className="ml-2 rounded-md border border-gray-medium text-text-small"
           name="type"
           id="type"
-          onChange={handleChageFilter}
+          onChange={handleChangeFilter}
         >
           <option value="ALL">전체</option>
           <option value="MATCH">매칭</option>
