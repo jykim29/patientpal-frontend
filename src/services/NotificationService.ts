@@ -45,14 +45,19 @@ export class NotificationService {
       }
     );
     // 이벤트 리스너
-    targetRef.current.onopen = (event) => console.log(event);
     targetRef.current.onerror = (event) => {
-      console.log(event);
+      console.log('Eventsource error :', event);
       if (targetRef.current) targetRef.current.close();
     };
     targetRef.current.onmessage = (event) => {
       const parsedData: NotificationItem = JSON.parse(event.data);
-      if (parsedData && parsedData.type !== 'CONNECT') this.setList(parsedData);
+      const allowedTypeList: NotificationItem['type'][] = [
+        'MATCH',
+        'REVIEW',
+        'CHAT',
+      ];
+      if (parsedData && allowedTypeList.includes(parsedData.type))
+        this.setList(parsedData);
     };
   }
 
