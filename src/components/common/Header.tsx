@@ -187,6 +187,7 @@ function Notification({
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   const { notificationList } = useNotificationStore();
+  const unreadCount = notificationList.length;
   return (
     <div className="relative">
       <button
@@ -195,24 +196,24 @@ function Notification({
         className="relative cursor-pointer"
         onClick={handleToggleModal}
       >
-        {notificationList.length > 0 && (
+        {unreadCount > 0 && (
           <span className="absolute -right-1 -top-1 h-4 w-4 rounded-full bg-negative text-text-small text-white">
-            {notificationList.length}
+            {unreadCount}
           </span>
         )}
         <FaBell
           className="h-6 w-6"
-          color={notificationList.length > 0 ? '#4166F5' : '#d8d8d8'}
+          color={unreadCount > 0 ? '#4166F5' : '#d8d8d8'}
         />
       </button>
 
-      {notificationList.length > 0 && (
+      {unreadCount > 0 && (
         <motion.div
           className="absolute left-1/2 top-[120%] w-[180px] -translate-x-1/2 rounded-md bg-black p-1 text-text-small font-semibold text-white before:absolute before:left-1/2 before:top-[-12px] before:-translate-x-1/2 before:border-[6px] before:border-transparent before:border-b-black"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
-          <p className="break-keep text-center">{`읽지않은 알림이 ${notificationList.length}건 있습니다.`}</p>
+          <p className="break-keep text-center">{`읽지않은 알림이 ${unreadCount}건 있습니다.`}</p>
         </motion.div>
       )}
 
