@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FaBell, FaCircle } from 'react-icons/fa6';
+import { FaBell } from 'react-icons/fa6';
 import { twMerge } from 'tailwind-merge';
 import { motion } from 'framer-motion';
 
 import { useAuthStore } from '@/store/useAuthStore';
 import { API_FAILED } from '@/constants/api';
 import { authService } from '@/services';
+import { useNotificationStore } from '@/store/useNotificationStore';
 import Button from './Button';
+import { NotificationModal } from '../Modal';
 
 type InitialIsShowState = {
   notification: boolean;
@@ -64,11 +66,20 @@ function Header() {
   if (user && isLoggedIn)
     accountSectionContent = isCompleteProfile ? (
       <>
-        <Notification />
-        <UserProfile isShow={isShow} onClick={handleClickToggleButton} />
+        <Notification
+          isShow={isShow.notification}
+          onClick={handleClickToggleButton}
+        />
+        <UserProfile
+          isShow={isShow.shortcut}
+          onClick={handleClickToggleButton}
+        />
       </>
     ) : (
-      <UnknownProfile isShow={isShow} onClick={handleClickToggleButton} />
+      <UnknownProfile
+        isShow={isShow.shortcut}
+        onClick={handleClickToggleButton}
+      />
     );
   useEffect(() => {
     if (isShow.shortcut || isShow.notification)
@@ -97,7 +108,7 @@ function UserProfile({
   isShow,
   onClick: handleClick,
 }: {
-  isShow: InitialIsShowState;
+  isShow: InitialIsShowState['shortcut'];
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   const { user } = useAuthStore();
@@ -118,13 +129,13 @@ function UserProfile({
         <button
           id="shortcut"
           title="메뉴 펼치기"
-          className={`h-6 w-6 bg-[length:12px_12px] bg-center bg-no-repeat hover:bg-gray-light ${isShow.shortcut ? "bg-[url('/assets/chevron_up.svg')]" : "bg-[url('/assets/chevron_down.svg')]"}`}
+          className={`h-6 w-6 bg-[length:12px_12px] bg-center bg-no-repeat hover:bg-gray-light ${isShow ? "bg-[url('/assets/chevron_up.svg')]" : "bg-[url('/assets/chevron_down.svg')]"}`}
           type="button"
           onClick={handleClick}
         >
           <span className="sr-only">메뉴 펼치기</span>
         </button>
-        {user && isShow.shortcut && (
+        {user && isShow && (
           <ShortcutMenu
             className="right-[-10px] top-[140%] w-32"
             menuList={shortcutMenuArray[Number(user.isCompleteProfile)]}
@@ -139,7 +150,7 @@ function UnknownProfile({
   isShow,
   onClick: handleClick,
 }: {
-  isShow: InitialIsShowState;
+  isShow: InitialIsShowState['shortcut'];
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   const { user } = useAuthStore();
@@ -158,7 +169,7 @@ function UnknownProfile({
         />
         <span>프로필을 먼저 등록해주세요.</span>
       </button>
-      {user && isShow.shortcut && (
+      {user && isShow && (
         <ShortcutMenu
           className="left-[50px] top-[120%] w-[120px]"
           menuList={shortcutMenuArray[Number(user.isCompleteProfile)]}
@@ -168,22 +179,46 @@ function UnknownProfile({
   );
 }
 
-function Notification() {
-  const [newNotice, setNewNotice] = useState(true);
-  const checkNotice = () => {
-    setNewNotice(false);
-    //모달창 나오게
-  };
+function Notification({
+  isShow,
+  onClick: handleToggleModal,
+}: {
+  isShow: InitialIsShowState['notification'];
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+}) {
+  const { notificationList } = useNotificationStore();
+  const unreadCount = notificationList.length;
   return (
-    <button className="relative cursor-pointer" onClick={checkNotice}>
-      <FaBell className="h-[30px] w-[30px]" color="#4166F5" />
-      {newNotice && (
-        <FaCircle
-          className="absolute right-0 top-0 h-[15px] w-[15px]"
-          color="red"
+    <div className="relative">
+      <button
+        id="notification"
+        title="알림 목록"
+        className="relative cursor-pointer"
+        onClick={handleToggleModal}
+      >
+        {unreadCount > 0 && (
+          <span className="absolute -right-1 -top-1 h-4 w-4 rounded-full bg-negative text-text-small text-white">
+            {unreadCount}
+          </span>
+        )}
+        <FaBell
+          className="h-6 w-6"
+          color={unreadCount > 0 ? '#4166F5' : '#d8d8d8'}
         />
+      </button>
+
+      {unreadCount > 0 && (
+        <motion.div
+          className="absolute left-1/2 top-[120%] w-[180px] -translate-x-1/2 rounded-md bg-black p-1 text-text-small font-semibold text-white before:absolute before:left-1/2 before:top-[-12px] before:-translate-x-1/2 before:border-[6px] before:border-transparent before:border-b-black"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <p className="break-keep text-center">{`읽지않은 알림이 ${unreadCount}건 있습니다.`}</p>
+        </motion.div>
       )}
-    </button>
+
+      {isShow && <NotificationModal onClick={handleToggleModal} />}
+    </div>
   );
 }
 

@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-type NotificationItem = {
+export type NotificationItem = {
   id: string;
   name: string;
   content: string;
-  type: 'MATCH' | 'CHAT' | 'REVIEW';
+  type: 'MATCH' | 'CHAT' | 'REVIEW' | 'CONNECT';
   createdDate: string;
 };
 type InitialState = {
@@ -25,7 +25,7 @@ export const useNotificationStore = create<InitialState & Action>()(
     setList: (value) =>
       set((state) => ({
         ...state,
-        notificationList: [...state.notificationList, value],
+        notificationList: [value, ...state.notificationList],
       })),
     resetList: () => set((state) => ({ ...state, notificationList: [] })),
   }))

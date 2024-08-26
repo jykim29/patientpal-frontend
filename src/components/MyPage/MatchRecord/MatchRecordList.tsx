@@ -7,8 +7,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { useModal } from '@/hooks/useModal';
 import { API_FAILED } from '@/constants/api';
 import { matchService } from '@/services/MatchService';
-import { ContractViewModal } from '@/components/Modal';
-import ReviewWriteModal from '@/components/Modal/ReviewWriteModal';
+import { ContractViewModal, ReviewWriteModal } from '@/components/Modal';
 
 type MatchList = {
   all?: MatchItem[];
@@ -166,7 +165,7 @@ export default function MatchRecordList({
         new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
     );
 
-  const cancelMatchRequest = async () => {
+  const cancelMatchRequest = async (matchId: number) => {
     if (!(await confirm('매칭 신청을 취소하시겠습니까?'))) return;
     const cancelResponse = await matchService.cancelContract(matchId, {
       headers: {
@@ -186,7 +185,7 @@ export default function MatchRecordList({
       // 계약서 조회
       if (eventType === 'contract') openModal('contract-view');
       // 매칭 취소
-      if (eventType === 'cancel') cancelMatchRequest();
+      if (eventType === 'cancel') cancelMatchRequest(matchId);
       // 리뷰 작성
       if (eventType === 'review') openModal('contract-review');
     };
