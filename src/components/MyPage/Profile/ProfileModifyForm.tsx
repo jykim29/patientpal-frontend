@@ -24,6 +24,7 @@ import {
   PatientInformation,
 } from '@/types/api/member';
 import { useModal } from '@/hooks/useModal';
+import ImageUploadModal from './ImageUploadModal';
 
 export interface IUserInfo {
   label: string;
@@ -241,6 +242,7 @@ function ProfileModifyForm() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [buttonLabel, setButtonLabel] = useState<string>('등록');
   const [isInMatchList, setIsInMatchList] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuthStore();
   const { alert } = useModal();
   const memberId = user?.memberId;
@@ -371,6 +373,8 @@ function ProfileModifyForm() {
     reset();
     setIsEditMode(false);
   };
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <>
@@ -380,7 +384,13 @@ function ProfileModifyForm() {
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-[10px]">
-            <FaUserCircle className="h-[90px] w-[90px] text-gray-medium" />
+            <FaUserCircle
+              onClick={openModal}
+              className="h-[90px] w-[90px] cursor-pointer text-gray-medium"
+            />
+            {isModalOpen && (
+              <ImageUploadModal isOpen={isModalOpen} onClose={closeModal} />
+            )}
             <input
               className={`bg-transparent text-start text-text-large outline-none`}
               {...register('name', { required: true })}
