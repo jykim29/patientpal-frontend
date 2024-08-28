@@ -1,4 +1,3 @@
-import Button from '@/components/common/Button';
 import { useEffect, useState } from 'react';
 import {
   SubmitHandler,
@@ -7,7 +6,7 @@ import {
   useForm,
 } from 'react-hook-form';
 import { FaUserCircle } from 'react-icons/fa';
-import ProfileDetailForm from './ProfileDetailForm';
+import Button from '@/components/common/Button';
 import { useProfile } from '@/hooks/useProfile';
 import {
   ICaregiverData,
@@ -16,7 +15,6 @@ import {
   IPatientEditData,
 } from '@/types/api/profile';
 import { getCaregiverProfile, getPatientProfile } from '@/api/profile.api';
-import MatchingListControls from './MatchingListControls';
 import { useAuthStore } from '@/store/useAuthStore';
 import {
   CaregiverInformation,
@@ -24,6 +22,8 @@ import {
   PatientInformation,
 } from '@/types/api/member';
 import { useModal } from '@/hooks/useModal';
+import ProfileDetailForm from './ProfileDetailForm';
+import MatchingListControls from './MatchingListControls';
 import ImageUploadModal from './ImageUploadModal';
 
 export interface IUserInfo {
@@ -237,16 +237,19 @@ function ProfileModifyForm() {
     role,
   } = useProfile();
   const [currentProfileInfo, setCurrentProfileInfo] = useState<
-    GetUserDataResponse | {}
+    GetUserDataResponse | object
   >({});
   const [isEditMode, setIsEditMode] = useState(false);
   const [buttonLabel, setButtonLabel] = useState<string>('등록');
   const [isInMatchList, setIsInMatchList] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const { user } = useAuthStore();
   const { alert } = useModal();
   const memberId = user?.memberId;
   const isCompletedProfile: boolean = user?.isCompleteProfile ?? false;
+  const isCaregiver = user?.role === 'CAREGIVER';
+  const isUser = user?.role === 'USER';
   useEffect(() => {
     if (memberId === undefined) {
       throw new Error('memberId가 필요하다');
@@ -268,10 +271,10 @@ function ProfileModifyForm() {
     }
     reset(currentProfileInfo);
 
-    if (role === 'CAREGIVER' && isCompletedProfile) {
+    if (isCaregiver && isCompletedProfile) {
       setButtonLabel('수정');
       setIsInMatchList((user as CaregiverInformation).isProfilePublic);
-    } else if (role === 'USER' && isCompletedProfile) {
+    } else if (isUser && isCompletedProfile) {
       setButtonLabel('수정');
       setIsInMatchList((user as PatientInformation).isProfilePublic);
     }
@@ -338,16 +341,16 @@ function ProfileModifyForm() {
     };
 
     let response;
-    if (buttonLabel === '등록') {
-      if (role === 'CAREGIVER' && registerCaregiver) {
+    if (!isCompletedProfile) {
+      if (isCaregiver && registerCaregiver) {
         response = await registerCaregiver(transformedData as ICaregiverData);
         await alert('success', '등록이 완료되었습니다');
-      } else if (role === 'USER' && registerPatient) {
+      } else if (isUser && registerPatient) {
         response = await registerPatient(transformedData as IPatientData);
         await alert('success', '등록이 완료되었습니다');
       }
-    } else if (buttonLabel === '수정' && memberId) {
-      if (role === 'CAREGIVER' && modifyCaregiverData) {
+    } else if (isCompletedProfile && memberId) {
+      if (isCaregiver && modifyCaregiverData) {
         response = await modifyCaregiverData(
           memberId,
           editedData as ICaregiverEditData
@@ -422,7 +425,7 @@ function ProfileModifyForm() {
           </span>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-[15px]">
-          {role === 'CAREGIVER'
+          {isCaregiver
             ? caregiverInfoList.map(
                 (item) =>
                   item.key !== 'name' && (
