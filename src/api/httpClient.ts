@@ -103,6 +103,20 @@ export class HTTPClient {
       return { data: response!.data, status: API_FAILED };
     }
   }
+
+  async PUT<T, U>(
+    url: string,
+    data: T,
+    config: AxiosRequestConfig = {}
+  ): Promise<FetchResult<U>> {
+    try {
+      const response = await this.axiosInstance.put<U>(url, data, config);
+      return { data: response.data, status: API_SUCCESS };
+    } catch (error) {
+      const { response } = error as AxiosError<ErrorResponse>;
+      return { data: response!.data, status: API_FAILED };
+    }
+  }
 }
 
 export const httpClient = new HTTPClient(axiosInstance);

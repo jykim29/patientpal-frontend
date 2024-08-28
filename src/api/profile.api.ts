@@ -199,3 +199,39 @@ export const removeCaregiverFromMatchList = async (
 
   return { data, status };
 };
+
+export const createCaregiverPresignedURL = async (
+  token?: string,
+  payload = null,
+  config = {}
+) => {
+  const { data, status } = await httpClient.POST(
+    API_ENDPOINT.CAREGIVER.GENERATE_S3_PRESIGNED_URL,
+    payload,
+    {
+      ...config,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return { data, status };
+};
+
+export const uploadCargiverProfileImg = async (
+  token: string,
+  presignedUrl: string,
+  file,
+  config = {}
+) => {
+  const { data, status } = await httpClient.PUT(presignedUrl, file, {
+    ...config,
+    headers: {
+      'Content-Type': 'image/png',
+    },
+  });
+
+  return { data, status };
+};
+
+export const uploadPatientProfileImg = async () => {};
