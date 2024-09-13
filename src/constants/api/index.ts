@@ -81,4 +81,7 @@ export const API_ENDPOINT = Object.freeze({
     SUBSCRIBE: '/notification/subscribe',
     READ: '/notification/read',
   },
+  REVIEW: {
+    TOP_CAREGIVERS: '/reviews/top-caregivers',
+  },
 });
