@@ -1,62 +1,51 @@
-import { useNavigate } from 'react-router-dom';
-import { FaCircleUser } from 'react-icons/fa6';
-import { FaCakeCandles } from 'react-icons/fa6';
+import { Link } from 'react-router-dom';
+import { FaCakeCandles, FaCircleUser } from 'react-icons/fa6';
+import { useAuthStore } from '@/store/useAuthStore';
 
-interface SmallCardProps {
-  text: string;
-  img: string;
-  index: number;
+interface ShortcutCardProps {
+  label: string;
+  buttonImageUrl: string;
+  path: string;
 }
-
-interface LargeCardProps {
+interface RankCardProps {
   index: number;
   name: string;
-  color: 'gold' | 'silver' | 'bronze';
+  address: string;
+}
+interface RecommendCardProps {
+  memberId: number;
+  name: string;
+  gender: 'MALE' | 'FEMALE';
+  age: number;
+  address: string;
+  image: string;
+  experienceYears?: number;
 }
 
 type CardType = {
-  Small: React.FC<SmallCardProps>;
-  Large: React.FC<LargeCardProps>;
+  Shortcut: React.FC<ShortcutCardProps>;
+  Rank: React.FC<RankCardProps>;
+  Recommend: React.FC<RecommendCardProps>;
 };
 
-export const Card: CardType = {
-  Small: ({ text, img, index }) => {
-    const navigate = useNavigate();
-    const moveTo = (index: number) => {
-      switch (index) {
-        case 0:
-          navigate('/search');
-          break;
-        case 1:
-          navigate('/contract');
-          break;
-        case 2:
-          navigate('/community/forum');
-          break;
-      }
-    };
-
+const Card: CardType = {
+  Shortcut: ({ label, buttonImageUrl, path }: ShortcutCardProps) => {
     return (
-      <div
-        className="flex h-[100px] cursor-pointer items-center gap-1 rounded-[15px] bg-gray-light px-8 py-3 drop-shadow-lg"
-        onClick={() => moveTo(index)}
+      <Link
+        to={path}
+        className="flex h-[80px] cursor-pointer items-center gap-1 rounded-xl bg-gray-light px-4 py-2 shadow-lg"
       >
-        <p className="text-nowrap text-title-small">{text}</p>
-        <img src="/assets/right circle icon.png"></img>
-        <img src={img}></img>
-      </div>
+        <p className="text-nowrap text-text-large font-semibold">{label}</p>
+        <img src="/assets/right_circle_icon.png" alt="바로가기 이동" />
+        <img className="h-full" src={buttonImageUrl} alt={label} />
+      </Link>
     );
   },
-  Large: ({ index, name, color }) => {
-    const colorVarient: Record<'gold' | 'silver' | 'bronze', string> = {
-      gold: 'bg-gold',
-      silver: 'bg-gray-light-medium',
-      bronze: 'bg-light-bronze',
-    };
-
+  Rank: ({ index, name, address }: RankCardProps) => {
+    const bgColorList = ['bg-gold', 'bg-gray-light-medium', 'bg-light-bronze'];
     return (
       <div
-        className={`flex h-[304px] w-[303px] flex-col gap-5 px-5 py-3 ${colorVarient[color]} rounded-[15px] drop-shadow-lg`}
+        className={`flex flex-col gap-3 px-5 py-3 ${bgColorList[index]} rounded-[15px] drop-shadow-lg`}
       >
         <div className="flex items-center gap-3">
           <img src={`assets/icon-ranking${index + 1}.png`} />
@@ -64,43 +53,86 @@ export const Card: CardType = {
           <p className="text-text-small">간병인님</p>
         </div>
         <div className="flex items-center justify-between">
-          <FaCircleUser className="h-[112px] w-[112px]" color="#969696" />
-          <div className="flex flex-col gap-3">
+          <FaCircleUser className="h-[80px] w-[80px]" color="#969696" />
+          <div className="flex w-[120px] flex-col gap-3">
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-1">
                 <FaCakeCandles color="#969696" />
                 <p>나이</p>
               </div>
-              <p>50세</p>
+              <p>OO세</p>
             </div>
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-1">
                 <FaCakeCandles color="#969696" />
                 <p>성별</p>
               </div>
-              <p>여성</p>
+              <p>비공개</p>
             </div>
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-1">
                 <FaCakeCandles color="#969696" />
                 <p>경력</p>
               </div>
-              <p>2년</p>
+              <p>OO년</p>
             </div>
           </div>
         </div>
-        <hr />
         <div className="flex flex-col gap-3 px-1 py-3">
           <div className="flex w-[150px] justify-between">
-            <p>자격증</p>
-            <p>요양보호사</p>
-          </div>
-          <div className="flex w-[150px] justify-between">
             <p>지역</p>
-            <p>서울 강남구</p>
+            <p>{address}</p>
           </div>
         </div>
       </div>
     );
   },
+  Recommend: ({
+    memberId,
+    name,
+    age,
+    address,
+    gender,
+    image,
+    experienceYears,
+  }: RecommendCardProps) => {
+    const user = useAuthStore((state) => state.user);
+    const myRole = user && user.role;
+    const roleName = myRole === 'CAREGIVER' ? '환자님' : '간병인님';
+    const description = {
+      genderName: gender === 'MALE' ? '남성' : '여성',
+      ageName: `${age}세`,
+      experienceYearsName: experienceYears
+        ? `경력 ${experienceYears}년`
+        : undefined,
+    };
+    const imageSrc = image ?? '/assets/default_profile.jpg';
+    return (
+      <div className="flex h-full w-[230px] shrink-0 flex-col items-center justify-center gap-2 rounded-md border border-tertiary p-4 text-text-small shadow-md">
+        <img
+          className="pointer-events-none h-16 w-16 rounded-full"
+          src={imageSrc}
+          alt={name}
+        />
+        <div>
+          <span className="mr-1 text-text-medium font-semibold">{name}</span>
+          <span>{roleName}</span>
+        </div>
+        <span>
+          {Object.values(description)
+            .filter((value) => value)
+            .join(' / ')}
+        </span>
+        <span>{address}</span>
+        <Link
+          to={`/mypage/contract/write/${memberId}`}
+          className="rounded-md bg-primary px-2 py-1 text-white transition-all hover:bg-secondary"
+        >
+          매칭 신청
+        </Link>
+      </div>
+    );
+  },
 };
+
+export default Card;
