@@ -9,8 +9,11 @@ import {
   SignOutResponse,
   SignUpResponse,
 } from '@/types/api/auth';
+import { Role } from '@/types/user';
 import { FetchResult } from '@/types/api/common';
+import { decodeTokenPayload } from '@/utils/decodeTokenPayload';
 import { useAuthStore } from './../store/useAuthStore';
+import { memberService } from '.';
 
 export default class AuthService {
   private httpClient;
@@ -79,5 +82,24 @@ export default class AuthService {
       return { data, status: API_FAILED };
     }
     return { data, status: API_SUCCESS };
+  }
+
+  async initializeAuth(): Promise<FetchResult<string>> {
+    // 토큰 리프레쉬
+    const refreshTokenResponse = await this.refreshToken();
+    if (refreshTokenResponse.status === API_FAILED)
+      return { data: refreshTokenResponse.data, status: API_FAILED };
+    const accessToken = refreshTokenResponse.data.access_token;
+    // 유저 정보 수신
+    const myRole: Role = decodeTokenPayload(accessToken).auth;
+    if (myRole === 'ADMIN') return { data: 'ADMIN', status: API_SUCCESS };
+    const getUserDataResponse = await memberService.getUserData(accessToken, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    if (getUserDataResponse.status === API_FAILED)
+      return { data: getUserDataResponse.data, status: API_FAILED };
+    return { data: 'Initialization Success', status: API_SUCCESS };
   }
 }

@@ -1,34 +1,37 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { RouterProvider } from 'react-router-dom';
+import { EventSourcePolyfill } from 'event-source-polyfill';
 
 import './App.css';
 
-import { API_FAILED } from './constants/api';
 import { router } from './routes/router';
-import { authService, memberService } from './services';
+import { authService, notificationService } from './services';
 import { useModalStore } from './store/useModalStore';
 import Modal from './components/common/Modal';
 import { FeedbackModal } from './components/Modal';
+import { useAuthStore } from './store/useAuthStore';
 
 function App() {
   const [isInit, setIsInit] = useState<boolean>(false);
+  const { accessToken, isLoggedIn } = useAuthStore();
   const { dialogState } = useModalStore();
+  const eventSource = useRef<EventSourcePolyfill>();
 
   useEffect(() => {
-    authService
-      .refreshToken()
-      .then((res) => {
-        if (res.status === API_FAILED) return;
-        return memberService.getUserData(res.data.access_token, {
-          headers: {
-            Authorization: `Bearer ${res.data.access_token}`,
-          },
-        });
-      })
-      .then((res) => {
-        if (res?.status === API_FAILED) return;
-        return setIsInit(true);
+    if (isLoggedIn && accessToken)
+      notificationService.createSSEConnection({
+        targetRef: eventSource,
+        accessToken,
       });
+    if (!isLoggedIn && !accessToken && eventSource.current)
+      eventSource.current.close();
+  }, [isLoggedIn, accessToken]);
+
+  useEffect(() => {
+    authService.initializeAuth().then(() => setIsInit(true));
+    return () => {
+      if (eventSource.current) eventSource.current.close();
+    };
   }, []);
 
   return isInit ? (

@@ -28,7 +28,7 @@ function MatchRecordPage() {
     const sendListResponse = await matchService.getSendContractList(
       user?.memberId as number,
       0,
-      10,
+      50,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -38,7 +38,7 @@ function MatchRecordPage() {
     const receiveListResponse = await matchService.getReceivedContractList(
       user?.memberId as number,
       0,
-      10,
+      50,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
