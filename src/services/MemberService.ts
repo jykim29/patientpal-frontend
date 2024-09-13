@@ -43,7 +43,6 @@ export default class MemberService {
     myRole: Role,
     config: AxiosRequestConfig = {}
   ): Promise<FetchResult<GetRecommendUserDataResponse>> {
-    console.log(myRole);
     const endPoint =
       myRole === 'USER'
         ? API_ENDPOINT.PATIENT.RECOMMEND
