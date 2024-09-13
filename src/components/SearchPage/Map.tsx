@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
-
+import { useEffect, useState } from 'react';
 import { UserList } from '@/types/searchResult.model';
+import { useAuthStore } from '@/store/useAuthStore';
 const { kakao }: any = window;
 
 interface MapProps {
@@ -8,14 +8,59 @@ interface MapProps {
 }
 
 function Map({ searchResult }: MapProps) {
+  const { user }: any = useAuthStore();
+  const userAddress = user?.address.addr;
+  const [userLocation, setUserLocation] = useState<any | null>(null);
   useEffect(() => {
+    const geocoder = new kakao.maps.services.Geocoder();
+
+    geocoder.addressSearch(userAddress, function (result: any, status: any) {
+      if (status === kakao.maps.services.Status.OK) {
+        const location = new kakao.maps.LatLng(result[0].y, result[0].x);
+        console.log(location);
+        setUserLocation(location);
+      } else {
+        console.log('사용자 위치 검색 실패');
+      }
+    });
+  }, [user?.address]);
+
+  useEffect(() => {
+    let center;
+    if (!userLocation) {
+      center = new kakao.maps.LatLng(37.5665, 126.978);
+    } else {
+      center = userLocation;
+    }
+
     const container = document.getElementById('map');
+    const geocoder = new kakao.maps.services.Geocoder();
+
     const options = {
-      center: new kakao.maps.LatLng(37.5665, 126.978), // 기본 중심 위치를 내 프로필의 주소로 넣으면 어떨까?
+      center: center, // 기본 중심 위치를 내 프로필의 주소로 넣으면 어떨까?
       level: 7,
     };
     const map = new kakao.maps.Map(container, options);
-    const geocoder = new kakao.maps.services.Geocoder();
+
+    var imageSrc =
+        'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
+      imageSize = new kakao.maps.Size(24, 35),
+      imageOption = { offset: new kakao.maps.Point(15, 10) };
+
+    var markerImage = new kakao.maps.MarkerImage(
+      imageSrc,
+      imageSize,
+      imageOption
+    );
+
+    if (userLocation) {
+      const userMarker = new kakao.maps.Marker({
+        map: map,
+        position: userLocation,
+        image: markerImage,
+        zIndex: -1,
+      });
+    }
 
     searchResult.forEach((item) => {
       // address가 존재하는지 확인
@@ -49,7 +94,7 @@ function Map({ searchResult }: MapProps) {
         console.log('주소 정보가 없습니다');
       }
     });
-  }, [searchResult]);
+  }, [searchResult, userLocation]);
 
   return <div id="map" className="h-full w-full"></div>;
 }
