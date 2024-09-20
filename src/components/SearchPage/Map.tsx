@@ -42,19 +42,19 @@ function Map({ searchResult }: MapProps) {
     };
     const map = new kakao.maps.Map(container, options);
 
-    var imageSrc =
+    const imageSrc =
         'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
       imageSize = new kakao.maps.Size(24, 35),
       imageOption = { offset: new kakao.maps.Point(15, 10) };
 
-    var markerImage = new kakao.maps.MarkerImage(
+    const markerImage = new kakao.maps.MarkerImage(
       imageSrc,
       imageSize,
       imageOption
     );
 
     if (userLocation) {
-      const userMarker = new kakao.maps.Marker({
+      new kakao.maps.Marker({
         map: map,
         position: userLocation,
         image: markerImage,

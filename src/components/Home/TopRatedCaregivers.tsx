@@ -11,7 +11,7 @@ function TopRatedCaregivers() {
 
   useEffect(() => {
     const getTopRatedCaregivers = async () => {
-      const myRegion = user ? user.address.addr.split(' ')[0] : '서울';
+      const myRegion = user?.address ? user.address.addr.split(' ')[0] : '서울';
       const response = await reviewService.getTopRatedCaregiver(myRegion);
       if (response.status === API_FAILED) return;
       const sortedData = [...response.data].sort((a, b) => b.rating - a.rating);

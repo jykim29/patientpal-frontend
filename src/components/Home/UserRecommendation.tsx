@@ -29,7 +29,7 @@ function UserRecommendation() {
         path: '/auth/signin',
         hoverMessage: '로그인하러 가기',
       });
-    if (user && !user.isCompleteProfile)
+    if (isCompleteProfile)
       return setError({
         type: 'profile',
         message: '프로필 작성이 필요합니다.',
