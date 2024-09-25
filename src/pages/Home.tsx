@@ -16,7 +16,7 @@ type ShortcutNavigationItem = {
   path: string;
 };
 
-function Home() {
+export function Component() {
   const user = useAuthStore((state) => state.user);
   const myRole = user && user.role;
   const shortcutNavigation: ShortcutNavigationItem[] = useMemo(
@@ -79,4 +79,4 @@ function Home() {
   );
 }
 
-export default Home;
+Component.displayName = 'Home';

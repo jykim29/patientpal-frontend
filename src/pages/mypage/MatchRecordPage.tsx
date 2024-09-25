@@ -18,7 +18,7 @@ const initialState: MatchList = { send: [], receive: [] };
   TODO
   1. 환자와 간병인이 서로에게 매칭 신청 시, matchStatus가 동기화되지 않는 문제 백엔드와 협의 필요 
 */
-function MatchRecordPage() {
+export function Component() {
   const { accessToken, user } = useAuthStore();
   const [matchList, setMatchList] = useState<MatchList>(initialState);
   const [isError, setIsError] = useState<boolean>(false);
@@ -85,4 +85,4 @@ function MatchRecordPage() {
   );
 }
 
-export default MatchRecordPage;
+Component.displayName = 'MatchRecordPage';

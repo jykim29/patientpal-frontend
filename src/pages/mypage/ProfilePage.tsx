@@ -1,6 +1,6 @@
 import ProfileModifyForm from '@/components/MyPage/Profile/ProfileModifyForm';
 
-function ProfilePage() {
+export function Component() {
   return (
     <>
       <h1 className="text-title-small">프로필 관리</h1>
@@ -9,4 +9,4 @@ function ProfilePage() {
   );
 }
 
-export default ProfilePage;
+Component.displayName = 'ProfilePage';

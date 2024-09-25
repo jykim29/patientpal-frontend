@@ -1,9 +1,11 @@
 import { BoardArticle } from '@/components/board';
 
-export default function BoardView() {
+export function Component() {
   return (
     <>
       <BoardArticle />
     </>
   );
 }
+
+Component.displayName = 'BoardView';

@@ -5,7 +5,7 @@ import Footer from '../common/Footer';
 import SideBar from '../common/SideBar/SideBar';
 import ScrollToTop from '../common/ScrollToTop';
 
-function Layout() {
+export function Component() {
   return (
     <ScrollToTop>
       <div className="mx-auto flex w-[1440px] flex-col items-center justify-center">
@@ -22,4 +22,4 @@ function Layout() {
   );
 }
 
-export default Layout;
+Component.displayName = 'Layout';

@@ -1,46 +1,23 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-
-import AuthLayout from '@/components/layout/AuthLayout';
-import Layout from '@/components/layout/Layout';
-import MainLayout from '@/components/layout/MainLayout';
-import MyPageLayout from '@/components/layout/MyPageLayout';
-import ProtectedRoute from '@/components/ProtectedRoute';
-import { SignIn, SignUp } from '@/pages/auth';
-import { ChatLobby, ChatRoom } from '@/pages/chat';
-import {
-  FreeBoard,
-  BoardWrite,
-  BoardModify,
-  postLoader,
-  BoardView,
-  NoticeBoard,
-} from '@/pages/community';
-import { ContractWrite } from '@/pages/contract';
-import Home from '@/pages/Home';
-import MatchRecordPage from '@/pages/mypage/MatchRecordPage';
-import MyPage from '@/pages/mypage/MyPage';
-import ProfilePage from '@/pages/mypage/ProfilePage';
-import ReviewPage from '@/pages/mypage/ReviewPage';
-import SearchPage from '@/pages/SearchPage';
 import Error from '@/components/common/Error';
-import ChatContextProvider from '@/context/ChatContextProvider';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout />,
+    lazy: () => import('@/components/layout/Layout'),
     errorElement: <Error />,
     children: [
       {
         index: true,
-        element: <Home />,
+        lazy: () => import('@/pages/Home'),
       },
       {
         path: '/',
-        element: <ProtectedRoute />,
+        lazy: () => import('@/components/ProtectedRoute'),
         children: [
           {
             path: '/search',
+            lazy: () => import('@/components/layout/MainLayout'),
             errorElement: <Error />,
             children: [
               {
@@ -49,17 +26,17 @@ export const router = createBrowserRouter([
               },
               {
                 path: 'city',
-                element: <SearchPage searchType="city" />,
+                lazy: () => import('@/pages/SearchPage'),
               },
               {
                 path: 'map',
-                element: <SearchPage searchType="map" />,
+                lazy: () => import('@/pages/SearchPage'),
               },
             ],
           },
           {
             path: 'community',
-            element: <MainLayout title="커뮤니티" />,
+            lazy: () => import('@/components/layout/MainLayout'),
             errorElement: <Error />,
             children: [
               {
@@ -71,21 +48,35 @@ export const router = createBrowserRouter([
                 children: [
                   {
                     index: true,
-                    element: <FreeBoard />,
+                    lazy: () => import('@/pages/community/FreeBoard'),
                   },
                   {
                     path: 'post',
-                    element: <BoardWrite boardType="board" />,
+                    lazy: () => import('@/pages/community/BoardWrite'),
                   },
                   {
                     path: 'modify/:postId',
-                    element: <BoardModify boardType="board" />,
-                    loader: postLoader,
+                    async lazy() {
+                      const { Component } = await import(
+                        '@/pages/community/BoardModify'
+                      );
+                      const { loader } = await import(
+                        '@/pages/community/loader'
+                      );
+                      return { Component, loader };
+                    },
                   },
                   {
                     path: 'view/:postId',
-                    element: <BoardView />,
-                    loader: postLoader,
+                    async lazy() {
+                      const { Component } = await import(
+                        '@/pages/community/BoardView'
+                      );
+                      const { loader } = await import(
+                        '@/pages/community/loader'
+                      );
+                      return { Component, loader };
+                    },
                   },
                 ],
               },
@@ -94,21 +85,35 @@ export const router = createBrowserRouter([
                 children: [
                   {
                     index: true,
-                    element: <NoticeBoard />,
+                    lazy: () => import('@/pages/community/NoticeBoard'),
                   },
                   {
                     path: 'post',
-                    element: <BoardWrite boardType="notice" />,
+                    lazy: () => import('@/pages/community/BoardWrite'),
                   },
                   {
                     path: 'modify/:postId',
-                    element: <BoardModify boardType="notice" />,
-                    loader: postLoader,
+                    async lazy() {
+                      const { Component } = await import(
+                        '@/pages/community/BoardModify'
+                      );
+                      const { loader } = await import(
+                        '@/pages/community/loader'
+                      );
+                      return { Component, loader };
+                    },
                   },
                   {
                     path: 'view/:postId',
-                    element: <BoardView />,
-                    loader: postLoader,
+                    async lazy() {
+                      const { Component } = await import(
+                        '@/pages/community/BoardView'
+                      );
+                      const { loader } = await import(
+                        '@/pages/community/loader'
+                      );
+                      return { Component, loader };
+                    },
                   },
                 ],
               },
@@ -117,19 +122,19 @@ export const router = createBrowserRouter([
           {
             path: '/mypage',
             errorElement: <Error />,
-            element: <MyPageLayout />,
+            lazy: () => import('@/components/layout/MainLayout'),
             children: [
               {
                 index: true,
-                element: <MyPage />,
+                lazy: () => import('@/pages/mypage/MyPage'),
               },
               {
                 path: 'profile',
-                element: <ProfilePage />,
+                lazy: () => import('@/pages/mypage/ProfilePage'),
               },
               {
                 path: 'chat',
-                element: <ChatContextProvider />,
+                lazy: () => import('@/context/ChatContextProvider'),
                 children: [
                   {
                     index: true,
@@ -137,25 +142,25 @@ export const router = createBrowserRouter([
                   },
                   {
                     path: 'lobby',
-                    element: <ChatLobby title="채팅 목록" />,
+                    lazy: () => import('@/pages/chat/ChatLobby'),
                   },
                   {
                     path: 'room/:roomId',
-                    element: <ChatRoom />,
+                    lazy: () => import('@/pages/chat/ChatRoom'),
                   },
                 ],
               },
               {
                 path: 'contract/write/:memberId',
-                element: <ContractWrite />,
+                lazy: () => import('@/pages/contract/ContractWrite'),
               },
               {
                 path: 'match-record',
-                element: <MatchRecordPage />,
+                lazy: () => import('@/pages/mypage/MatchRecordPage'),
               },
               {
                 path: 'review',
-                element: <ReviewPage />,
+                lazy: () => import('@/pages/mypage/ReviewPage'),
               },
             ],
           },
@@ -165,7 +170,7 @@ export const router = createBrowserRouter([
   },
   {
     path: '/auth',
-    element: <AuthLayout />,
+    lazy: () => import('@/components/layout/AuthLayout'),
     errorElement: <Error />,
     children: [
       {
@@ -174,11 +179,11 @@ export const router = createBrowserRouter([
       },
       {
         path: 'signin',
-        element: <SignIn />,
+        lazy: () => import('@/pages/auth/SignIn'),
       },
       {
         path: 'signup',
-        element: <SignUp />,
+        lazy: () => import('@/pages/auth/SignUp'),
       },
     ],
   },

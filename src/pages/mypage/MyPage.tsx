@@ -1,6 +1,6 @@
 import CardMenu from '@/components/MyPage/CardMenu';
 
-function MyPage() {
+export function Component() {
   return (
     <section className="flex flex-wrap gap-[30px] px-5 py-[10px]">
       <CardMenu />
@@ -8,4 +8,4 @@ function MyPage() {
   );
 }
 
-export default MyPage;
+Component.displayName = 'MyPage';

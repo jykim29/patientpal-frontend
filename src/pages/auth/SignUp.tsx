@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { SignUpForm } from '@/components/Form';
 import SocialLoginButtonSet from '@/components/common/SocialLoginButtonSet';
 
-export default function SignUp() {
+export function Component() {
   return (
     <motion.div
       initial={{ opacity: 0, width: '440px' }}
@@ -41,3 +41,5 @@ export default function SignUp() {
     </motion.div>
   );
 }
+
+Component.displayName = 'SignUp';

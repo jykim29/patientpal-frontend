@@ -9,7 +9,7 @@ import { GetMatchUserInfoResponse } from '@/types/api/match';
 import { useAuthStore } from '@/store/useAuthStore';
 import { validateObject } from '@/utils/validateObject';
 
-export default function ContractWrite() {
+export function Component() {
   const { memberId } = useParams();
   if (isNaN(Number(memberId))) {
     alert('잘못된 접근입니다.');
@@ -63,3 +63,5 @@ export default function ContractWrite() {
     </section>
   );
 }
+
+Component.displayName = 'ContractWrite';

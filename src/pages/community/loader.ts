@@ -4,7 +4,7 @@ import { boardService } from '@/services';
 import { useAuthStore } from '@/store/useAuthStore';
 import { getBoardType } from '@/utils/getBoardType';
 
-export const postLoader: LoaderFunction = async ({ request, params }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
   const boardType = getBoardType(request.url);
   if (!boardType) return null;
   const accessToken = useAuthStore.getState().accessToken;

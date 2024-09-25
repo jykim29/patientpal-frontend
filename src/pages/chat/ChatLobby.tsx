@@ -1,7 +1,7 @@
 import { ChatRoomList } from '@/components/Chat';
 import { useChatContext } from '@/hooks/useChatContext';
 
-export default function ChatLobby({ title }: { title: string }) {
+export function Component() {
   const {
     loadingState: [isLoading],
   } = useChatContext();
@@ -9,10 +9,12 @@ export default function ChatLobby({ title }: { title: string }) {
   return (
     <section>
       <div className="flex w-full items-center justify-between">
-        <h3 className="text-title-small">{title}</h3>
+        <h3 className="text-title-small">채팅 목록</h3>
       </div>
 
       {!isLoading && <ChatRoomList />}
     </section>
   );
 }
+
+Component.displayName = 'ChatLobby';

@@ -3,7 +3,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAuthStore } from '@/store/useAuthStore';
 import Header from '../common/Header';
 
-function AuthLayout() {
+export function Component() {
   const { isLoggedIn, user } = useAuthStore();
   if (isLoggedIn && user) {
     return <Navigate to={'/'} replace />;
@@ -23,4 +23,4 @@ function AuthLayout() {
   );
 }
 
-export default AuthLayout;
+Component.displayName = 'AuthLayout';

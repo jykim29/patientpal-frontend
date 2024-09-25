@@ -27,7 +27,7 @@ interface ChatContextValues {
 
 export const ChatContext = createContext<ChatContextValues | null>(null);
 
-export default function ChatContextProvider() {
+export function Component() {
   const values = useChat(stompClient);
   return (
     <ChatContext.Provider value={values}>
@@ -35,3 +35,5 @@ export default function ChatContextProvider() {
     </ChatContext.Provider>
   );
 }
+
+Component.displayName = 'ChatContextProvider';

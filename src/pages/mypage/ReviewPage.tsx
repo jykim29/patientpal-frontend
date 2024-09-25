@@ -28,7 +28,7 @@ const reviews = [
   },
 ];
 
-function ReviewPage() {
+export function Component() {
   const [filter, setFilter] = useState('all');
   const [filteredReviews, setFilteredReviews] = useState(reviews);
 
@@ -109,4 +109,4 @@ function ReviewPage() {
   );
 }
 
-export default ReviewPage;
+Component.displayName = 'ReviewPage';

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { ChatMessenger } from '@/components/Chat';
 import { useChatContext } from '@/hooks/useChatContext';
 
-export default function ChatRoom() {
+export function Component() {
   const {
     disconnect,
     loadingState: [isLoading],
@@ -25,3 +25,5 @@ export default function ChatRoom() {
   }, []);
   return <section>{!isLoading && <ChatMessenger />}</section>;
 }
+
+Component.displayName = 'ChatRoom';

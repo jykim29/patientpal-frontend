@@ -19,7 +19,7 @@ const matchExactPathname = (pathname: string, currentPathname: string) => {
   return regex.test(currentPathname);
 };
 
-export default function ProtectedRoute() {
+export function Component() {
   const { isLoggedIn, user } = useAuthStore();
   const { alert } = useModal();
   const navigate = useNavigate();
@@ -54,3 +54,5 @@ export default function ProtectedRoute() {
 
   return <>{isHideOutlet ? null : <Outlet />}</>;
 }
+
+Component.displayName = 'ProtectedRoute';

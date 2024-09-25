@@ -17,7 +17,6 @@ export default function Board({
 }: {
   title: string;
   boardType: BoardType;
-  loaderData: GetListResponse;
 }) {
   const { user, accessToken } = useAuthStore();
   const [searchParams] = useSearchParams();
