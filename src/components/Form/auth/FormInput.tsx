@@ -10,16 +10,9 @@ interface FormInputProps extends React.ComponentPropsWithoutRef<'input'> {
   [key: string]: any;
 }
 
-const FormInput = forwardRef(function FormInput(
-  {
-    className = '',
-    type = 'text',
-    name,
-    label,
-    isValid = true,
-    ...restProps
-  }: FormInputProps,
-  ref: any
+const FormInput = forwardRef<any, FormInputProps>(function FormInput(
+  { className = '', type = 'text', name, label, isValid = true, ...restProps },
+  ref
 ) {
   const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
 
