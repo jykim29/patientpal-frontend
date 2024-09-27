@@ -22,8 +22,8 @@ function Dropdown({
     'bg-[center_right_5px] bg-no-repeat py-0.5 pl-2 pr-10',
     'rounded-lg border border-black shadow-[0_0_0_0.5px_#000] outline-none focus-visible:border-secondary focus-visible:shadow-[0_0_0_0.5px_#6495ED]',
     isExpanded
-      ? "bg-[url('/assets/chevron_up.svg')]"
-      : "bg-[url('/assets/chevron_down.svg')]",
+      ? "bg-[url('/assets/images/chevron_up.svg')]"
+      : "bg-[url('/assets/images/chevron_down.svg')]",
     className
   );
 

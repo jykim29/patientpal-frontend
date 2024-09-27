@@ -157,7 +157,7 @@ export default function SignUpForm() {
                   <figcaption>일반 사용자</figcaption>
                   <img
                     className="h-[120px]"
-                    src="/assets/patient_both.png"
+                    src="/assets/images/patient_both.png"
                     alt="휠체어를 탄 노인 남녀"
                   />
                 </figure>
@@ -176,7 +176,7 @@ export default function SignUpForm() {
                   <figcaption>간병인</figcaption>
                   <img
                     className="h-[120px]"
-                    src="/assets/caregiver_both.png"
+                    src="/assets/images/caregiver_both.png"
                     alt="앞치마를 두르고 있는 간병인 남녀"
                   />
                 </figure>

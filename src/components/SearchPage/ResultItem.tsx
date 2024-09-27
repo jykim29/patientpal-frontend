@@ -117,7 +117,11 @@ function ResultItem({ searchResult }: Props) {
           type="button"
           className="border-2 border-gold bg-orange px-2.5"
         >
-          <img src="/assets/paper_pencil.svg" title="계약서" alt="계약서" />
+          <img
+            src="/assets/images/paper_pencil.svg"
+            title="계약서"
+            alt="계약서"
+          />
           신청하기
         </Button>
         <Button
@@ -125,7 +129,7 @@ function ResultItem({ searchResult }: Props) {
           type="submit"
           className="bg-primary px-2.5 py-3"
         >
-          <img src="/assets/send.svg" title="전송" alt="전송" />
+          <img src="/assets/images/send.svg" title="전송" alt="전송" />
           채팅하기
         </Button>
       </div>

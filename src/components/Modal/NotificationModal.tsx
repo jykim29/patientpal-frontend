@@ -67,7 +67,7 @@ export default function NotificationModal({
         )}
         <button
           id="notification"
-          className="ml-auto h-4 w-4 bg-[url('/assets/cross_black.svg')] bg-center bg-no-repeat"
+          className="ml-auto h-4 w-4 bg-[url('/assets/images/cross_black.svg')] bg-center bg-no-repeat"
           type="button"
           onClick={handleToggleModal}
         ></button>
@@ -120,7 +120,7 @@ function NotificationListItem({ name, type, createdDate }: NotificationItem) {
     <li className="flex select-none items-center justify-between gap-3 border-b border-gray-light-medium px-3 py-2 hover:bg-yellow-50">
       <img
         className="h-10 w-10 overflow-hidden rounded-full"
-        src="/assets/default_profile.jpg"
+        src="/assets/images/default_profile.jpg"
         alt="프로필"
       />
       <div className="flex-1 text-text-small">

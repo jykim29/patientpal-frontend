@@ -63,7 +63,8 @@ export default class ChatService {
         partnerInfo: {
           ...partnerInfoData,
           profileImageUrl:
-            partnerInfoData?.profileImageUrl ?? '/assets/default_profile.jpg',
+            partnerInfoData?.profileImageUrl ??
+            '/assets/images/default_profile.jpg',
         },
       };
     });

@@ -25,20 +25,20 @@ export function Component() {
         id: 0,
         buttonImageUrl:
           myRole === 'CAREGIVER'
-            ? '/assets/patient_both.png'
-            : '/assets/caregiver_both.png',
+            ? '/assets/images/patient_both.png'
+            : '/assets/images/caregiver_both.png',
         label: myRole === 'CAREGIVER' ? '환자 찾기' : '간병인 찾기',
         path: '/search/city',
       },
       {
         id: 1,
-        buttonImageUrl: 'assets/icon-contract.png',
+        buttonImageUrl: 'assets/images/icon-contract.png',
         label: '매칭 기록',
         path: '/mypage/match-record',
       },
       {
         id: 2,
-        buttonImageUrl: 'assets/icon-notice.png',
+        buttonImageUrl: 'assets/images/icon-notice.png',
         label: '자유게시판',
         path: '/community/forum',
       },
@@ -49,7 +49,7 @@ export function Component() {
     <main className="flex w-[1190px] flex-col items-center gap-8 px-[52px] py-8">
       <img
         className="w-full"
-        src="assets/main-banner.png"
+        src="assets/images/main-banner.png"
         alt="페이션트팔 메인 배너"
       />
 

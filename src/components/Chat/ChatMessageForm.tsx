@@ -36,7 +36,7 @@ export default function ChatMessageForm() {
         className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-md border border-primary bg-white px-4 py-2.5 text-white transition-all hover:brightness-[0.95] active:brightness-[1.05]"
         htmlFor="attach"
       >
-        <img src="/assets/clip.svg" title="이미지 첨부" alt="클립" />
+        <img src="/assets/images/clip.svg" title="이미지 첨부" alt="클립" />
       </label>
       <input
         className="sr-only"
@@ -65,7 +65,7 @@ export default function ChatMessageForm() {
         />
       </div>
       <Button type="submit" className={sendButtonClassName}>
-        <img src="/assets/send.svg" title="전송" alt="전송" />
+        <img src="/assets/images/send.svg" title="전송" alt="전송" />
       </Button>
       {currentRoomData?.partnerInfo && (
         <Link
@@ -73,7 +73,7 @@ export default function ChatMessageForm() {
           className="inline-flex items-center justify-center gap-2 rounded-md border-2 border-gold bg-orange px-2.5 py-2.5 text-white transition-all hover:brightness-[0.95] active:brightness-[1.05]"
         >
           <img
-            src="/assets/paper_pencil.svg"
+            src="/assets/images/paper_pencil.svg"
             title="계약서 작성"
             alt="계약서"
           />

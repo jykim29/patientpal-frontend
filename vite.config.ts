@@ -36,14 +36,13 @@ export default defineConfig(({ mode }) => {
     build: {
       rollupOptions: {
         output: {
-          manualChunks(id) {
-            if (id.includes('node_modules')) {
-              const moduleName = id
-                .split('node_modules/.store/')
-                .pop()
-                ?.split('/')[0];
-              return `vendor/${moduleName}`;
-            }
+          manualChunks: {
+            stompjs: ['@stomp/stompjs'],
+            dompurify: ['dompurify'],
+            lodash: ['lodash'],
+            qs: ['qs'],
+            'react-quill': ['react-quill'],
+            'framer-motion': ['framer-motion'],
           },
         },
       },

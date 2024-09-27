@@ -53,7 +53,7 @@
     & .board-subject {
       @apply flex;
       & .board-subject-text.notice {
-        @apply relative ml-8 font-semibold before:absolute before:-left-8 before:h-6 before:w-6 before:bg-[url('/assets/speaker_notice.svg')] before:bg-center before:bg-no-repeat;
+        @apply relative ml-8 font-semibold before:absolute before:-left-8 before:h-6 before:w-6 before:bg-[url('/assets/images/speaker_notice.svg')] before:bg-center before:bg-no-repeat;
       }
       & a {
         @apply ml-3;

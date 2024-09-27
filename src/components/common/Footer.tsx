@@ -56,7 +56,7 @@ function Footer() {
           ))}
         </div>
         <div className="flex w-full items-center gap-6 border-t-[0.5px] pt-5">
-          <img src="/assets/logo-main.png" className="text-black"></img>
+          <img src="/assets/images/logo-main.png" className="text-black"></img>
           <div className="flex flex-col gap-2 text-text-small text-gray-dark">
             <p>프로젝트명 : 간병매칭서비스 patientpal</p>
             <p>제작자 : (BE)이정혜, 이후성, 장치훈 (FE)김종연, 노현호</p>

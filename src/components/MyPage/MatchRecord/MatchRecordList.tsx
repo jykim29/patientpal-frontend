@@ -51,12 +51,12 @@ const division: Division = {
   },
   send: {
     label: '보냄',
-    imgSrc: '/assets/arrow_send.svg',
+    imgSrc: '/assets/images/arrow_send.svg',
     textColor: 'text-naver',
   },
   receive: {
     label: '받음',
-    imgSrc: '/assets/arrow_receive.svg',
+    imgSrc: '/assets/images/arrow_receive.svg',
     textColor: 'text-primary',
   },
 };
@@ -78,7 +78,7 @@ const matchStatusContents: MatchStatusContents = {
       actionButton: {
         bgColor: 'bg-negative',
         label: '신청 취소',
-        imgSrc: '/assets/cross_white.svg',
+        imgSrc: '/assets/images/cross_white.svg',
         eventType: 'cancel',
       },
     },
@@ -88,7 +88,7 @@ const matchStatusContents: MatchStatusContents = {
       actionButton: {
         bgColor: 'bg-primary',
         label: '계약서 조회',
-        imgSrc: '/assets/contract_search.svg',
+        imgSrc: '/assets/images/contract_search.svg',
         eventType: 'contract',
       },
     },
@@ -103,7 +103,7 @@ const matchStatusContents: MatchStatusContents = {
       actionButton: {
         bgColor: 'bg-orange',
         label: '후기 작성',
-        imgSrc: '/assets/contract_search.svg',
+        imgSrc: '/assets/images/contract_search.svg',
         eventType: 'review',
       },
     },
@@ -115,7 +115,7 @@ const matchStatusContents: MatchStatusContents = {
       actionButton: {
         bgColor: 'bg-primary',
         label: '계약서 조회',
-        imgSrc: '/assets/contract_search.svg',
+        imgSrc: '/assets/images/contract_search.svg',
         eventType: 'contract',
       },
     },
@@ -125,7 +125,7 @@ const matchStatusContents: MatchStatusContents = {
       actionButton: {
         bgColor: 'bg-primary',
         label: '계약서 조회',
-        imgSrc: '/assets/contract_search.svg',
+        imgSrc: '/assets/images/contract_search.svg',
         eventType: 'contract',
       },
     },
@@ -140,7 +140,7 @@ const matchStatusContents: MatchStatusContents = {
       actionButton: {
         bgColor: 'bg-orange',
         label: '후기 작성',
-        imgSrc: '/assets/contract_search.svg',
+        imgSrc: '/assets/images/contract_search.svg',
         eventType: 'review',
       },
     },
@@ -299,13 +299,13 @@ export default function MatchRecordList({
                       <span className="list-item-container">{partnerName}</span>
                       {/* 간병 기간 */}
                       <span className="list-item-container">
-                        <img src="/assets/calendar.svg" alt="calendar" />
+                        <img src="/assets/images/calendar.svg" alt="calendar" />
                         <span>{period}</span>
                         <span className="text-negative">{`(${duration}일)`}</span>
                       </span>
                       {/* 금액 */}
                       <span className="list-item-container">
-                        <img src="/assets/won.svg" alt="won" />
+                        <img src="/assets/images/won.svg" alt="won" />
                         <span>{`${totalAmount.toLocaleString('ko-KR')}원`}</span>
                       </span>
                       {/* 매칭 상태 */}

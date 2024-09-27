@@ -23,7 +23,7 @@ const FormCheckbox = forwardRef<any, FormCheckboxProps>(function FormCheckbox(
         {...restProps}
       />
       <label
-        className="ml-6 block select-none rounded-sm text-text-small before:absolute before:left-0 before:top-1/2 before:h-[16px] before:w-[16px] before:-translate-y-1/2 before:bg-[url('/assets/unchecked.svg')] before:bg-no-repeat peer-checked:before:bg-[url('/assets/checked.svg')] [input[type='checkbox']:focus-visible~&]:outline [input[type='checkbox']:focus-visible~&]:outline-2 [input[type='checkbox']:focus-visible~&]:outline-primary"
+        className="ml-6 block select-none rounded-sm text-text-small before:absolute before:left-0 before:top-1/2 before:h-[16px] before:w-[16px] before:-translate-y-1/2 before:bg-[url('/assets/images/unchecked.svg')] before:bg-no-repeat peer-checked:before:bg-[url('/assets/images/checked.svg')] [input[type='checkbox']:focus-visible~&]:outline [input[type='checkbox']:focus-visible~&]:outline-2 [input[type='checkbox']:focus-visible~&]:outline-primary"
         htmlFor={name}
       >
         {label}

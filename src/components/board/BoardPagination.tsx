@@ -21,12 +21,12 @@ export default function BoardPagination({
       <div className="flex items-center gap-0.5">
         <Link
           title="처음 페이지"
-          className='block h-5 w-5 bg-[url("/assets/chevron_dobule_left.svg")] bg-center bg-no-repeat'
+          className='block h-5 w-5 bg-[url("/assets/images/chevron_dobule_left.svg")] bg-center bg-no-repeat'
           to={'.?page=0'}
         ></Link>
         <Link
           title="이전 페이지"
-          className='block h-5 w-5 bg-[url("/assets/chevron_left.svg")] bg-center bg-no-repeat'
+          className='block h-5 w-5 bg-[url("/assets/images/chevron_left.svg")] bg-center bg-no-repeat'
           to={`.?page=${chunkedPageArray[currentPageArrayIndex - 1]?.[0] || 0}`}
         ></Link>
       </div>
@@ -66,12 +66,12 @@ export default function BoardPagination({
       <div className="flex items-center gap-0.5">
         <Link
           title="다음 페이지"
-          className='block h-5 w-5 bg-[url("/assets/chevron_right.svg")] bg-center bg-no-repeat'
+          className='block h-5 w-5 bg-[url("/assets/images/chevron_right.svg")] bg-center bg-no-repeat'
           to={`.?page=${chunkedPageArray[currentPageArrayIndex + 1]?.[0] || totalPages - 1}`}
         ></Link>
         <Link
           title="마지막 페이지"
-          className='block h-5 w-5 bg-[url("/assets/chevron_double_right.svg")] bg-center bg-no-repeat'
+          className='block h-5 w-5 bg-[url("/assets/images/chevron_double_right.svg")] bg-center bg-no-repeat'
           to={`.?page=${totalPages - 1}`}
         ></Link>
       </div>

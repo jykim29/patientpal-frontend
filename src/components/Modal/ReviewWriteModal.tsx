@@ -54,8 +54,8 @@ export default function ReviewWriteModal() {
           {starArray.map((value) => {
             const starImage =
               value > formData.star
-                ? "bg-[url('/assets/review_star_empty.png')]"
-                : "bg-[url('/assets/review_star_full.png')]";
+                ? "bg-[url('/assets/images/review_star_empty.png')]"
+                : "bg-[url('/assets/images/review_star_full.png')]";
             return (
               <Fragment key={value}>
                 <label

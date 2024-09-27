@@ -18,7 +18,7 @@ export default function ChatRoomList() {
             username={value.partnerInfo?.name ?? ''}
             profileImageUrl={
               value.partnerInfo?.profileImageUrl ??
-              '/assets/default_profile.jpg'
+              '/assets/images/default_profile.jpg'
             }
           />
         ))

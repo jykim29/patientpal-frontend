@@ -36,7 +36,7 @@ const Card: CardType = {
         className="flex h-[80px] cursor-pointer items-center gap-1 rounded-xl bg-gray-light px-4 py-2 shadow-lg"
       >
         <p className="text-nowrap text-text-large font-semibold">{label}</p>
-        <img src="/assets/right_circle_icon.png" alt="바로가기 이동" />
+        <img src="/assets/images/right_circle_icon.png" alt="바로가기 이동" />
         <img className="h-full" src={buttonImageUrl} alt={label} />
       </Link>
     );
@@ -48,7 +48,7 @@ const Card: CardType = {
         className={`flex flex-col gap-3 px-5 py-3 ${bgColorList[index]} rounded-[15px] drop-shadow-lg`}
       >
         <div className="flex items-center gap-3">
-          <img src={`assets/icon-ranking${index + 1}.png`} />
+          <img src={`assets/images/icon-ranking${index + 1}.png`} />
           <p className="text-title-small">{name}</p>
           <p className="text-text-small">간병인님</p>
         </div>
@@ -106,7 +106,7 @@ const Card: CardType = {
         ? `경력 ${experienceYears}년`
         : undefined,
     };
-    const imageSrc = image ?? '/assets/default_profile.jpg';
+    const imageSrc = image ?? '/assets/images/default_profile.jpg';
     return (
       <div className="flex h-full w-[230px] shrink-0 flex-col items-center justify-center gap-2 rounded-md border border-tertiary p-4 text-text-small shadow-md">
         <img

@@ -92,7 +92,7 @@ function Header() {
         <Link to={'/'}>
           <img
             className="max-h-full"
-            src="/assets/logo-main.png"
+            src="/assets/images/logo-main.png"
             alt="페이션트팔"
           />
         </Link>
@@ -118,7 +118,7 @@ function UserProfile({
       <div className="flex select-none items-center gap-3">
         <img
           className="h-10 w-10 overflow-hidden rounded-full"
-          src={user?.image || '/assets/default_profile.jpg'}
+          src={user?.image || '/assets/images/default_profile.jpg'}
           alt="프로필 사진"
         />
         <p>
@@ -129,7 +129,7 @@ function UserProfile({
         <button
           id="shortcut"
           title="메뉴 펼치기"
-          className={`h-6 w-6 bg-[length:12px_12px] bg-center bg-no-repeat hover:bg-gray-light ${isShow ? "bg-[url('/assets/chevron_up.svg')]" : "bg-[url('/assets/chevron_down.svg')]"}`}
+          className={`h-6 w-6 bg-[length:12px_12px] bg-center bg-no-repeat hover:bg-gray-light ${isShow ? "bg-[url('/assets/images/chevron_up.svg')]" : "bg-[url('/assets/images/chevron_down.svg')]"}`}
           type="button"
           onClick={handleClick}
         >
@@ -164,7 +164,7 @@ function UnknownProfile({
       >
         <img
           className="h-10 w-10 overflow-hidden rounded-full"
-          src="/assets/unknown_profile.jpg"
+          src="/assets/images/unknown_profile.jpg"
           alt="프로필 사진"
         />
         <span>프로필을 먼저 등록해주세요.</span>

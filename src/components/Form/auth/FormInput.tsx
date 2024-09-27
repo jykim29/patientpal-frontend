@@ -47,7 +47,7 @@ const FormInput = forwardRef<any, FormInputProps>(function FormInput(
         <button
           title={isShowPassword ? '비밀번호 숨기기' : '비밀번호 표시'}
           type="button"
-          className={`absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 bg-center bg-no-repeat ${twMerge([isShowPassword ? "bg-[url('/assets/show.svg')]" : "bg-[url('/assets/hide.svg')]"])}`}
+          className={`absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 bg-center bg-no-repeat ${twMerge([isShowPassword ? "bg-[url('/assets/images/show.svg')]" : "bg-[url('/assets/images/hide.svg')]"])}`}
           onClick={handleClick}
         ></button>
       )}

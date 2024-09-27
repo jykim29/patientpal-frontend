@@ -65,7 +65,7 @@ function UserRecommendation() {
           className="relative flex h-[230px] w-full items-center overflow-hidden"
           ref={containerRef}
         >
-          <div className="absolute left-0 z-10 h-full w-10 bg-[url('/assets/chevron_left.svg')] bg-center bg-no-repeat"></div>
+          <div className="absolute left-0 z-10 h-full w-10 bg-[url('/assets/images/chevron_left.svg')] bg-center bg-no-repeat"></div>
           <motion.div
             className="flex items-center gap-4"
             drag="x"
@@ -91,11 +91,11 @@ function UserRecommendation() {
               );
             })}
           </motion.div>
-          <div className="absolute right-0 z-10 h-full w-10 bg-[url('/assets/chevron_right.svg')] bg-center bg-no-repeat"></div>
+          <div className="absolute right-0 z-10 h-full w-10 bg-[url('/assets/images/chevron_right.svg')] bg-center bg-no-repeat"></div>
         </div>
       )}
       {error && (
-        <div className="flex h-[230px] w-full items-center justify-center rounded-lg bg-[url('/assets/user_recommend_blur.png')]">
+        <div className="flex h-[230px] w-full items-center justify-center rounded-lg bg-[url('/assets/images/user_recommend_blur.png')]">
           <Link
             to={error.path}
             className="relative h-11 w-[400px] overflow-hidden rounded-lg border border-primary bg-white px-2 py-1 text-text-xlarge font-semibold shadow-lg transition-all hover:bg-primary [&:hover>span]:-translate-y-[100%] [&:hover>span]:text-white"

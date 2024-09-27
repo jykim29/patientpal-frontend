@@ -24,7 +24,7 @@
       }
     }
     &.done {
-      @apply bg-primary bg-[url('/assets/checkmark.svg')] bg-center bg-no-repeat;
+      @apply bg-primary bg-[url('/assets/images/checkmark.svg')] bg-center bg-no-repeat;
       & .step-count {
         @apply hidden;
       }

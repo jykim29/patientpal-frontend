@@ -15,7 +15,7 @@ export default function ChatListItem({
     >
       <img
         className="profile-image"
-        src={profileImageUrl ?? '/assets/default_profile.jpg'}
+        src={profileImageUrl ?? '/assets/images/default_profile.jpg'}
         alt="프로필"
       />
       <p className="chat-text">{content}</p>

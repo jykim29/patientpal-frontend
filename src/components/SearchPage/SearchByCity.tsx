@@ -49,7 +49,7 @@ function SearchByCity() {
           <img
             key={currentImg.index}
             alt={currentImg.title}
-            src={`/assets/seoul/map_${currentImg.index}.png`}
+            src={`/assets/images/seoul/map_${currentImg.index}.png`}
             className="w-[696px]"
           />
         )}
